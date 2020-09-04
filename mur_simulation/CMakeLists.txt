@@ -12,8 +12,10 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   mur_force_controller
   mur_kinematics
+  tf
 )
 
+#find_package(cmake_modules REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 ## System dependencies are found with CMake's conventions
@@ -109,8 +111,8 @@ catkin_package(
  INCLUDE_DIRS include
  LIBRARIES mur_simulation
  CATKIN_DEPENDS 
-   roscpp
-   geometry_msgs
+ #  roscpp
+ #  geometry_msgs
 #  DEPENDS system_lib
 )
 
@@ -136,6 +138,7 @@ add_library(${PROJECT_NAME}
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
 # add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS}
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
@@ -158,6 +161,10 @@ add_executable(execution_node src/main.cpp)
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+
+target_link_libraries(${PROJECT_NAME}
+  ${catkin_LIBRARIES}
+)
 
 target_link_libraries(execution_node ${catkin_LIBRARIES})
 

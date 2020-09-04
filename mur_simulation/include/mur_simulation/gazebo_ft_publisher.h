@@ -12,6 +12,7 @@
 
 #include <ros/ros.h>
 #include <geometry_msgs/WrenchStamped.h>
+#include <geometry_msgs/Vector3Stamped.h>
 
 #include <tf/transform_listener.h>
 #include <tf/transform_datatypes.h>
@@ -23,36 +24,57 @@
 #ifndef GAZEBO_FT_PUBLISHER_H
 #define GAZEBO_FT_PUBLISHER_H
 
-class WrenchPublisher
-{
-private:
-    ros::NodeHandle nh_;
-    ros::Subscriber sub_;
-    ros::Publisher pub_;
-    geometry_msgs::WrenchStamped measured_wrench_;
-    
-public:
-    //standard constructor
-    WrenchPublisher();
+namespace gazebo_ft_publisher{
 
-    //destructor
-    ~WrenchPublisher();
+    class WrenchPublisher
+    {
+    private:
+        ros::NodeHandle nh_;
+        ros::Subscriber sub_;
+        ros::Publisher pub_;
+        geometry_msgs::WrenchStamped wrench_;
+        geometry_msgs::Vector3Stamped force_, torque_;
+        geometry_msgs::Vector3Stamped wrench_force_, wrench_torque_;
+        
+        tf::StampedTransform transform;
+        tf::Transform force_at_wrist3;
+        tf::Transform force_at_ee;
 
-    struct Frames{};
+        tf::StampedTransform transform_;
+        tf::TransformListener listener_;
+        
+    public:
+        //standard constructor
+        WrenchPublisher();
 
-    /**
-    * @brief Callbacks current wrench and publishes it to cartesian_admittance_controller 
-    * 
-    */
+        //destructor
+        ~WrenchPublisher();
 
-    void wrenchCallback(geometry_msgs::WrenchStamped::ConstPtr wrench_msg);
+        /**
+        * @brief transfers current wrench of Gazebo-F/T-sensor-plugin fixed at 'wrist3_link_ur5' into 'ee_link_ur5'
+        * 
+        */
+        void transform_wrench_into_ee();
+        
+        /**
+        * @brief Callbacks current wrench and publishes it to cartesian_admittance_controller 
+        * 
+        */
+        void wrenchCallback(geometry_msgs::WrenchStamped::ConstPtr wrench_msg);
 
-    /**
-    * @brief transfers current wrench of Gazebo-F/T-sensor-plugin fixed at 'wrist3_link_ur5' into 'ee_link_ur5'
-    * 
-    */
-    void transform_wrench_into_ee();
+        
+        /**
+         * @brief 
+         * 
+         * @param source_frame 
+         * @param target_frame 
+         * @return tf::StampedTransform 
+         */
+        tf::StampedTransform tf_listener(std::string &source_frame, std::string &target_frame);
 
-};
+        
+
+    };
+}
 
 #endif /* GAZEBO_FT_PUBLISHER_H */

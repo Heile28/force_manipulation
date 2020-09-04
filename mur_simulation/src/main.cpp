@@ -14,9 +14,11 @@
 int main(int argc, char** argv)
 {
     ros::init(argc,argv,"Drive_MiR");  
+    ros::NodeHandle nh;
 
     //start publishing wrench data to cartesian_admittance_controller
-    //WrenchPublisher startWrench;
+    gazebo_ft_publisher::WrenchPublisher startWrench;
+    
 
     //start moving MiR robot
     move_compliant::MurBase begin;

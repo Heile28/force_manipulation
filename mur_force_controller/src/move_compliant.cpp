@@ -18,7 +18,7 @@ using namespace move_compliant;
 //constructor
 MurBase::MurBase()
 {
-    this->nh_=ros::NodeHandle("~");
+    this->nh_=nh_;
     this->joint_angles_ = nh_.subscribe("/robot1_ns/joint_states", 10, &MurBase::callbackJointAngles, this);
     this->theta1_ = 0.0; 
     this->theta2_ = 0.0;
@@ -46,10 +46,10 @@ void MurBase::callbackJointAngles(sensor_msgs::JointState joint_msg_)
 }
 
 //constructor
-MoveMir::MoveMir(){
-    
+MoveMir::MoveMir()
+{
     this->nh_=ros::NodeHandle("move_mir_compliant");
-    this->sub_pose_ = nh_.subscribe("cartesian/endeffector_pose/data", 100, &MoveMir::callbackCurrentPose, this); //from listen_frames_node
+    this->sub_pose_ = nh_.subscribe("/cartesian/endeffector_pose/data", 100, &MoveMir::callbackCurrentPose, this); //from listen_frames_node
     this->pub_simple_ = nh_.advertise<geometry_msgs::Twist>("/robot1_ns/mobile_base_controller/cmd_vel", 100);
     //this->scan_pub_=this->nh_.advertise<sensor_msgs::PointCloud>("scan",10);
     last_time_ = ros::Time::now();
@@ -65,7 +65,7 @@ void MoveMir::lookupInitialPosition(){
         //last_time_ = ros::Time::now();
         current_time_ = ros::Time::now();
 
-        endeffector_pose_client_ = nh_.serviceClient<mur_robot_msgs::PoseRequest>("request_endeffector/pose"); //from pose_server.cpp
+        endeffector_pose_client_ = nh_.serviceClient<mur_robot_msgs::PoseRequest>("/request_endeffector/pose"); //from pose_server.cpp
         mur_robot_msgs::PoseRequest pose_msg_;
         pose_msg_.request.request = true;
 
@@ -84,7 +84,7 @@ void MoveMir::lookupInitialPosition(){
                 current_pose_old_ = initial_pose_;
         }
         else{
-        ROS_WARN("Service call failed! Start pose_server_node!");
+            ROS_WARN("Service call failed! Start pose_server_node!");
         }
 }
 
