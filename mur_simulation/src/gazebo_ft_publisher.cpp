@@ -4,10 +4,16 @@ using namespace gazebo_ft_publisher;
 
 WrenchPublisher::WrenchPublisher()
 {
-    this->nh_=nh_;
-    //this->nh_=ros::NodeHandle("publish_sensor_wrench");
+    //this->nh_=nh_;
+    this->nh_=ros::NodeHandle("publish_sensor_wrench");
     this->pub_ = nh_.advertise<geometry_msgs::WrenchStamped>("/robot1_ns/arm_cartesian_compliance_controller/ft_sensor_wrench",100);
     this->sub_= nh_.subscribe("/robot1_ns/ee_force_torque_sensor", 100, &WrenchPublisher::wrenchCallback, this);
+}
+
+//destructor
+WrenchPublisher::~WrenchPublisher()
+{
+    printf("No forces are gonna be published to admittance controller \n");
 }
 
 void WrenchPublisher::wrenchCallback(geometry_msgs::WrenchStamped::ConstPtr wrench_msg_){

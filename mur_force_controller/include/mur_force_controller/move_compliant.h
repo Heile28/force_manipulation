@@ -91,7 +91,7 @@ namespace move_compliant{
         void transferIntoMir(Eigen::VectorXd displ_);
 
         /**
-        * @brief diff_drive controller for the MiR
+        * @brief diff_drive controller for the MiR NEUES
         * 
         */
         void moveGoal();

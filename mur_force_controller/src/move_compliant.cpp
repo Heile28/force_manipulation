@@ -53,9 +53,8 @@ MoveMir::MoveMir()
     this->pub_simple_ = nh_.advertise<geometry_msgs::Twist>("/robot1_ns/mobile_base_controller/cmd_vel", 100);
     //this->scan_pub_=this->nh_.advertise<sensor_msgs::PointCloud>("scan",10);
     last_time_ = ros::Time::now();
-    for(unsigned i=0; i<6; i++){
+    for(unsigned i=0; i<6; i++)
         initial_pose_.push_back(0.0);
-    }
 }
 
 void MoveMir::lookupInitialPosition(){
