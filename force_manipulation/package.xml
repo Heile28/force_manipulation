@@ -1,0 +1,25 @@
+<package format="2">
+  <name>force_manipulation</name>
+  <version>0.1.0</version>
+  <description>Library of packages to manipulate the mur-robot by force</description>
+
+  <maintainer email="lenz.heiko@posteo.de">Heiko Lenz</maintainer>
+
+  <license>BSD</license>
+
+  <!-- <url type="repository">https://github.com/fzi-forschungszentrum-informatik/cartesian_controllers</url> --> 
+
+  <author email="lenz.heiko@posteo.de">Heiko Lenz</author> 
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>mur_force_controller</exec_depend>
+  <exec_depend>mur_kinematics</exec_depend>
+  <exec_depend>mur_robot_msgs</exec_depend>
+  <exec_depend>mur_simulation</exec_depend>
+
+  <export>
+    <metapackage/>
+  </export>
+</package>
