@@ -1,13 +1,14 @@
 <package format="2">
   <name>force_manipulation</name>
   <version>0.1.0</version>
-  <description>Library of packages to manipulate the mur-robot by force</description>
+  <description>meta package to manipulate the mur-robot by force</description>
 
+  <author>Heiko Lenz</author>
   <maintainer email="lenz.heiko@posteo.de">Heiko Lenz</maintainer>
 
   <license>BSD</license>
 
-  <!-- <url type="repository">https://github.com/fzi-forschungszentrum-informatik/cartesian_controllers</url> --> 
+  <url type="repository">https://github.com/Heile28/force_manipulation</url>
 
   <author email="lenz.heiko@posteo.de">Heiko Lenz</author> 
 
