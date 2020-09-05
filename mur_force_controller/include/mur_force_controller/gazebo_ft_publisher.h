@@ -60,18 +60,7 @@ namespace gazebo_ft_publisher{
         * @brief Callbacks current wrench and publishes it to cartesian_admittance_controller 
         * 
         */
-        void wrenchCallback(geometry_msgs::WrenchStamped::ConstPtr wrench_msg);
-
-        
-        /**
-         * @brief 
-         * 
-         * @param source_frame 
-         * @param target_frame 
-         * @return tf::StampedTransform 
-         */
-        tf::StampedTransform tf_listener(std::string &source_frame, std::string &target_frame);
-
+        void wrenchCallback(geometry_msgs::WrenchStamped wrench_msg);
         
 
     };

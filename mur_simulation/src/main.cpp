@@ -9,7 +9,7 @@
 */
 
 #include <mur_force_controller/move_compliant.h>
-#include <mur_simulation/gazebo_ft_publisher.h>
+#include <mur_force_controller/gazebo_ft_publisher.h>
 
 int main(int argc, char** argv)
 {
@@ -21,7 +21,7 @@ int main(int argc, char** argv)
     
 
     //start moving MiR robot
-    move_compliant::MurBase begin;
+    //move_compliant::MurBase begin;
     move_compliant::MoveMir obj1;
     //obj1.lookupInitialPosition();
 

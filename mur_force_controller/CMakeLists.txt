@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   tf
   sensor_msgs
+  geometry_msgs
   mur_robot_msgs
 )
 
@@ -130,7 +131,9 @@ include_directories(
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
   include/${PROJECT_NAME}/move_compliant.h
+  include/${PROJECT_NAME}/gazebo_ft_publisher.h
   src/move_compliant.cpp
+  src/gazebo_ft_publisher.cpp
 )
 
 ## Add cmake target dependencies of the library

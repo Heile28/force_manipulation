@@ -129,10 +129,9 @@ include_directories(
 )
 
 ## Declare a C++ library
-add_library(${PROJECT_NAME}
-  include/${PROJECT_NAME}/gazebo_ft_publisher.h
-  src/gazebo_ft_publisher.cpp
-)
+#add_library(${PROJECT_NAME}
+#  include/${PROJECT_NAME}/...
+#)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -162,9 +161,9 @@ add_executable(execution_node src/main.cpp)
 #   ${catkin_LIBRARIES}
 # )
 
-target_link_libraries(${PROJECT_NAME}
-  ${catkin_LIBRARIES}
-)
+#target_link_libraries(${PROJECT_NAME}
+#  ${catkin_LIBRARIES}
+#)
 
 target_link_libraries(execution_node ${catkin_LIBRARIES})
 
