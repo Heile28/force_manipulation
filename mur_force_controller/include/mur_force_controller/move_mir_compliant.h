@@ -12,10 +12,11 @@
 //ROS
 #include <ros/ros.h>
 
-// ROS msgs
+//ROS msgs
 #include <tf/transform_broadcaster.h>
 #include <sensor_msgs/JointState.h>
 #include <mur_robot_msgs/PoseMessage.h>
+#include <mur_robot_msgs/PoseRequest.h>
 
 //other
 #include <eigen3/Eigen/Dense>
@@ -31,10 +32,11 @@ namespace move_compliant{
     class MurBase
     {
     private:
-        double theta1_, theta2_, theta3_, theta4_, theta5_, theta6_;
         ros::NodeHandle nh_;
         ros::Subscriber joint_angles_;
 
+    protected:
+        double theta1_, theta2_, theta3_, theta4_, theta5_, theta6_;
 
     public:
         //standard constructor
@@ -61,7 +63,7 @@ namespace move_compliant{
         ros::Subscriber sub_pose_;
         ros::Publisher pub_simple_;
         ros::ServiceClient endeffector_pose_client_;
-        ros::Time current_time_, last_time_;
+        ros::Time init_time_, current_time_, last_time_;
         std::vector<double> current_pose_, current_pose_old_, displacement_pose_;
         std::vector<double> initial_pose_;
 
@@ -76,6 +78,7 @@ namespace move_compliant{
 
         //methods
         void lookupInitialPosition();
+        
         virtual void callbackCurrentPose(mur_robot_msgs::PoseMessage pose_msg);
         
         /**

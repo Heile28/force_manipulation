@@ -112,6 +112,7 @@ catkin_package(
  CATKIN_DEPENDS 
    roscpp
    geometry_msgs
+   sensor_msgs
    mur_robot_msgs
  #DEPENDS Eigen3
 )
@@ -130,9 +131,9 @@ include_directories(
 
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
-  include/${PROJECT_NAME}/move_compliant.h
+  include/${PROJECT_NAME}/move_mir_compliant.h
   include/${PROJECT_NAME}/gazebo_ft_publisher.h
-  src/move_compliant.cpp
+  src/move_mir_compliant.cpp
   src/gazebo_ft_publisher.cpp
 )
 

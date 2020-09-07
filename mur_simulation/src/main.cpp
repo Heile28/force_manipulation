@@ -8,7 +8,7 @@
  * 
 */
 
-#include <mur_force_controller/move_compliant.h>
+#include <mur_force_controller/move_mir_compliant.h>
 #include <mur_force_controller/gazebo_ft_publisher.h>
 
 int main(int argc, char** argv)

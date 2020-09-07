@@ -9,9 +9,7 @@
  * 
 */
 
-#include <mur_force_controller/move_compliant.h>
-#include <mur_robot_msgs/PoseRequest.h>
-#include <mur_robot_msgs/PoseMessage.h>
+#include <mur_force_controller/move_mir_compliant.h>
 
 using namespace move_compliant;
 
@@ -51,40 +49,38 @@ MoveMir::MoveMir()
     this->nh_=ros::NodeHandle("move_mir_compliant");
     this->sub_pose_ = nh_.subscribe("/cartesian/endeffector_pose/data", 100, &MoveMir::callbackCurrentPose, this); //from listen_frames_node
     this->pub_simple_ = nh_.advertise<geometry_msgs::Twist>("/robot1_ns/mobile_base_controller/cmd_vel", 100);
+    this->endeffector_pose_client_ = nh_.serviceClient<mur_robot_msgs::PoseRequest>("listen_frames/request_endeffector/pose");
     //this->scan_pub_=this->nh_.advertise<sensor_msgs::PointCloud>("scan",10);
-    last_time_ = ros::Time::now();
+    init_time_ = ros::Time(0);
     for(unsigned i=0; i<6; i++)
         initial_pose_.push_back(0.0);
 }
 
 void MoveMir::lookupInitialPosition(){
-    //get endeffector pose from pose_server.cpp
-        ros::service::waitForService("request_endeffector/pose");
 
-        //last_time_ = ros::Time::now();
-        current_time_ = ros::Time::now();
+        ros::service::waitForService("listen_frames/request_endeffector/pose");
 
-        endeffector_pose_client_ = nh_.serviceClient<mur_robot_msgs::PoseRequest>("/request_endeffector/pose"); //from pose_server.cpp
         mur_robot_msgs::PoseRequest pose_msg_;
         pose_msg_.request.request = true;
-
         
-        if(endeffector_pose_client_.call(pose_msg_)){
-                initial_pose_.clear();
-                initial_pose_.push_back(pose_msg_.response.position.x);
-                initial_pose_.push_back(pose_msg_.response.position.y);
-                initial_pose_.push_back(pose_msg_.response.position.z);
-                initial_pose_.push_back(pose_msg_.response.rpy_orientation.x);
-                initial_pose_.push_back(pose_msg_.response.rpy_orientation.y);
-                initial_pose_.push_back(pose_msg_.response.rpy_orientation.z);
-                std::cout<<"Initial pose is: "<<initial_pose_[0]<<", "<<initial_pose_[1]<<", "<<initial_pose_[2]<<", "
-                                        <<initial_pose_[3]<<", "<<initial_pose_[4]<<", "<<initial_pose_[5]<<std::endl;
-                //give vector initial values which are changeable
-                current_pose_old_ = initial_pose_;
+        try{
+            endeffector_pose_client_.call(pose_msg_);
+            initial_pose_.clear();
+            initial_pose_.push_back(pose_msg_.response.position.x);
+            initial_pose_.push_back(pose_msg_.response.position.y);
+            initial_pose_.push_back(pose_msg_.response.position.z);
+            initial_pose_.push_back(pose_msg_.response.rpy_orientation.x);
+            initial_pose_.push_back(pose_msg_.response.rpy_orientation.y);
+            initial_pose_.push_back(pose_msg_.response.rpy_orientation.z);
+            std::cout<<"Initial pose is: "<<initial_pose_[0]<<", "<<initial_pose_[1]<<", "<<initial_pose_[2]<<", "
+                        <<initial_pose_[3]<<", "<<initial_pose_[4]<<", "<<initial_pose_[5]<<std::endl;
+            //give vector initial values which are changeable
         }
-        else{
-            ROS_WARN("Service call failed! Start pose_server_node!");
+        catch(ros::Exception &ex)
+        {
+            ROS_ERROR("Error occured %s", ex.what());
         }
+        last_time_ = init_time_;
 }
 
 void MoveMir::callbackCurrentPose(mur_robot_msgs::PoseMessage current_pose_msg_)
