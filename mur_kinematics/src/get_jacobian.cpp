@@ -14,14 +14,10 @@
 #include <math.h>
 
 //constructor
-calculate_jacobian::GetJacobian::GetJacobian() : move_compliant::MurBase()
+calculate_jacobian::GetJacobian::GetJacobian() //: move_compliant::MurBase()
 {
     this->nh_=ros::NodeHandle("~");
-    /*
-    move_compliant::MurBase *joint_angles = new move_compliant::MurBase();
-    this->get_joint_angles_ = joint_angles->joint_angles_;
-    */
-    
+    this->get_joint_angles_ = nh_.subscribe("/robot1_ns/joint_states", 10, &GetJacobian::callbackJointAngles, this);
 }
 
 //destructor
@@ -42,8 +38,10 @@ Eigen::MatrixXd calculate_jacobian::GetJacobian::urJacobian()
         Eigen::Vector4d r(0.0, 0.0, 0.0, 1.0);
 
         /***** Calculation of Transformation matrices *****/
-        std::cout<<"Joint angles: "<<this->theta1_<<", "<<this->theta2_<<", "
-        <<this->theta3_<<", "<<this->theta4_<<", "<<this->theta5_<<", "<<this->theta6_<<std::endl;
+        /*
+        std::cout<<"Joint angles: "<<theta1_<<", "<<theta2_<<", "
+        <<theta3_<<", "<<theta4_<<", "<<theta5_<<", "<<theta6_<<std::endl;
+        */
 
         T1 << cos(theta1_), 0, sin(theta1_), 0,
                 sin(theta1_), 0, -cos(theta1_), 0,
@@ -69,6 +67,8 @@ Eigen::MatrixXd calculate_jacobian::GetJacobian::urJacobian()
                 sin(theta6_), cos(theta6_), 0, 0,
                 0, 0, 1, d6,
                 0, 0, 0, 1;
+        
+                
         /*
         std::cout <<"(0)_T_1 =\n "<< T1 <<std::endl;
         std::cout <<"(1)_T_2 =\n "<< T2 <<std::endl;
@@ -80,7 +80,7 @@ Eigen::MatrixXd calculate_jacobian::GetJacobian::urJacobian()
 
         //Endeffector transformation
         T_E << T1*T2*T3*T4*T5*T6;
-        //std::cout << "Homogenous transformation of Endeffector=\n" <<T_E<<std::endl;
+        std::cout << "Homogenous transformation of Endeffector=\n" <<T_E<<std::endl;
 
         /***** spin axis (z) relative to ur5_base *****/
         ez_00 << 0.0, 0.0, 1.0;
@@ -126,10 +126,25 @@ void calculate_jacobian::GetJacobian::manipulationMeasure()
         es.compute(J_v*J_v.transpose(), true);
         Eigen::VectorXd eigen_values = es.eigenvalues().real(); //just the real part
         Eigen::MatrixXd eigen_vectors = es.eigenvectors().real(); //just the real part
-        std::cout<<"The eigenvalues of Jacobian are: \n"<<eigen_values<<std::endl;
-        std::cout<<"\n";
+        //std::cout<<"The eigenvalues of Jacobian are: \n"<<eigen_values<<std::endl;
+        //std::cout<<"\n";
         
         //Manipulation measure
         w = sqrt(JJ.determinant());
-        std::cout<<"Manipulation measure is: "<<w<<std::endl;
+        //std::cout<<"Manipulation measure is: "<<w<<std::endl;
+}
+
+void calculate_jacobian::GetJacobian::callbackJointAngles(const sensor_msgs::JointState::ConstPtr& joint_msg_)
+{
+        this->theta1_ = joint_msg_->position[0];
+        this->theta2_ = joint_msg_->position[1];
+        this->theta3_ = joint_msg_->position[2];
+        this->theta4_ = joint_msg_->position[3];
+        this->theta5_ = joint_msg_->position[4];
+        this->theta6_ = joint_msg_->position[5];
+        
+        std::cout<<"Winkel:"<<std::endl;
+        std::cout<<"["<<theta1_<<","<<theta2_<<","<<theta3_<<","<<theta4_<<","<<theta5_<<","<<theta6_<<"]"<<std::endl;
+
+        manipulationMeasure();
 }

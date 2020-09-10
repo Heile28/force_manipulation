@@ -20,6 +20,7 @@
 
 //other
 #include <eigen3/Eigen/Dense>
+#include <boost/shared_ptr.hpp>
 
 
 #ifndef MOVE_MIR_COMPLIANT_H
@@ -46,7 +47,7 @@ namespace move_compliant{
         * @brief callback function of joints data
         * 
         */
-        virtual void callbackJointAngles(sensor_msgs::JointState joint_msg);
+        virtual void callbackJointAngles(const sensor_msgs::JointState::ConstPtr& joint_msg_);
 
         ros::Subscriber joint_angles_;
         double theta1_, theta2_, theta3_, theta4_, theta5_, theta6_;

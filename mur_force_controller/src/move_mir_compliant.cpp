@@ -34,15 +34,15 @@ MurBase::~MurBase()
     printf("Angles have been deleted\n");
 }
 
-void MurBase::callbackJointAngles(sensor_msgs::JointState joint_msg_)
+void MurBase::callbackJointAngles(const sensor_msgs::JointState::ConstPtr& joint_msg_)
 {
-    theta1_ = joint_msg_.position[0];
-    theta2_ = joint_msg_.position[1];
-    theta3_ = joint_msg_.position[2];
-    theta4_ = joint_msg_.position[3];
-    theta5_ = joint_msg_.position[4];
-    theta6_ = joint_msg_.position[5];
-
+    this->theta1_ = joint_msg_->position[0];
+    this->theta2_ = joint_msg_->position[1];
+    this->theta3_ = joint_msg_->position[2];
+    this->theta4_ = joint_msg_->position[3];
+    this->theta5_ = joint_msg_->position[4];
+    this->theta6_ = joint_msg_->position[5];
+    
     std::cout<<"Winkel:"<<std::endl;
     std::cout<<"["<<theta1_<<","<<theta2_<<","<<theta3_<<","<<theta4_<<","<<theta5_<<","<<theta6_<<"]"<<std::endl;
     

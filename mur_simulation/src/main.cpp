@@ -14,9 +14,9 @@
 
 int main(int argc, char** argv)
 {
-    //ros::init(argc,argv,"Drive_MiR");
+    ros::init(argc,argv,"Drive_MiR");
     std::cout<<"Im in main file"<<std::endl;
-    //ros::NodeHandle nh;
+    ros::NodeHandle nh;
 
     
 

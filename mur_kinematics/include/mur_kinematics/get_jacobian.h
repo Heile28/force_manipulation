@@ -16,12 +16,12 @@
 namespace calculate_jacobian{
     /// \brief class to calculate the jacobian matrix through DH-transformations
     
-    class GetJacobian : public move_compliant::MurBase //inherits class method listening joint angles
+    class GetJacobian
     {
         private:
             ros::NodeHandle nh_;
             ros::ServiceClient endeffector_pose_client;
-            //ros::Subscriber get_joint_angles_;
+            ros::Subscriber get_joint_angles_;
 
             //DH parameters
             const double d1 = 0.089159;
@@ -39,7 +39,7 @@ namespace calculate_jacobian{
             const double alpha5 = -PI/2;
             const double alpha6 = 0.0;
 
-            //double theta1, theta2, theta3, theta4, theta5, theta6;
+            double theta1_, theta2_, theta3_, theta4_, theta5_, theta6_;
         
         protected:
             double w; //Manipulation measure
@@ -74,6 +74,12 @@ namespace calculate_jacobian{
              * 
              */
             void manipulationMeasure();
+
+            /**
+            * @brief callback function of joints data
+            * 
+            */
+            void callbackJointAngles(const sensor_msgs::JointState::ConstPtr& joint_msg_);
 
     };
 
