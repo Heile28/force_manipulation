@@ -1,5 +1,5 @@
 /*
- * File: get_jacobian.h
+ * File: get_jacobian.cpp
  * Author: Heiko Lenz
  * 
  * Created on 20. August 2020
@@ -7,26 +7,26 @@
  * Source file providing method calculating the geometric jacobian matrix
  * 
 */
-
 #include <mur_kinematics/get_jacobian.h>
-#include <mur_force_controller/move_mir_compliant.h>
 
 //others
 #include <eigen3/Eigen/Dense>
 #include <math.h>
 
-using namespace calculate_jacobian;
-
 //constructor
-GetJacobian::GetJacobian()
+calculate_jacobian::GetJacobian::GetJacobian()
 {
     this->nh_=ros::NodeHandle("~");
+    move_compliant::MurBase *joint_angles = new move_compliant::MurBase();
+    this->get_joint_angles_ = joint_angles->joint_angles_;
+    //this->get_joint_angles_->joint_angles_;
+    
 }
 
 //destructor
-GetJacobian::~GetJacobian(){}
+calculate_jacobian::GetJacobian::~GetJacobian(){}
 
-Eigen::MatrixXd GetJacobian::urJacobian()
+Eigen::MatrixXd calculate_jacobian::GetJacobian::urJacobian()
 {
         /***** Initialise variables *****/
         Eigen::MatrixXd T1(4,4), T2(4,4), T3(4,4), T4(4,4), T5(4,4), T6(4,4);
@@ -42,7 +42,7 @@ Eigen::MatrixXd GetJacobian::urJacobian()
 
         /***** Calculation of Transformation matrices *****/
 
-        //std::cout<<"Joint angles: "<<theta1<<", "<<theta2<<", "<<theta3<<", "<<theta4<<", "<<theta5<<", "<<theta6<<std::endl;
+        //std::cout<<"Joint angles: "<<theta1_<<", "<<theta2_<<", "<<theta3_<<", "<<theta4_<<", "<<theta5_<<", "<<theta6_<<std::endl;
 
         T1 << cos(theta1_), 0, sin(theta1_), 0,
                 sin(theta1_), 0, -cos(theta1_), 0,
@@ -79,7 +79,7 @@ Eigen::MatrixXd GetJacobian::urJacobian()
 
         //Endeffector transformation
         T_E << T1*T2*T3*T4*T5*T6;
-        std::cout << "Homogenous transformation of Endeffector=\n" <<T_E<<std::endl;
+        //std::cout << "Homogenous transformation of Endeffector=\n" <<T_E<<std::endl;
 
         /***** spin axis (z) relative to ur5_base *****/
         ez_00 << 0.0, 0.0, 1.0;
@@ -102,12 +102,12 @@ Eigen::MatrixXd GetJacobian::urJacobian()
         J_ur_ << ez_00.cross(r_0E), ez_01.cross(r_1E), ez_02.cross(r_2E),
                 ez_03.cross(r_3E), ez_04.cross(r_4E), ez_05.cross(r_5E),
                 ez_00, ez_01, ez_02, ez_03, ez_04, ez_05;
-        std::cout <<"Jacobian matrix of UR=\n"<<J_ur_<<std::endl;
+        //std::cout <<"Jacobian matrix of UR=\n"<<J_ur_<<std::endl;
 
         return J_ur_;
 }
 
-void GetJacobian::manipulationMeasure()
+void calculate_jacobian::GetJacobian::manipulationMeasure()
 {
         /***** Manipulation ellipsoid *****/
         //eigenvalues and eigenvectors

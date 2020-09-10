@@ -20,7 +20,7 @@ void WrenchPublisher::transform_wrench_into_ee(){
 
     ros::Time now = ros::Time(0); //starting time when calling method (when a loop runs through it inside, the time is set as the very starting time)
     
-    std::cout<<"Transformationsmatrix zwischen robot1_tf/wrist_3_link_ur5 und robot1_tf/ee_link_ur5: "<<std::endl;
+    //std::cout<<"Transformationsmatrix zwischen robot1_tf/wrist_3_link_ur5 und robot1_tf/ee_link_ur5: "<<std::endl;
     std::string source_frame = "robot1_tf/wrist_3_link_ur5";
     std::string target_frame = "robot1_tf/ee_link_ur5";
     
@@ -41,6 +41,7 @@ void WrenchPublisher::transform_wrench_into_ee(){
     wrench_.wrench.force = wrench_force_.vector;
     wrench_.wrench.torque = wrench_torque_.vector;
 
+    /*
     std::cout<<"Wrench is \n";
     std::cout<<wrench_.wrench.force.x<<std::endl;
     std::cout<<wrench_.wrench.force.y<<std::endl;
@@ -48,7 +49,7 @@ void WrenchPublisher::transform_wrench_into_ee(){
     std::cout<<wrench_.wrench.torque.x<<std::endl;
     std::cout<<wrench_.wrench.torque.y<<std::endl;
     std::cout<<wrench_.wrench.torque.z<<std::endl;
-
+    */
     pub_.publish(wrench_);
     
     /*

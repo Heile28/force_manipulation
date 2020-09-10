@@ -14,8 +14,11 @@
 
 int main(int argc, char** argv)
 {
-    ros::init(argc,argv,"Drive_MiR");  
-    ros::NodeHandle nh;
+    //ros::init(argc,argv,"Drive_MiR");
+    std::cout<<"Im in main file"<<std::endl;
+    //ros::NodeHandle nh;
+
+    
 
     //start publishing wrench data to cartesian_admittance_controller
     gazebo_ft_publisher::WrenchPublisher start_wrench;

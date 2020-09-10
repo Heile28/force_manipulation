@@ -145,7 +145,8 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/mur_simulation_node.cpp)
 
-add_executable(execution_node src/main.cpp)
+add_executable(execution_node1 src/main.cpp)
+add_executable(execution_node2 src/main.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -166,7 +167,8 @@ add_executable(execution_node src/main.cpp)
 #  ${catkin_LIBRARIES}
 #)
 
-target_link_libraries(execution_node ${catkin_LIBRARIES})
+target_link_libraries(execution_node1 ${catkin_LIBRARIES})
+target_link_libraries(execution_node2 ${catkin_LIBRARIES})
 
 #############
 ## Install ##

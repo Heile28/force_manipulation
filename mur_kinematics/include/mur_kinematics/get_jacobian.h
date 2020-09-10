@@ -21,6 +21,7 @@ namespace calculate_jacobian{
         private:
             ros::NodeHandle nh_;
             ros::ServiceClient endeffector_pose_client;
+            ros::Subscriber get_joint_angles_;
 
             //DH parameters
             const double d1 = 0.089159;

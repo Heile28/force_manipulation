@@ -33,7 +33,7 @@ namespace move_compliant{
     {
     private:
         ros::NodeHandle nh_;
-        ros::Subscriber joint_angles_;
+        
 
     protected:
         double theta1_, theta2_, theta3_, theta4_, theta5_, theta6_;
@@ -51,6 +51,8 @@ namespace move_compliant{
         * 
         */
         virtual void callbackJointAngles(sensor_msgs::JointState joint_msg);
+
+        ros::Subscriber joint_angles_;
 
     };
     
