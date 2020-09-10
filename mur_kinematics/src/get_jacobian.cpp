@@ -14,12 +14,13 @@
 #include <math.h>
 
 //constructor
-calculate_jacobian::GetJacobian::GetJacobian()
+calculate_jacobian::GetJacobian::GetJacobian() : move_compliant::MurBase()
 {
     this->nh_=ros::NodeHandle("~");
+    /*
     move_compliant::MurBase *joint_angles = new move_compliant::MurBase();
     this->get_joint_angles_ = joint_angles->joint_angles_;
-    //this->get_joint_angles_->joint_angles_;
+    */
     
 }
 
@@ -41,8 +42,8 @@ Eigen::MatrixXd calculate_jacobian::GetJacobian::urJacobian()
         Eigen::Vector4d r(0.0, 0.0, 0.0, 1.0);
 
         /***** Calculation of Transformation matrices *****/
-
-        //std::cout<<"Joint angles: "<<theta1_<<", "<<theta2_<<", "<<theta3_<<", "<<theta4_<<", "<<theta5_<<", "<<theta6_<<std::endl;
+        std::cout<<"Joint angles: "<<this->theta1_<<", "<<this->theta2_<<", "
+        <<this->theta3_<<", "<<this->theta4_<<", "<<this->theta5_<<", "<<this->theta6_<<std::endl;
 
         T1 << cos(theta1_), 0, sin(theta1_), 0,
                 sin(theta1_), 0, -cos(theta1_), 0,

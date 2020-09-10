@@ -16,7 +16,7 @@ using namespace move_compliant;
 //constructor
 MurBase::MurBase()
 {
-    this->nh_=nh_;
+    this->nh_ = ros::NodeHandle("mur_base");
     this->joint_angles_ = nh_.subscribe("/robot1_ns/joint_states", 10, &MurBase::callbackJointAngles, this);
     /*
     this->theta1_ = 0.0; 
@@ -42,8 +42,10 @@ void MurBase::callbackJointAngles(sensor_msgs::JointState joint_msg_)
     theta4_ = joint_msg_.position[3];
     theta5_ = joint_msg_.position[4];
     theta6_ = joint_msg_.position[5];
+
     std::cout<<"Winkel:"<<std::endl;
     std::cout<<"["<<theta1_<<","<<theta2_<<","<<theta3_<<","<<theta4_<<","<<theta5_<<","<<theta6_<<"]"<<std::endl;
+    
 }
 
 //constructor
@@ -152,6 +154,3 @@ void MoveMir::moveGoal(){
     tw_msg_.angular.z = vth_;
     pub_simple_.publish(tw_msg_);
 }
-
-
-
