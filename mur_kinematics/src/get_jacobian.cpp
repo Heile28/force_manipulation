@@ -23,6 +23,9 @@ GetJacobian::GetJacobian()
     this->nh_=ros::NodeHandle("~");
 }
 
+//destructor
+GetJacobian::~GetJacobian(){}
+
 Eigen::MatrixXd GetJacobian::urJacobian()
 {
         /***** Initialise variables *****/

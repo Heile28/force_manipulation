@@ -16,7 +16,7 @@
 namespace calculate_jacobian{
     /// \brief class to calculate the jacobian matrix through DH-transformations
     
-    class GetJacobian : public move_compliant::MurBase //inherit class method listening joint angles
+    class GetJacobian : public move_compliant::MurBase //inherits class method listening joint angles
     {
         private:
             ros::NodeHandle nh_;
