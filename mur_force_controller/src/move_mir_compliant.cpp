@@ -14,6 +14,44 @@
 using namespace move_compliant;
 
 //constructor
+<<<<<<< HEAD
+=======
+MurBase::MurBase()
+{
+    this->nh_ = ros::NodeHandle("mur_base");
+    this->joint_angles_ = nh_.subscribe("/robot1_ns/joint_states", 10, &MurBase::callbackJointAngles, this);
+    /*
+    this->theta1_ = 0.0; 
+    this->theta2_ = 0.0;
+    this->theta3_ = 0.0;
+    this->theta4_ = 0.0;
+    this->theta5_ = 0.0;
+    this->theta6_ = 0.0;
+    */
+}
+
+//destructor
+MurBase::~MurBase()
+{
+    printf("Angles have been deleted\n");
+}
+
+void MurBase::callbackJointAngles(const sensor_msgs::JointState::ConstPtr& joint_msg_)
+{
+    this->theta1_ = joint_msg_->position[0];
+    this->theta2_ = joint_msg_->position[1];
+    this->theta3_ = joint_msg_->position[2];
+    this->theta4_ = joint_msg_->position[3];
+    this->theta5_ = joint_msg_->position[4];
+    this->theta6_ = joint_msg_->position[5];
+    
+    std::cout<<"Winkel:"<<std::endl;
+    std::cout<<"["<<theta1_<<","<<theta2_<<","<<theta3_<<","<<theta4_<<","<<theta5_<<","<<theta6_<<"]"<<std::endl;
+    
+}
+
+//constructor
+>>>>>>> d0cfbdd073d435640bd6d40c8463e73396a3eb84
 MoveMir::MoveMir()
 {
     this->nh_=ros::NodeHandle("move_mir_compliant");
