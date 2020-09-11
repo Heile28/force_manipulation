@@ -133,8 +133,10 @@ include_directories(
 add_library(${PROJECT_NAME}
   include/${PROJECT_NAME}/move_mir_compliant.h
   include/${PROJECT_NAME}/gazebo_ft_publisher.h
+  include/${PROJECT_NAME}/mur_base.h
   src/move_mir_compliant.cpp
   src/gazebo_ft_publisher.cpp
+  src/mur_base.cpp
 )
 
 ## Add cmake target dependencies of the library

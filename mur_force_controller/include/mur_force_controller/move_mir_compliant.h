@@ -20,6 +20,7 @@
 
 //other
 #include <eigen3/Eigen/Dense>
+#include <mur_force_controller/mur_base.h>
 
 
 #ifndef MOVE_MIR_COMPLIANT_H
@@ -27,33 +28,6 @@
 
 namespace move_compliant{
     
-    
-    /// \brief base class ready to get inherited
-    class MurBase
-    {
-    private:
-        ros::NodeHandle nh_;
-
-    public:
-        //standard constructor
-        MurBase();
-        
-        //destructor
-        ~MurBase();
-
-        //methods
-        /**
-        * @brief callback function of joints data
-        * 
-        */
-        virtual void callbackJointAngles(sensor_msgs::JointState joint_msg);
-
-        ros::Subscriber joint_angles_;
-        double theta1_, theta2_, theta3_, theta4_, theta5_, theta6_;
-
-    };
-    
-
     class MoveMir : public MurBase
     {
 

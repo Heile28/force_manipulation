@@ -14,14 +14,13 @@
 #include <math.h>
 
 //constructor
-calculate_jacobian::GetJacobian::GetJacobian() : move_compliant::MurBase()
+calculate_jacobian::GetJacobian::GetJacobian()
 {
     this->nh_=ros::NodeHandle("~");
     /*
     move_compliant::MurBase *joint_angles = new move_compliant::MurBase();
     this->get_joint_angles_ = joint_angles->joint_angles_;
     */
-    
 }
 
 //destructor
@@ -41,9 +40,11 @@ Eigen::MatrixXd calculate_jacobian::GetJacobian::urJacobian()
         Eigen::Vector3d r_0E, r_1E, r_2E, r_3E, r_4E, r_5E;
         Eigen::Vector4d r(0.0, 0.0, 0.0, 1.0);
 
+        theta_ = base_.getAngles();
+
         /***** Calculation of Transformation matrices *****/
-        std::cout<<"Joint angles: "<<this->theta1_<<", "<<this->theta2_<<", "
-        <<this->theta3_<<", "<<this->theta4_<<", "<<this->theta5_<<", "<<this->theta6_<<std::endl;
+        /*std::cout<<"Joint angles: "<<theta_[0]<<", "<<theta_[1]<<", "
+        <<theta_[2]<<", "<<theta_[3]<<", "<<theta_[4]<<", "<<theta_[5]<<std::endl;*/
 
         T1 << cos(theta1_), 0, sin(theta1_), 0,
                 sin(theta1_), 0, -cos(theta1_), 0,
@@ -80,7 +81,7 @@ Eigen::MatrixXd calculate_jacobian::GetJacobian::urJacobian()
 
         //Endeffector transformation
         T_E << T1*T2*T3*T4*T5*T6;
-        //std::cout << "Homogenous transformation of Endeffector=\n" <<T_E<<std::endl;
+        std::cout << "Homogenous transformation of Endeffector=\n" <<T_E<<std::endl;
 
         /***** spin axis (z) relative to ur5_base *****/
         ez_00 << 0.0, 0.0, 1.0;
@@ -126,10 +127,10 @@ void calculate_jacobian::GetJacobian::manipulationMeasure()
         es.compute(J_v*J_v.transpose(), true);
         Eigen::VectorXd eigen_values = es.eigenvalues().real(); //just the real part
         Eigen::MatrixXd eigen_vectors = es.eigenvectors().real(); //just the real part
-        std::cout<<"The eigenvalues of Jacobian are: \n"<<eigen_values<<std::endl;
+        //std::cout<<"The eigenvalues of Jacobian are: \n"<<eigen_values<<std::endl;
         std::cout<<"\n";
         
         //Manipulation measure
         w = sqrt(JJ.determinant());
-        std::cout<<"Manipulation measure is: "<<w<<std::endl;
+        //std::cout<<"Manipulation measure is: "<<w<<std::endl;
 }

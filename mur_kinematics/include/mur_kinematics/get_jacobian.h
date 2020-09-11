@@ -9,6 +9,7 @@
 */
 
 #include <mur_force_controller/move_mir_compliant.h>
+#include <mur_force_controller/mur_base.h>
 
 #ifndef GET_JACOBIAN_H
 #define GET_JACOBIAN_H
@@ -16,9 +17,10 @@
 namespace calculate_jacobian{
     /// \brief class to calculate the jacobian matrix through DH-transformations
     
-    class GetJacobian : public move_compliant::MurBase //inherits class method listening joint angles
+    class GetJacobian : public MurBase //inherits class method listening joint angles
     {
         private:
+            MurBase base_;
             ros::NodeHandle nh_;
             ros::ServiceClient endeffector_pose_client;
             //ros::Subscriber get_joint_angles_;
@@ -35,11 +37,11 @@ namespace calculate_jacobian{
             const double alpha1 = PI/2;
             const double alpha2 = 0.0;
             const double alpha3 = 0.0;
-            const double alpha4 = PI/2;
-            const double alpha5 = -PI/2;
+            const double alpha4 = PI/2; //
+            const double alpha5 = -PI/2; //-
             const double alpha6 = 0.0;
 
-            //double theta1, theta2, theta3, theta4, theta5, theta6;
+            std::vector<double> theta_;
         
         protected:
             double w; //Manipulation measure
