@@ -1,6 +1,6 @@
-# force_manipulation
-https://img.shields.io/github/issues/Heile28/force_manipulation.git
-https://img.shields.io/github/forks/Heile28/force_manipulation.git
+# force_manipulation ![alt text](https://img.shields.io/github/issues/Heile28/force_manipulation.git) ![alt text](https://img.shields.io/github/forks/Heile28/force_manipulation.git)
+
+
 
 This repository can be used to implement a controlling mechanism for driving the mobile robot MuR205 consisting of UR5 manipulator and MiR plattform by external forces.
 It is intended for gazebo simulation inside ROS.
