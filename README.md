@@ -11,7 +11,7 @@ The following instructions assume that a Catkin workspace has been created. Brow
 cd $HOME/catkin_ws/src
 ```
 
-#### Clone the following repositories
+### Clone the following repositories
 * [force_manipulation](https://github.com/Heile28/force_manipulation.git)
 * [universal_robot](https://github.com/ros-industrial/universal_robot)
 * [MiR200_Sim](https://github.com/matchRos/MiR200_Sim)
@@ -28,4 +28,20 @@ git clone https://github.com/matchRos/MiR200_Sim.git
 ```
 into your catkin workspace.
 
-#### Dependencies
+### Dependencies
+```bash
+cd ~/MiR200_Sim/mir_driver/nodes/
+chmod +x rep117_filter.py
+cd $HOME/catkin_ws
+
+# Install 
+sudo apt install ros-melodic-cob-gazebo-ros-control
+sudo apt-get install ros-melodic-moveit-visual-tools
+
+# checking dependencies
+sudo apt-get update -qq
+sudo apt-get install -qq -y python-rosdep
+sudo rosdep init
+sudo rosdep update
+sudo rosdep install --from-paths ./ -i -y --rosdistro melodic
+```
