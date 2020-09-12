@@ -11,34 +11,21 @@ The following instructions assume that a Catkin workspace has been created. Brow
 cd $HOME/catkin_ws/src
 ```
 
-Clone the following repositories
+###Clone the following repositories
 * [force_manipulation](https://github.com/Heile28/force_manipulation.git)
-```bash
-git clone https://github.com/Heile28/force_manipulation.git
-
-
-git clone https://github.com/Heile28/MiR200-with-UR5.git
-```
 * [universal_robot](https://github.com/ros-industrial/universal_robot)
-```bash
-git clone -b $melodic-devel https://github.com/ros-industrial/universal_robot.git
-```
 * [MiR200_Sim](https://github.com/matchRos/MiR200_Sim)
-```bash
-git clone https://github.com/matchRos/MiR200_Sim.git
-```
 * [MiR200-with-UR5](https://github.com/Heile28/MiR200-with-UR5)
-```bash
-git clone https://github.com/Heile28/MiR200-with-UR5.git
-```
 * [gazebo_ros_link_attacher](https://github.com/pal-robotics/gazebo_ros_link_attacher)
-```bash
-git clone -b $melodic-devel https://github.com/pal-robotics/gazebo_ros_link_attacher
-```
 * [cartesian_controllers](https://github.com/fzi-forschungszentrum-informatik/cartesian_controllers)
 ```bash
+git clone https://github.com/Heile28/force_manipulation.git
+git clone -b $melodic-devel https://github.com/ros-industrial/universal_robot.git
+git clone https://github.com/matchRos/MiR200_Sim.git
+git clone https://github.com/Heile28/MiR200-with-UR5.git
+git clone -b $melodic-devel https://github.com/pal-robotics/gazebo_ros_link_attacher
 git clone https://github.com/matchRos/MiR200_Sim.git
 ```
-
 into your catkin workspace.
 
+##Dependencies
