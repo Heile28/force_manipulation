@@ -1,4 +1,5 @@
-# force_manipulation ![alt text](https://img.shields.io/github/issues/Heile28/force_manipulation.git) ![alt text](https://img.shields.io/github/forks/Heile28/force_manipulation.git)
+# force_manipulation ![alt text](https://img.shields.io/github/issues/Heile28/force_manipulation) ![alt text](https://img.shields.io/github/forks/Heile28/force_manipulation)
+
 
 
 
