@@ -53,6 +53,6 @@ source $HOME/catkin_ws/devel/setup.bash
 ```
 ## FDCC-Solver
 The Cartesian Compliance controller is a merging of impedance, admittance and force control visibly as following:
-
+![Image of FDCC_Control](https://github.com/Heile28/force_manipulation/blob/master/etc/FDCC_model.PNG)
 
 Information about the implemented control loop used for the Forward Dynamics Solver provides [this paper](https://arxiv.org/pdf/1908.06252.pdf).
