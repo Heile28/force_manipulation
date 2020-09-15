@@ -43,6 +43,13 @@ namespace gazebo_ft_publisher{
         tf::StampedTransform transform_;
         tf::TransformListener listener_;
         
+    protected:
+        /**
+        * @brief Callbacks current wrench and publishes it to cartesian_admittance_controller 
+        * 
+        */
+        void wrenchCallback(geometry_msgs::WrenchStamped wrench_msg);
+    
     public:
         //standard constructor
         WrenchPublisher();
@@ -56,11 +63,7 @@ namespace gazebo_ft_publisher{
         */
         void transform_wrench_into_ee();
         
-        /**
-        * @brief Callbacks current wrench and publishes it to cartesian_admittance_controller 
-        * 
-        */
-        void wrenchCallback(geometry_msgs::WrenchStamped wrench_msg);
+        
         
 
     };

@@ -3,6 +3,8 @@
 # request fields
 
 bool request #true for activation
+string source_frame #specify frames for tf_transformation
+string target_frame
 ---
 bool success
 geometry_msgs/Point position

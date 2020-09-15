@@ -82,11 +82,7 @@ void ListenFrames::getLinkTransformUR5(const std::string source_frame, const std
   rpy.x = roll;
   rpy.y = pitch;
   rpy.z = yaw;
-  /*
-  std::cout <<std::endl;
-  std::cout <<"transformation into RPY xyz [rad] yields: "<<std::endl;
-  std::cout <<"["<<roll<<", "<<pitch<<", "<<yaw <<"]" <<std::endl;
-  */
+
     
   //into degree
   alpha = 180.0*roll/PI;

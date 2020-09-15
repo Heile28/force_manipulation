@@ -50,16 +50,10 @@ void WrenchPublisher::transform_wrench_into_ee(){
     std::cout<<wrench_.wrench.torque.y<<std::endl;
     std::cout<<wrench_.wrench.torque.z<<std::endl;
     */
+
+     /***** Finally publish wrench data to cartesian admittance controller *****/
     pub_.publish(wrench_);
-    
-    /*
-    //send force vector to tf
-    tf::vector3StampedMsgToTF(force_,force_at_wrist3);
 
-    force_at_ee = transform * force_at_wrist3;
-
-    tf::vector3TFToMsg(force_at_ee, wrench_force_);
-    */
 }
 
 void WrenchPublisher::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){

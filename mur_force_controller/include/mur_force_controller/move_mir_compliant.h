@@ -14,17 +14,10 @@
 
 //ROS msgs
 #include <tf/transform_broadcaster.h>
-#include <sensor_msgs/JointState.h>
-#include <mur_robot_msgs/PoseMessage.h>
-#include <mur_robot_msgs/PoseRequest.h>
 
 //other
 #include <eigen3/Eigen/Dense>
-<<<<<<< HEAD
 #include <mur_force_controller/mur_base.h>
-=======
-#include <boost/shared_ptr.hpp>
->>>>>>> d0cfbdd073d435640bd6d40c8463e73396a3eb84
 
 
 #ifndef MOVE_MIR_COMPLIANT_H
@@ -32,42 +25,12 @@
 
 namespace move_compliant{
     
-<<<<<<< HEAD
-=======
-    
-    /// \brief base class ready to get inherited
-    class MurBase
-    {
-    private:
-        ros::NodeHandle nh_;
-
-    public:
-        //standard constructor
-        MurBase();
-        
-        //destructor
-        ~MurBase();
-
-        //methods
-        /**
-        * @brief callback function of joints data
-        * 
-        */
-        virtual void callbackJointAngles(const sensor_msgs::JointState::ConstPtr& joint_msg_);
-
-        ros::Subscriber joint_angles_;
-        double theta1_, theta2_, theta3_, theta4_, theta5_, theta6_;
-
-    };
-    
-
->>>>>>> d0cfbdd073d435640bd6d40c8463e73396a3eb84
-    class MoveMir : public MurBase
+    class MoveMir //: public MurBase
     {
 
     private:
         ros::NodeHandle nh_;
-        ros::Subscriber sub_pose_;
+        MurBase base_;
         ros::Publisher pub_simple_;
         ros::ServiceClient endeffector_pose_client_;
         ros::Time init_time_, current_time_, last_time_;
@@ -86,10 +49,16 @@ namespace move_compliant{
         //methods
         void lookupInitialPosition();
         
-        virtual void callbackCurrentPose(mur_robot_msgs::PoseMessage pose_msg);
+        /**
+         * @brief 
+         * 
+         * @param pose_msg 
+         */
+        virtual void callbackCurrentPose();
         
         /**
         * @brief Calculates displacement based on previous callbacks of initial and current poses
+        * to calculate the rotation speed
         * 
         */
         void displacementPose();

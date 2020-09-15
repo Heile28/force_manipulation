@@ -27,8 +27,6 @@
 
 namespace listen_frames{
     
-    #define POSE_ARRAY_SIZE 6
-
     class ListenFrames
     {
 

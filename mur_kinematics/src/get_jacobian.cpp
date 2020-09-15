@@ -14,20 +14,9 @@
 #include <math.h>
 
 //constructor
-<<<<<<< HEAD
 calculate_jacobian::GetJacobian::GetJacobian()
 {
     this->nh_=ros::NodeHandle("~");
-    /*
-    move_compliant::MurBase *joint_angles = new move_compliant::MurBase();
-    this->get_joint_angles_ = joint_angles->joint_angles_;
-    */
-=======
-calculate_jacobian::GetJacobian::GetJacobian() //: move_compliant::MurBase()
-{
-    this->nh_=ros::NodeHandle("~");
-    this->get_joint_angles_ = nh_.subscribe("/robot1_ns/joint_states", 10, &GetJacobian::callbackJointAngles, this);
->>>>>>> d0cfbdd073d435640bd6d40c8463e73396a3eb84
 }
 
 //destructor
@@ -50,41 +39,33 @@ Eigen::MatrixXd calculate_jacobian::GetJacobian::urJacobian()
         theta_ = base_.getAngles();
 
         /***** Calculation of Transformation matrices *****/
-<<<<<<< HEAD
         /*std::cout<<"Joint angles: "<<theta_[0]<<", "<<theta_[1]<<", "
         <<theta_[2]<<", "<<theta_[3]<<", "<<theta_[4]<<", "<<theta_[5]<<std::endl;*/
-=======
-        /*
-        std::cout<<"Joint angles: "<<theta1_<<", "<<theta2_<<", "
-        <<theta3_<<", "<<theta4_<<", "<<theta5_<<", "<<theta6_<<std::endl;
-        */
->>>>>>> d0cfbdd073d435640bd6d40c8463e73396a3eb84
 
-        T1 << cos(theta1_), 0, sin(theta1_), 0,
-                sin(theta1_), 0, -cos(theta1_), 0,
+        T1 << cos(theta_[0]), 0, sin(theta_[0]), 0,
+                sin(theta_[0]), 0, -cos(theta_[0]), 0,
                 0, 1, 0, d1,
                 0, 0, 0, 1;
-        T2 << cos(theta2_), -sin(theta2_), 0, a2*cos(theta2_),
-                sin(theta2_), cos(theta2_), 0, a2*sin(theta2_),
+        T2 << cos(theta_[1]), -sin(theta_[1]), 0, a2*cos(theta_[1]),
+                sin(theta_[1]), cos(theta_[1]), 0, a2*sin(theta_[1]),
                 0, 0, 1, 0,
                 0, 0, 0, 1;
-        T3 << cos(theta3_), -sin(theta3_), 0, a3*cos(theta3_),
-                sin(theta3_), cos(theta3_), 0, a3*sin(theta3_),
+        T3 << cos(theta_[2]), -sin(theta_[2]), 0, a3*cos(theta_[2]),
+                sin(theta_[2]), cos(theta_[2]), 0, a3*sin(theta_[2]),
                 0, 0, 1, 0,
                 0, 0, 0, 1;
-        T4 << cos(theta4_), 0, sin(theta4_), 0,
-                sin(theta4_), 0, -cos(theta4_), 0,
+        T4 << cos(theta_[3]), 0, sin(theta_[3]), 0,
+                sin(theta_[3]), 0, -cos(theta_[3]), 0,
                 0, 1, 0, d4,
                 0, 0, 0, 1;
-        T5 << cos(theta5_), 0, -sin(theta5_), 0,
-                sin(theta5_), 0, cos(theta5_), 0,
+        T5 << cos(theta_[4]), 0, -sin(theta_[4]), 0,
+                sin(theta_[4]), 0, cos(theta_[4]), 0,
                 0, -1, 0, d5,
                 0, 0, 0, 1;
-        T6 << cos(theta6_), -sin(theta6_), 0, 0,
-                sin(theta6_), cos(theta6_), 0, 0,
+        T6 << cos(theta_[5]), -sin(theta_[5]), 0, 0,
+                sin(theta_[5]), cos(theta_[5]), 0, 0,
                 0, 0, 1, d6,
                 0, 0, 0, 1;
-        
                 
         /*
         std::cout <<"(0)_T_1 =\n "<< T1 <<std::endl;
@@ -95,7 +76,7 @@ Eigen::MatrixXd calculate_jacobian::GetJacobian::urJacobian()
         std::cout <<"(5)_T_E =\n "<< T6 <<std::endl;
         */
 
-        //Endeffector transformation
+        /***** Endeffector transformation *****/
         T_E << T1*T2*T3*T4*T5*T6;
         std::cout << "Homogenous transformation of Endeffector=\n" <<T_E<<std::endl;
 
@@ -144,31 +125,9 @@ void calculate_jacobian::GetJacobian::manipulationMeasure()
         Eigen::VectorXd eigen_values = es.eigenvalues().real(); //just the real part
         Eigen::MatrixXd eigen_vectors = es.eigenvectors().real(); //just the real part
         //std::cout<<"The eigenvalues of Jacobian are: \n"<<eigen_values<<std::endl;
-<<<<<<< HEAD
-        std::cout<<"\n";
-=======
         //std::cout<<"\n";
->>>>>>> d0cfbdd073d435640bd6d40c8463e73396a3eb84
         
         //Manipulation measure
         w = sqrt(JJ.determinant());
         //std::cout<<"Manipulation measure is: "<<w<<std::endl;
-<<<<<<< HEAD
-=======
-}
-
-void calculate_jacobian::GetJacobian::callbackJointAngles(const sensor_msgs::JointState::ConstPtr& joint_msg_)
-{
-        this->theta1_ = joint_msg_->position[0];
-        this->theta2_ = joint_msg_->position[1];
-        this->theta3_ = joint_msg_->position[2];
-        this->theta4_ = joint_msg_->position[3];
-        this->theta5_ = joint_msg_->position[4];
-        this->theta6_ = joint_msg_->position[5];
-        
-        std::cout<<"Winkel:"<<std::endl;
-        std::cout<<"["<<theta1_<<","<<theta2_<<","<<theta3_<<","<<theta4_<<","<<theta5_<<","<<theta6_<<"]"<<std::endl;
-
-        manipulationMeasure();
->>>>>>> d0cfbdd073d435640bd6d40c8463e73396a3eb84
 }
