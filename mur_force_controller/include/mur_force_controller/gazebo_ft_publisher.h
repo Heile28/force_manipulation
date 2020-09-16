@@ -35,10 +35,6 @@ namespace gazebo_ft_publisher{
         geometry_msgs::WrenchStamped wrench_;
         geometry_msgs::Vector3Stamped force_, torque_;
         geometry_msgs::Vector3Stamped wrench_force_, wrench_torque_;
-        
-        tf::StampedTransform transform;
-        tf::Transform force_at_wrist3;
-        tf::Transform force_at_ee;
 
         tf::StampedTransform transform_;
         tf::TransformListener listener_;

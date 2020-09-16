@@ -4,7 +4,7 @@
  * 
  * Created on 11. September 2020
  * 
- * Header file providing methods to get inherited by subclasses
+ * Header file providing basis methods to get inherited by subclasses
  * 
 */
 
@@ -70,15 +70,6 @@ class MurBase
          */
         void getLinkTransformUR5(const std::string source_frame, const std::string target_frame);
 
-        /**
-         * @brief Returns an transformation object
-         * 
-         * @param source_frame_ 
-         * @param target_frame_ 
-         * @return tf::StampedTransform 
-         */
-        tf::StampedTransform transform(const std::string source_frame_, const std::string target_frame_);
-
     public:
         struct Orientation {double x; double y; double z;};
         struct Translation {double x; double y; double z;};
@@ -110,6 +101,15 @@ class MurBase
          * @return std::vector<double> pose_
          */
         std::vector<double> getCurrentPose(std::string source_frame_, std::string target_frame_);
+
+        /**
+         * @brief Returns an transformation object
+         * 
+         * @param source_frame_ 
+         * @param target_frame_ 
+         * @return tf::StampedTransform 
+         */
+        tf::StampedTransform transform(const std::string source_frame_, const std::string target_frame_);
 
     };
 
