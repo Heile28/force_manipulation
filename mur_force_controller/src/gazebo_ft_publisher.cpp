@@ -41,7 +41,7 @@ void WrenchPublisher::transform_wrench_into_ee(){
     wrench_.wrench.force = wrench_force_.vector;
     wrench_.wrench.torque = wrench_torque_.vector;
 
-    /*
+    
     std::cout<<"Wrench is \n";
     std::cout<<wrench_.wrench.force.x<<std::endl;
     std::cout<<wrench_.wrench.force.y<<std::endl;
@@ -49,7 +49,7 @@ void WrenchPublisher::transform_wrench_into_ee(){
     std::cout<<wrench_.wrench.torque.x<<std::endl;
     std::cout<<wrench_.wrench.torque.y<<std::endl;
     std::cout<<wrench_.wrench.torque.z<<std::endl;
-    */
+    
 
      /***** Finally publish wrench data to cartesian admittance controller *****/
     pub_.publish(wrench_);

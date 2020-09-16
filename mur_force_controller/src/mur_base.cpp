@@ -76,13 +76,18 @@ std::vector<double> MurBase::getCurrentPose(std::string source_frame_, std::stri
     pose_.push_back(orientation.x);
     pose_.push_back(orientation.y);
     pose_.push_back(orientation.z);
+
+    pose_.push_back(quaternion.x);
+    pose_.push_back(quaternion.y);
+    pose_.push_back(quaternion.z);
+    pose_.push_back(quaternion.w);
     return pose_;
 }
 
 void MurBase::getLinkTransformUR5(const std::string source_frame, const std::string target_frame)
 {
   /***** Migrate transformation into object *****/
-  ROS_INFO("Translation from %s into %s", source_frame.c_str(), target_frame.c_str());
+  //ROS_INFO("Translation from %s into %s", source_frame.c_str(), target_frame.c_str());
   transform_ = transform(source_frame, target_frame);
   
   /***** Get orientation'in quaternions *****/

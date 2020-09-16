@@ -88,7 +88,7 @@ void MoveMir::lookupInitialLocalPosition(){
         last_time_ = init_time_;
 }
 
-void MoveMir::callCurrentGlobalPose()
+std::vector<double> MoveMir::callCurrentGlobalPose()
 {
     std::string source_frame = "robot1_tf/base_link";
     std::string target_frame = "robot1_tf/ee_link_ur5";
@@ -105,9 +105,11 @@ void MoveMir::callCurrentGlobalPose()
     current_pose_ = current_global_pose_;
     last_time_ = ros::Time::now();
 
+    return current_pose_;
+
 }
 
-void MoveMir::callCurrentLocalPose()
+std::vector<double> MoveMir::callCurrentLocalPose()
 {
     std::string source_frame = "robot1_tf/base_link_ur5";
     std::string target_frame = "robot1_tf/ee_link_ur5";
@@ -115,8 +117,8 @@ void MoveMir::callCurrentLocalPose()
     current_local_pose_.clear();
     current_local_pose_ = base_.getCurrentPose(source_frame, target_frame);
 
-    std::cout<<"Current pose is "<<current_local_pose_[0]<<", "<<current_local_pose_[1]<<", "<<current_local_pose_[2]
-                    <<", "<<current_local_pose_[3]<<", "<<current_local_pose_[4]<<", "<<current_local_pose_[5]<<std::endl;
+    /*std::cout<<"Current pose is "<<current_local_pose_[0]<<", "<<current_local_pose_[1]<<", "<<current_local_pose_[2]
+                    <<", "<<current_local_pose_[3]<<", "<<current_local_pose_[4]<<", "<<current_local_pose_[5]<<std::endl;*/
 
     current_time_ = ros::Time::now();
     dt_ = (current_time_-last_time_).toSec();
@@ -124,6 +126,7 @@ void MoveMir::callCurrentLocalPose()
     current_pose_ = current_local_pose_;
     last_time_ = ros::Time::now();
 
+    return current_pose_;
 }
 
 void MoveMir::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){
@@ -153,36 +156,66 @@ void MoveMir::moveGoal()
         tw_msg_.linear.x = x_length*cos(delta_th_)/dt_;
         tw_msg_.angular.z = vth_;
         pub_simple_.publish(tw_msg_);
-    }while (// condition)
-    {
-        //code
-    }
+        last_pose_ = current_pose_;
+        func_case_ = 1;
+        callCurrentLocalPose();
+    }while (current_local_pose_==last_pose_);
     
 }
 
-void MoveMir::nullspace()
+void MoveMir::nullspace(double theta_)
 {
-    callCurrentGlobalPose(); //1st get current pose
+    /***** Rotate MiR platform *****/
+    tw_msg_.linear.x = 0.0;
+    tw_msg_.linear.y = 0.0;
+    tw_msg_.linear.z = 0.0;
+    tw_msg_.angular.x = 0.0;
+    tw_msg_.angular.y = 0.0;
+    tw_msg_.angular.z = theta_/dt_;
+
+    pub_simple_.publish(tw_msg_);
+    
+    //callCurrentGlobalPose(); //1st get current global pose
+    
+    /***** Publish desired pose to cartesian_compliance_controller *****/
     geometry_msgs::PoseStamped x_d;
     x_d.pose.position.x = current_pose_[0]; //-dsad;
+    x_d.pose.position.y = current_pose_[1];
+    x_d.pose.position.z = current_pose_[2];
 
-    //if()
+    x_d.pose.orientation.x = current_pose_[6];
+    x_d.pose.orientation.x = current_pose_[7];
+    x_d.pose.orientation.x = current_pose_[8];
+    x_d.pose.orientation.x = current_pose_[9];
 
+    pub_pose_.publish(x_d);
 }
 
 void MoveMir::rotateToForceDirection()
 {
-    transform_ = base_.transform("robot1_tf/base_link", "robot1_tf/ee_link_ur5");
+    double theta;
+    do{
+        /***** Request current local pose *****/
+        callCurrentLocalPose();
 
-    tf::Transform( transform_.getRotation(),tf::Vector3(0.0,0.0,0.0) );
+        /***** Transform wrench vector into ~/base_link *****/
+        transform_ = base_.transform("robot1_tf/base_link", "robot1_tf/ee_link_ur5");
 
-    tf::vector3MsgToTF(force_,tf_force_at_ee_);
-    tf_force_at_base_ = transform_.getBasis() * tf_force_at_ee_;
-    tf::vector3TFToMsg(tf_force_at_base_, force_at_base_);
+        //tf::Transform( transform_.getRotation(),tf::Vector3(0.0,0.0,0.0) );
 
-    ROS_INFO_STREAM("Force vector in base is: \n"<<force_at_base_.x<<", "<<force_at_base_.y<<", "<<force_at_base_.z);
+        tf::vector3MsgToTF(force_,tf_force_at_ee_);
+        tf_force_at_base_ = transform_.getBasis() * tf_force_at_ee_;
+        tf::vector3TFToMsg(tf_force_at_base_, force_at_base_);
 
+        ROS_INFO_STREAM("Force vector in base is: \n"<<force_at_base_.x<<", "<<force_at_base_.y<<", "<<force_at_base_.z);
 
+        
+        theta = atan(force_at_base_.y/force_at_base_.x);
+
+        //move manipulator and platform inversely
+        nullspace(theta);
+    }while (theta != 0); //Vorteil: erst nach Schleifendurchlauf prüfen
+    
 }
 
 

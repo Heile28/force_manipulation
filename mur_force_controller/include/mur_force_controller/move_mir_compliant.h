@@ -39,7 +39,9 @@ namespace move_compliant{
         std::vector<double> initial_pose_, current_pose_, displacement_pose_;
         std::vector<double> initial_global_pose_, initial_local_pose_;
         std::vector<double> current_global_pose_, current_local_pose_;
+        std::vector<double> last_pose_;
         double delta_x_, delta_y_; 
+        int func_case_;
 
         //MiR variables
         double dt_, vth_;
@@ -79,14 +81,16 @@ namespace move_compliant{
         /**
          * @brief calls for global position of endeffector (inside ~/base_link)
          * 
+         * @return std::vector<double> current_pose
          */
-        virtual void callCurrentGlobalPose();
+        virtual std::vector<double> callCurrentGlobalPose();
 
         /**
          * @brief calls for local position of endeffector (inside ~/base_link_ur5)
          * 
+         * @return std::vector<double> current_pose
          */
-        virtual void callCurrentLocalPose();
+        virtual std::vector<double> callCurrentLocalPose();
         
         /**
         * @brief Calculates displacement based on previous callbacks of initial and current poses
@@ -113,9 +117,10 @@ namespace move_compliant{
          * @brief connects /robot1_ns/arm_cartesian_compliance_controller/target_frame
          * 
          * @param x_d desired pose which to send to cartesian_compliance_controller
+         * @param theta_ angle between MiR-x-axis and force direction
          * 
          */
-        void nullspace();
+        void nullspace(double theta_);
 
         void rotateToForceDirection();
     };
