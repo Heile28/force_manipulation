@@ -20,7 +20,6 @@ MurBase::MurBase()
 {
     this->nh_ = ros::NodeHandle("mur_base");
     this->joint_angles_ = nh_.subscribe("/robot1_ns/joint_states", 10, &MurBase::callbackJointAngles, this);
-    this->server_pose_ = nh_.advertiseService("listen_frames/request_endeffector/pose", &MurBase::callbackRequestEndeffector, this);
     /*
     this->theta1_ = 0.0; 
     this->theta2_ = 0.0;
@@ -37,18 +36,41 @@ MurBase::~MurBase()
     printf("Angles have been deleted\n");
 }
 
+int MurBase::mapIndizes(std::string name)
+{
+    for(int i=0;i<6;i++)
+    {
+        if (names[i]==name)
+        return i;
+    }    
+}
+
 void MurBase::callbackJointAngles(sensor_msgs::JointState joint_msg_)
 {
-    theta1_ = joint_msg_.position[0];
-    theta2_ = joint_msg_.position[1];
-    theta3_ = joint_msg_.position[2];
-    theta4_ = joint_msg_.position[3];
-    theta5_ = joint_msg_.position[4];
-    theta6_ = joint_msg_.position[5];
+    double theta_[6];
+    std::string name;
+    for(unsigned i = 0; i<6; i++){
+        name=joint_msg_.name[i];
+        theta_[mapIndizes(name)] = joint_msg_.position[i];
+    }
+    
+    theta1_ = theta_[0];
+    theta2_ = theta_[1];
+    theta3_ = theta_[2];
+    theta4_ = theta_[3];
+    theta5_ = theta_[4];
+    theta6_ = theta_[5];
+    
     /*
     std::cout<<"Winkel:"<<std::endl;
     std::cout<<"["<<theta1_<<","<<theta2_<<","<<theta3_<<","<<theta4_<<","<<theta5_<<","<<theta6_<<"]"<<std::endl;
     */
+    
+}
+
+void MurBase::startServiceServer()
+{
+  this->server_pose_ = nh_.advertiseService("listen_frames/request_endeffector/pose", &MurBase::callbackRequestEndeffector, this);
 }
 
 std::vector<double> MurBase::getAngles()
@@ -67,9 +89,9 @@ std::vector<double> MurBase::getAngles()
 std::vector<double> MurBase::getCurrentPose(std::string source_frame_, std::string target_frame_)
 {
     std::vector<double> pose_;
+    //get struct lists filled
     getLinkTransformUR5(source_frame_, target_frame_);
 
-    pose_.clear();
     pose_.push_back(translation.x);
     pose_.push_back(translation.y);
     pose_.push_back(translation.z);
@@ -84,7 +106,7 @@ std::vector<double> MurBase::getCurrentPose(std::string source_frame_, std::stri
     return pose_;
 }
 
-void MurBase::getLinkTransformUR5(const std::string source_frame, const std::string target_frame)
+void MurBase::getLinkTransformUR5(std::string source_frame, std::string target_frame)
 {
   /***** Migrate transformation into object *****/
   //ROS_INFO("Translation from %s into %s", source_frame.c_str(), target_frame.c_str());
@@ -93,7 +115,7 @@ void MurBase::getLinkTransformUR5(const std::string source_frame, const std::str
   /***** Get orientation'in quaternions *****/
   r = transform_.getOrigin();
   quat_rot = {transform_.getRotation().getX(), transform_.getRotation().getY(), transform_.getRotation().getZ(), transform_.getRotation().getW()};
-    
+  
   /***** Transfer rotation into RPY and write RAD angles into variables *****/
   R = transform_.getBasis();
   tf::Matrix3x3(R).getRPY(roll, pitch, yaw);
@@ -109,9 +131,12 @@ void MurBase::getLinkTransformUR5(const std::string source_frame, const std::str
   */
   
   /***** Store data of orientation, translation and quaternion *****/
-  orientation = {roll, pitch, yaw};
-  translation = {r[0], r[1], r[2]};
-  quaternion = {quat_rot[0], quat_rot[1], quat_rot[2], quat_rot[3]};
+  //orientation = {roll, pitch, yaw};
+  orientation.x = roll; orientation.y = pitch; orientation.z = yaw;
+  //translation = {r[0], r[1], r[2]};
+  translation.x = r[0]; translation.y = r[1]; translation.z = r[2];
+  //quaternion = {quat_rot.x(), quat_rot.y(), quat_rot.z(), quat_rot.w()};
+  quaternion.x = quat_rot.x(); quaternion.y = quat_rot.y(); quaternion.z = quat_rot.z(); quaternion.w = quat_rot.w();
 }
 
 bool MurBase::callbackRequestEndeffector(mur_robot_msgs::PoseRequest::Request& req, mur_robot_msgs::PoseRequest::Response& res)
@@ -119,15 +144,10 @@ bool MurBase::callbackRequestEndeffector(mur_robot_msgs::PoseRequest::Request& r
   std::cout<<"Service Request Current EndeffectorPose has called"<<std::endl;
   bool request = req.request;
 
-  if(req.source_frame.empty() && req.target_frame.empty()){
-    ROS_ERROR("You have not defined a source and target frame");
-    return 0;
-  }
+  getLinkTransformUR5((std::string)req.source_frame, (std::string)req.target_frame);
 
   if(request == true){
     /***** Call *****/
-    getLinkTransformUR5(req.source_frame, req.target_frame);
-
     res.success = true;
     res.position.x = translation.x;
     res.position.y = translation.y;
@@ -159,7 +179,7 @@ tf::StampedTransform MurBase::transform(const std::string source_frame_, const s
     tf::StampedTransform trans;
 
     try{
-        list.waitForTransform(source_frame_, target_frame_, now, ros::Duration(1.0));
+        list.waitForTransform(source_frame_, target_frame_, now, ros::Duration(2.0));
         list.lookupTransform(source_frame_, target_frame_, now, trans);
     }
     catch(tf::TransformException ex)

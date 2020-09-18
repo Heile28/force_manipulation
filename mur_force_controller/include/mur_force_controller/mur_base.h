@@ -45,7 +45,13 @@ class MurBase
         double alpha, beta, gamma; //angles in DEG
         const double PI = M_PI;
 
+        const std::string names[6]={"robot1_tf/shoulder_pan_joint", "robot1_tf/shoulder_lift_joint", "robot1_tf/elbow_joint",
+                             "robot1_tf/wrist_1_joint", "robot1_tf/wrist_2_joint", "robot1_tf/wrist_3_joint"};
+
     protected:
+        
+        int mapIndizes(std::string name);
+
         /**
         * @brief callback function of joints data
         * 
@@ -61,14 +67,6 @@ class MurBase
          * @return false
          */
         bool callbackRequestEndeffector(mur_robot_msgs::PoseRequest::Request& req, mur_robot_msgs::PoseRequest::Response& res);
-
-        /**
-         * @brief callback function of joints data
-         * 
-         * @param source_frame frame origin
-         * @param target_frame frame in which to transform
-         */
-        void getLinkTransformUR5(const std::string source_frame, const std::string target_frame);
 
     public:
         struct Orientation {double x; double y; double z;};
@@ -87,11 +85,27 @@ class MurBase
         double theta1_, theta2_, theta3_, theta4_, theta5_, theta6_;
 
         /**
+         * @brief starts the ServiceServer to query current poses
+         * 
+         */
+        void startServiceServer();
+
+        /**
          * @brief Get the Angles object in coherence of a JointAnglesListener()
          * 
          * @return std::vector<double> theta_
          */
         std::vector<double> getAngles();
+
+        
+
+        /**
+         * @brief callback function of joints data
+         * 
+         * @param source_frame frame origin
+         * @param target_frame frame in which to transform
+         */
+        void getLinkTransformUR5(const std::string source_frame, const std::string target_frame);
 
         /**
          * @brief Get the Current Pose object

@@ -17,25 +17,26 @@ using namespace move_compliant;
 MoveMir::MoveMir()
 {
     this->nh_=ros::NodeHandle("move_mir_compliant");
+    
     this->pub_simple_ = nh_.advertise<geometry_msgs::Twist>("/robot1_ns/mobile_base_controller/cmd_vel", 100);
-    this->endeffector_pose_client_ = nh_.serviceClient<mur_robot_msgs::PoseRequest>("listen_frames/request_endeffector/pose");
     this->pub_pose_ = nh_.advertise<geometry_msgs::PoseStamped>("/robot1_ns/arm_cartesian_compliance_controller/target_frame", 10);
     this->sub_force_ = nh_.subscribe("/robot1_ns/arm_cartesian_compliance_controller/ft_sensor_wrench", 100, &MoveMir::wrenchCallback, this);
+    
     //this->scan_pub_=this->nh_.advertise<sensor_msgs::PointCloud>("scan",10);
     init_time_ = ros::Time(0);
 }
 
 void MoveMir::lookupInitialGlobalPosition(){
 
-        ros::service::waitForService("mur_base/listen_frames/request_endeffector/pose");
-
         mur_robot_msgs::PoseRequest pose_msg_;
         pose_msg_.request.request = true;
         pose_msg_.request.source_frame = "robot1_tf/base_link";
         pose_msg_.request.target_frame = "robot1_tf/ee_link_ur5";
+
+        //ros::service::waitForService("/mur_base/listen_frames/request_endeffector/pose", ros::Duration(2));
         
-        try{
-            endeffector_pose_client_.call(pose_msg_);
+        if(endeffector_pose_client_.call(pose_msg_))
+        {
             initial_global_pose_.clear();
             initial_global_pose_.push_back(pose_msg_.response.position.x);
             initial_global_pose_.push_back(pose_msg_.response.position.y);
@@ -46,28 +47,33 @@ void MoveMir::lookupInitialGlobalPosition(){
             std::cout<<"Initial global pose is: "<<initial_global_pose_[0]<<", "<<initial_global_pose_[1]<<", "<<initial_global_pose_[2]<<", "
                         <<initial_global_pose_[3]<<", "<<initial_global_pose_[4]<<", "<<initial_global_pose_[5]<<std::endl;
             //give vector initial values which are changeable
-            delta_x_ = initial_global_pose_[0];
-            delta_y_ = initial_global_pose_[1];
+            //delta_x_ = initial_global_pose_[0];
+            //delta_y_ = initial_global_pose_[1];
         }
-        catch(ros::Exception &ex)
+        else
         {
-            ROS_ERROR("Error occured %s", ex.what());
+            ROS_ERROR("Service call failed!");
         }
+        initial_pose_.clear();
         initial_pose_ = initial_global_pose_;
         last_time_ = init_time_;
 }
 
 void MoveMir::lookupInitialLocalPosition(){
 
-        ros::service::waitForService("mur_base/listen_frames/request_endeffector/pose");
+        ros::service::waitForService("/mur_base/listen_frames/request_endeffector/pose");
+        this->endeffector_pose_client_ = nh_.serviceClient<mur_robot_msgs::PoseRequest>("/mur_base/listen_frames/request_endeffector/pose");
 
         mur_robot_msgs::PoseRequest pose_msg_;
         pose_msg_.request.request = true;
         pose_msg_.request.source_frame = "robot1_tf/base_link_ur5";
         pose_msg_.request.target_frame = "robot1_tf/ee_link_ur5";
-        
-        try{
-            endeffector_pose_client_.call(pose_msg_);
+
+        if(endeffector_pose_client_.call(pose_msg_))
+        {
+            std::cout<<"Inside service call"<<std::endl;
+
+            //endeffector_pose_client_.call(pose_msg_);
             initial_local_pose_.clear();
             initial_local_pose_.push_back(pose_msg_.response.position.x);
             initial_local_pose_.push_back(pose_msg_.response.position.y);
@@ -76,14 +82,16 @@ void MoveMir::lookupInitialLocalPosition(){
             initial_local_pose_.push_back(pose_msg_.response.orientation.y);
             initial_local_pose_.push_back(pose_msg_.response.orientation.z);
             initial_local_pose_.push_back(pose_msg_.response.orientation.w);
-            std::cout<<"Initial local pose is: "<<initial_local_pose_[0]<<", "<<initial_local_pose_[1]<<", "<<initial_local_pose_[2]<<", "
+            /*std::cout<<"Initial local pose is: "<<initial_local_pose_[0]<<", "<<initial_local_pose_[1]<<", "<<initial_local_pose_[2]<<", "
                         <<initial_local_pose_[3]<<", "<<initial_local_pose_[4]<<", "<<initial_local_pose_[5]<<", "<<initial_local_pose_[6]<<std::endl;
-            //give vector initial values which are changeable
+            */
         }
-        catch(ros::Exception &ex)
+        else
         {
-            ROS_ERROR("Error occured %s", ex.what());
+            ROS_ERROR("Service call failed!");
         }
+
+        initial_pose_.clear();
         initial_pose_ = initial_local_pose_;
         last_time_ = init_time_;
 }
@@ -98,31 +106,34 @@ std::vector<double> MoveMir::callCurrentGlobalPose()
 
     std::cout<<"Current pose is "<<current_global_pose_[0]<<", "<<current_global_pose_[1]<<", "<<current_global_pose_[2]
                     <<", "<<current_global_pose_[3]<<", "<<current_global_pose_[4]<<", "<<current_global_pose_[5]<<std::endl;
-
+    
     current_time_ = ros::Time::now();
     dt_ = (current_time_-last_time_).toSec();
 
+    current_pose_.clear();
     current_pose_ = current_global_pose_;
     last_time_ = ros::Time::now();
 
     return current_pose_;
-
 }
 
 std::vector<double> MoveMir::callCurrentLocalPose()
 {
-    std::string source_frame = "robot1_tf/base_link_ur5";
-    std::string target_frame = "robot1_tf/ee_link_ur5";
+    const std::string source_frame = "robot1_tf/base_link_ur5";
+    const std::string target_frame = "robot1_tf/ee_link_ur5";
 
     current_local_pose_.clear();
     current_local_pose_ = base_.getCurrentPose(source_frame, target_frame);
 
     /*std::cout<<"Current pose is "<<current_local_pose_[0]<<", "<<current_local_pose_[1]<<", "<<current_local_pose_[2]
-                    <<", "<<current_local_pose_[3]<<", "<<current_local_pose_[4]<<", "<<current_local_pose_[5]<<std::endl;*/
+                    <<", "<<current_local_pose_[3]<<", "<<current_local_pose_[4]<<", "<<current_local_pose_[5]<<std::endl; */
+    
 
     current_time_ = ros::Time::now();
     dt_ = (current_time_-last_time_).toSec();
+    //std::cout<<"Current dt: "<<dt_<<std::endl;
 
+    current_pose_.clear();
     current_pose_ = current_local_pose_;
     last_time_ = ros::Time::now();
 
@@ -132,7 +143,8 @@ std::vector<double> MoveMir::callCurrentLocalPose()
 void MoveMir::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){
     force_.x = wrench_msg_.wrench.force.x;
     force_.y = wrench_msg_.wrench.force.y;
-    force_.z = wrench_msg_.wrench.force.z;    
+    force_.z = wrench_msg_.wrench.force.z;
+    std::cout<<"Wrench is"<<force_.x<<", "<<force_.y<<", "<<force_.z<<std::endl;
 }
 
 void MoveMir::displacementPose(){
@@ -209,7 +221,6 @@ void MoveMir::rotateToForceDirection()
 
         ROS_INFO_STREAM("Force vector in base is: \n"<<force_at_base_.x<<", "<<force_at_base_.y<<", "<<force_at_base_.z);
 
-        
         theta = atan(force_at_base_.y/force_at_base_.x);
 
         //move manipulator and platform inversely

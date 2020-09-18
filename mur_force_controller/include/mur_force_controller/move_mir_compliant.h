@@ -26,7 +26,7 @@
 
 namespace move_compliant{
     
-    class MoveMir //: public MurBase
+    class MoveMir
     {
 
     private:

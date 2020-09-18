@@ -3,6 +3,7 @@ project(mur_simulation)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
+add_compile_options(-std=c++14)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -108,14 +109,14 @@ find_package(Eigen3 REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 
-#catkin_package(
+catkin_package(
 # INCLUDE_DIRS include
 # LIBRARIES mur_simulation
 # CATKIN_DEPENDS 
  #  roscpp
  #  geometry_msgs
 #  DEPENDS system_lib
-#)
+)
 
 ###########
 ## Build ##
@@ -146,7 +147,8 @@ include_directories(
 # add_executable(${PROJECT_NAME}_node src/mur_simulation_node.cpp)
 
 add_executable(execution_node1 src/main.cpp)
-add_executable(execution_node2 src/main.cpp)
+
+add_executable(start_services_node src/start_services.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -168,7 +170,8 @@ add_executable(execution_node2 src/main.cpp)
 #)
 
 target_link_libraries(execution_node1 ${catkin_LIBRARIES})
-target_link_libraries(execution_node2 ${catkin_LIBRARIES})
+
+target_link_libraries(start_services_node ${catkin_LIBRARIES})
 
 #############
 ## Install ##
