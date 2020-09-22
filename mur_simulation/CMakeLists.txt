@@ -14,6 +14,8 @@ find_package(catkin REQUIRED COMPONENTS
   mur_force_controller
   mur_kinematics
   tf
+  actionlib
+  actionlib_msgs
 )
 
 #find_package(cmake_modules REQUIRED)
@@ -147,8 +149,9 @@ include_directories(
 # add_executable(${PROJECT_NAME}_node src/mur_simulation_node.cpp)
 
 add_executable(execution_node1 src/main.cpp)
-
 add_executable(start_services_node src/start_services.cpp)
+add_executable(move_mur_client_node src/move_mur_client.cpp)
+add_executable(apply_force_node src/apply_force.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -170,8 +173,9 @@ add_executable(start_services_node src/start_services.cpp)
 #)
 
 target_link_libraries(execution_node1 ${catkin_LIBRARIES})
-
 target_link_libraries(start_services_node ${catkin_LIBRARIES})
+target_link_libraries(move_mur_client_node ${catkin_LIBRARIES})
+target_link_libraries(apply_force_node ${catkin_LIBRARIES})
 
 #############
 ## Install ##

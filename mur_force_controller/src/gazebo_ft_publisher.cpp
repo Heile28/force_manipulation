@@ -41,18 +41,43 @@ void WrenchPublisher::transform_wrench_into_ee(){
     wrench_.wrench.force = wrench_force_.vector;
     wrench_.wrench.torque = wrench_torque_.vector;
 
-    /*
-    std::cout<<"Wrench is \n";
-    std::cout<<wrench_.wrench.force.x<<std::endl;
-    std::cout<<wrench_.wrench.force.y<<std::endl;
-    std::cout<<wrench_.wrench.force.z<<std::endl;
-    std::cout<<wrench_.wrench.torque.x<<std::endl;
-    std::cout<<wrench_.wrench.torque.y<<std::endl;
-    std::cout<<wrench_.wrench.torque.z<<std::endl;
-    */
-    
+    // std::cout<<"Wrench is \n";
+    // std::cout<<wrench_.wrench.force.x<<std::endl;
+    // std::cout<<wrench_.wrench.force.y<<std::endl;
+    // std::cout<<wrench_.wrench.force.z<<std::endl;
+    // std::cout<<wrench_.wrench.torque.x<<std::endl;
+    // std::cout<<wrench_.wrench.torque.y<<std::endl;
+    // std::cout<<wrench_.wrench.torque.z<<std::endl;
 
-     /***** Finally publish wrench data to cartesian admittance controller *****/
+    /***** Gravitational compensation *****/
+    // now = ros::Time(0);
+    // tf::StampedTransform transform2_;
+    // geometry_msgs::Vector3Stamped gravitation, force_compensated;
+    // gravitation.vector.x = 0.0;
+    // gravitation.vector.y = 0.0;
+    // gravitation.vector.z = 9.81;
+    // gravitation.header.frame_id = "/robot1_tf/base_link";
+    // gravitation.header.stamp = now;
+
+    // try{
+    //     listener_.waitForTransform("robot1_tf/base_link", "robot1_tf/wrist_3_link_ur5", now, ros::Duration(1.0));
+    //     listener_.lookupTransform("robot1_tf/base_link", "robot1_tf/wrist_3_link_ur5", now, transform2_);
+    // }
+    // catch(tf::TransformException ex)
+    // {
+    //     ROS_ERROR("%s",ex.what());
+    //     ros::Duration(1.0).sleep();
+    // }
+    // listener_.transformVector("robot1_tf/wrist_3_link_ur5",gravitation, force_compensated);
+    
+    
+    // std::cout<<"Compensated force is \n";
+    // std::cout<<force_.vector.x - force_compensated.vector.x<<std::endl;
+    // std::cout<<force_.vector.y - force_compensated.vector.y<<std::endl;
+    // std::cout<<force_.vector.z - force_compensated.vector.z<<std::endl;
+
+    
+    /***** Finally publish wrench data to cartesian admittance controller *****/
     pub_.publish(wrench_);
 
 }
