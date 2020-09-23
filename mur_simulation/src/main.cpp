@@ -29,11 +29,12 @@ int main(int argc, char** argv)
     move_compliant::MoveMir obj1;
     obj1.lookupInitialLocalPosition(); //stores initial_global_pose_
 
-    obj1.rotateToForceDirection();
-    obj1.rotateToForceDirection();
-    obj1.rotateToForceDirection();
-    obj1.rotateToForceDirection();
-    obj1.rotateToForceDirection();
+    while(ros::ok()){
+        obj1.rotateToForceDirection();
+        ros::spinOnce();
+
+    }
+    
 
     /*
     while (ros::ok())

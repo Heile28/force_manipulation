@@ -19,7 +19,7 @@ MoveMir::MoveMir()
     this->nh_=ros::NodeHandle("move_mir_compliant");
     
     this->pub_simple_ = nh_.advertise<geometry_msgs::Twist>("/robot1_ns/mobile_base_controller/cmd_vel", 100);
-    this->pub_pose_ = nh_.advertise<geometry_msgs::PoseStamped>("/robot1_ns/arm_cartesian_compliance_controller/target_frame", 10);
+    this->pub_pose_ = nh_.advertise<geometry_msgs::PoseStamped>("/robot1_ns/arm_cartesian_compliance_controller/target_pose", 100);
     this->sub_force_ = nh_.subscribe("/robot1_ns/arm_cartesian_compliance_controller/ft_sensor_wrench", 100, &MoveMir::wrenchCallback, this);
     
     //this->scan_pub_=this->nh_.advertise<sensor_msgs::PointCloud>("scan",10);
@@ -104,8 +104,8 @@ std::vector<double> MoveMir::callCurrentGlobalPose()
     current_global_pose_.clear();
     current_global_pose_ = base_.getCurrentPose(source_frame, target_frame);
 
-    std::cout<<"Current pose is "<<current_global_pose_[0]<<", "<<current_global_pose_[1]<<", "<<current_global_pose_[2]
-                    <<", "<<current_global_pose_[3]<<", "<<current_global_pose_[4]<<", "<<current_global_pose_[5]<<std::endl;
+    //std::cout<<"Current global pose is "<<current_global_pose_[0]<<", "<<current_global_pose_[1]<<", "<<current_global_pose_[2]
+    //                <<", "<<current_global_pose_[3]<<", "<<current_global_pose_[4]<<", "<<current_global_pose_[5]<<std::endl;
     
     current_time_ = ros::Time::now();
     dt_ = (current_time_-last_time_).toSec();
@@ -125,8 +125,8 @@ std::vector<double> MoveMir::callCurrentLocalPose()
     current_local_pose_.clear();
     current_local_pose_ = base_.getCurrentPose(source_frame, target_frame);
 
-    /*std::cout<<"Current pose is "<<current_local_pose_[0]<<", "<<current_local_pose_[1]<<", "<<current_local_pose_[2]
-                    <<", "<<current_local_pose_[3]<<", "<<current_local_pose_[4]<<", "<<current_local_pose_[5]<<std::endl; */
+    // std::cout<<"Current pose is "<<current_local_pose_[0]<<", "<<current_local_pose_[1]<<", "<<current_local_pose_[2]
+    //                 <<", "<<current_local_pose_[3]<<", "<<current_local_pose_[4]<<", "<<current_local_pose_[5]<<std::endl;
     
 
     current_time_ = ros::Time::now();
@@ -144,7 +144,7 @@ void MoveMir::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){
     force_.x = wrench_msg_.wrench.force.x;
     force_.y = wrench_msg_.wrench.force.y;
     force_.z = wrench_msg_.wrench.force.z;
-    std::cout<<"Wrench is"<<force_.x<<", "<<force_.y<<", "<<force_.z<<std::endl;
+    //std::cout<<"Wrench is"<<force_.x<<", "<<force_.y<<", "<<force_.z<<std::endl;
 
 }
 
@@ -193,15 +193,34 @@ void MoveMir::nullspace(double theta_)
         //callCurrentGlobalPose(); //1st get current global pose
         
         /***** Publish desired pose to cartesian_compliance_controller *****/
+        callCurrentLocalPose();
         geometry_msgs::PoseStamped x_d;
-        x_d.pose.position.x = current_pose_[0]; //-dsad;
-        x_d.pose.position.y = current_pose_[1];
-        x_d.pose.position.z = current_pose_[2];
+        x_d.header.frame_id = "robot1_tf/base_link_ur5";
+         
+        if(theta_>0){
+            x_d.pose.position.x = current_pose_[0]+(atan(theta_)/current_pose_[1]); //-dsad;
+            x_d.pose.position.y = current_pose_[1]+(atan(theta_)*current_pose_[0]);
+        }else
+        {
+            x_d.pose.position.x = current_pose_[0]-(atan(theta_)/current_pose_[1]); //-dsad;
+            x_d.pose.position.y = current_pose_[1]-(atan(theta_)*current_pose_[0]);
+        }
+        
 
-        x_d.pose.orientation.x = current_pose_[6];
-        x_d.pose.orientation.x = current_pose_[7];
-        x_d.pose.orientation.x = current_pose_[8];
-        x_d.pose.orientation.x = current_pose_[9];
+        
+        x_d.pose.position.z = current_pose_[2]*0;
+
+        // x_d.pose.orientation.x = current_pose_[6];
+        // x_d.pose.orientation.x = current_pose_[7];
+        // x_d.pose.orientation.x = current_pose_[8];
+        // x_d.pose.orientation.x = current_pose_[9];
+
+        x_d.pose.orientation.x = 0.0;
+        x_d.pose.orientation.y = 0.0;
+        x_d.pose.orientation.z = 0.0;
+        x_d.pose.orientation.w = 1.0;
+
+        std::cout<<"Desired pose: "<<x_d.pose.position.x<<", "<<x_d.pose.position.y<<", "<<x_d.pose.position.z<<std::endl;
 
         pub_pose_.publish(x_d);
     }
