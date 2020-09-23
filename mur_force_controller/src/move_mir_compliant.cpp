@@ -82,9 +82,9 @@ void MoveMir::lookupInitialLocalPosition(){
             initial_local_pose_.push_back(pose_msg_.response.orientation.y);
             initial_local_pose_.push_back(pose_msg_.response.orientation.z);
             initial_local_pose_.push_back(pose_msg_.response.orientation.w);
-            /*std::cout<<"Initial local pose is: "<<initial_local_pose_[0]<<", "<<initial_local_pose_[1]<<", "<<initial_local_pose_[2]<<", "
+            std::cout<<"Initial local pose is: "<<initial_local_pose_[0]<<", "<<initial_local_pose_[1]<<", "<<initial_local_pose_[2]<<", "
                         <<initial_local_pose_[3]<<", "<<initial_local_pose_[4]<<", "<<initial_local_pose_[5]<<", "<<initial_local_pose_[6]<<std::endl;
-            */
+            
         }
         else
         {
@@ -145,6 +145,7 @@ void MoveMir::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){
     force_.y = wrench_msg_.wrench.force.y;
     force_.z = wrench_msg_.wrench.force.z;
     std::cout<<"Wrench is"<<force_.x<<", "<<force_.y<<", "<<force_.z<<std::endl;
+
 }
 
 void MoveMir::displacementPose(){
@@ -178,34 +179,37 @@ void MoveMir::moveGoal()
 void MoveMir::nullspace(double theta_)
 {
     /***** Rotate MiR platform *****/
-    tw_msg_.linear.x = 0.0;
-    tw_msg_.linear.y = 0.0;
-    tw_msg_.linear.z = 0.0;
-    tw_msg_.angular.x = 0.0;
-    tw_msg_.angular.y = 0.0;
-    tw_msg_.angular.z = theta_/dt_;
+    while(theta_ != 0.0)
+    {
+        tw_msg_.linear.x = 0.0;
+        tw_msg_.linear.y = 0.0;
+        tw_msg_.linear.z = 0.0;
+        tw_msg_.angular.x = 0.0;
+        tw_msg_.angular.y = 0.0;
+        tw_msg_.angular.z = theta_/dt_;
 
-    pub_simple_.publish(tw_msg_);
+        pub_simple_.publish(tw_msg_);
+        
+        //callCurrentGlobalPose(); //1st get current global pose
+        
+        /***** Publish desired pose to cartesian_compliance_controller *****/
+        geometry_msgs::PoseStamped x_d;
+        x_d.pose.position.x = current_pose_[0]; //-dsad;
+        x_d.pose.position.y = current_pose_[1];
+        x_d.pose.position.z = current_pose_[2];
+
+        x_d.pose.orientation.x = current_pose_[6];
+        x_d.pose.orientation.x = current_pose_[7];
+        x_d.pose.orientation.x = current_pose_[8];
+        x_d.pose.orientation.x = current_pose_[9];
+
+        pub_pose_.publish(x_d);
+    }
     
-    //callCurrentGlobalPose(); //1st get current global pose
-    
-    /***** Publish desired pose to cartesian_compliance_controller *****/
-    geometry_msgs::PoseStamped x_d;
-    x_d.pose.position.x = current_pose_[0]; //-dsad;
-    x_d.pose.position.y = current_pose_[1];
-    x_d.pose.position.z = current_pose_[2];
-
-    x_d.pose.orientation.x = current_pose_[6];
-    x_d.pose.orientation.x = current_pose_[7];
-    x_d.pose.orientation.x = current_pose_[8];
-    x_d.pose.orientation.x = current_pose_[9];
-
-    pub_pose_.publish(x_d);
 }
 
 void MoveMir::rotateToForceDirection()
 {
-    double theta;
     do{
         /***** Request current local pose *****/
         callCurrentLocalPose();
@@ -221,11 +225,19 @@ void MoveMir::rotateToForceDirection()
 
         ROS_INFO_STREAM("Force vector in base is: \n"<<force_at_base_.x<<", "<<force_at_base_.y<<", "<<force_at_base_.z);
 
-        theta = atan(force_at_base_.y/force_at_base_.x);
+        if(force_at_base_.x != 0)
+            theta_ = atan(force_at_base_.y/force_at_base_.x);
+        else
+        {
+            theta_ = 0.0;
+            ROS_INFO("No force attack!!!");
+        }
+        
+        std::cout<<"Theta is "<<theta_<<std::endl;
 
         //move manipulator and platform inversely
-        nullspace(theta);
-    }while (theta != 0); //Vorteil: erst nach Schleifendurchlauf prüfen
+        nullspace(theta_);
+    }while (theta_ != 0); //Vorteil: erst nach Schleifendurchlauf prüfen
     
 }
 

@@ -24,10 +24,10 @@ void apply_constant_force(ros::NodeHandle nh_)
     srv1.request.start_time = ros::Time().now();
     srv1.request.duration = duration_seconds;
     srv1.request.reference_point.x = 0.0;
-    srv1.request.reference_point.y = 0.0823;
+    srv1.request.reference_point.y = 0.0; //0.0823;
     srv1.request.reference_point.z = 0.0;
     srv1.request.wrench.force.x = 0.0;
-    srv1.request.wrench.force.y = 20.0;
+    srv1.request.wrench.force.y = -40.0;
     srv1.request.wrench.force.z = 0.0;
     srv1.request.wrench.torque.x = 0.0;
     srv1.request.wrench.torque.y = 0.0;
@@ -37,6 +37,7 @@ void apply_constant_force(ros::NodeHandle nh_)
     if(srv1.response.success == true){
         ROS_INFO("Force applied for %lf seconds", duration_seconds.toSec());
     }
+    ROS_INFO("Force attack has finished!");
         
 }
 
@@ -45,6 +46,8 @@ void profiled_attack()
 
 }
 
+
+/**** METHOD publishes  WRENCH referenced to ~/wrist_3_link ****/
 void directly_to_ee(ros::NodeHandle nh_)
 {
     ros::Publisher pub_wrench = nh_.advertise<geometry_msgs::WrenchStamped>("/robot1_ns/arm_cartesian_compliance_controller/target_wrench",100);
@@ -64,10 +67,11 @@ void directly_to_ee(ros::NodeHandle nh_)
     ros::Rate r(20.0); //0.05 seconds publishing rate
 
     ROS_INFO("Force attack for 45 seconds in Simulation (=8 seconds in real).");
+    std::cout<<"Current time: "<<current_time<<std::endl;
 
     while(current_time <= time1){
-        pub_wrench_msg.wrench.force.y = 7.5*pow(current_time, 2);
-        //cout<<"Force in y: "<<pub_wrench_msg.wrench.force.y<<endl;
+        pub_wrench_msg.wrench.force.z = 7.5*pow(current_time, 2);
+        //std::cout<<"Force in y: "<<pub_wrench_msg.wrench.force.y<<std::endl;
         pub_wrench.publish(pub_wrench_msg);
         current_time = current_time + 0.05;
         //std::cout<<"Current time: "<<current_time<<std::endl;
@@ -75,17 +79,17 @@ void directly_to_ee(ros::NodeHandle nh_)
     }
 
     while(current_time <= time2){
-        pub_wrench_msg.wrench.force.y = 30.0;
-        //cout<<"Force in y: "<<pub_wrench_msg.wrench.force.y<<std::endl;
+        pub_wrench_msg.wrench.force.z = 30.0;
+        std::cout<<"Force in y: "<<pub_wrench_msg.wrench.force.y<<std::endl;
         pub_wrench.publish(pub_wrench_msg);
         current_time = current_time + 0.05;
-        //std::cout<<"Current time: "<<current_time<<std::endl;
+        std::cout<<"Current time: "<<current_time<<std::endl;
         r.sleep();
     }
 
     while(current_time <= time3){
-        pub_wrench_msg.wrench.force.y = 7.5*pow(current_time-8.0, 2);
-        std::cout<<"Force in y: "<<pub_wrench_msg.wrench.force.y<<std::endl;
+        pub_wrench_msg.wrench.force.z = 7.5*pow(current_time-8.0, 2);
+        //std::cout<<"Force in y: "<<pub_wrench_msg.wrench.force.y<<std::endl;
         pub_wrench.publish(pub_wrench_msg);
         current_time = current_time + 0.05;
         //std::cout<<"Current time: "<<current_time<<std::endl;
@@ -99,8 +103,8 @@ int main(int argc, char** argv)
 {
     ros::init(argc,argv,"apply_force");
     ros::NodeHandle nh_;
-    //apply_constant_force(nh_);
-    directly_to_ee(nh_);
+    apply_constant_force(nh_);
+    //directly_to_ee(nh_);
 
     
 

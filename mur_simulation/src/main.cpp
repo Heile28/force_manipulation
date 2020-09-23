@@ -15,22 +15,33 @@
 int main(int argc, char** argv)
 {
     ros::init(argc,argv,"Drive_MiR");
-    std::cout<<"Im in main file"<<std::endl;
+    std::cout<<"Im in main file now"<<std::endl;
     ros::NodeHandle nh;
-
     
 
     //start publishing wrench data to cartesian_admittance_controller
     gazebo_ft_publisher::WrenchPublisher start_wrench;
     
-    //start moving MiR robot
-    /*move_compliant::MurBase begin;
-    move_compliant::MoveMir obj1;
-    obj1.lookupInitialPosition();
-    */
-    calculate_jacobian::GetJacobian get_jacobian;
-    get_jacobian.urJacobian();
+    // calculate_jacobian::GetJacobian get_jacobian;
+    // get_jacobian.urJacobian();
 
+    /***** start moving MiR robot *****/
+    move_compliant::MoveMir obj1;
+    obj1.lookupInitialLocalPosition(); //stores initial_global_pose_
+
+    obj1.rotateToForceDirection();
+    obj1.rotateToForceDirection();
+    obj1.rotateToForceDirection();
+    obj1.rotateToForceDirection();
+    obj1.rotateToForceDirection();
+
+    /*
+    while (ros::ok())
+    {
+        obj1.rotateToForceDirection();
+        ros::spinOnce();
+    }
+    */
 
     ros::spin();
 }

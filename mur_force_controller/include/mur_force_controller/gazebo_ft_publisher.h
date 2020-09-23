@@ -58,6 +58,12 @@ namespace gazebo_ft_publisher{
         * 
         */
         void transform_wrench_into_ee();
+
+        /**
+        * @brief send wrench directly to FDCC controler topic
+        * 
+        */
+        void send_directly_to_topic();
         
         
         

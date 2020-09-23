@@ -35,6 +35,7 @@ namespace move_compliant{
         ros::Publisher pub_simple_, pub_pose_;
         ros::ServiceClient endeffector_pose_client_;
         ros::Time init_time_, current_time_, last_time_;
+        double theta_;
 
         std::vector<double> initial_pose_, current_pose_, displacement_pose_;
         std::vector<double> initial_global_pose_, initial_local_pose_;

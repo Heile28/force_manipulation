@@ -98,6 +98,18 @@ void WrenchPublisher::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){
     torque_.vector.y = wrench_msg_.wrench.torque.y;
     torque_.vector.z = wrench_msg_.wrench.torque.z;
 
-    transform_wrench_into_ee();
+    //transform_wrench_into_ee();
+
+    /***send directly to topic ***/
+    send_directly_to_topic();
+
+}
+
+void WrenchPublisher::send_directly_to_topic()
+{
+    wrench_.wrench.force = force_.vector;
+    wrench_.wrench.torque = torque_.vector;
+
+    pub_.publish(wrench_);
 }
 
