@@ -56,3 +56,37 @@ The Cartesian Compliance controller is a merging of impedance, admittance and fo
 ![Image of FDCC_Control](https://github.com/Heile28/force_manipulation/blob/master/etc/FDCC_model.PNG)
 
 Information about the implemented control loop used for the Forward Dynamics Solver provides [this paper](https://arxiv.org/pdf/1908.06252.pdf).
+
+### Configuration
+```bash
+arm_cartesian_compliance_controller:
+  type: "position_controllers/CartesianComplianceController"
+  end_effector_link: "$(arg tf_prefix)ee_link_ur5"    # All links below must come before this link
+  robot_base_link: "$(arg tf_prefix)base_link_ur5"
+  ft_sensor_ref_link: "$(arg tf_prefix)wrist_3_link_ur5"
+  compliance_ref_link: "$(arg tf_prefix)ee_link_ur5"
+  target_frame_topic: "target_pose" #target_frame
+  joints:
+    - $(arg tf_prefix)shoulder_pan_joint
+    - $(arg tf_prefix)shoulder_lift_joint
+    - $(arg tf_prefix)elbow_joint
+    - $(arg tf_prefix)wrist_1_joint
+    - $(arg tf_prefix)wrist_2_joint
+    - $(arg tf_prefix)wrist_3_joint
+
+  stiffness:
+      trans_x: 200
+      trans_y: 200
+      trans_z: 200
+      rot_x: 150
+      rot_y: 150
+      rot_z: 150
+
+  pd_gains:
+      trans_x: {p: 0.05}
+      trans_y: {p: 0.05}
+      trans_z: {p: 0.05}
+      rot_x: {p: 0.01}
+      rot_y: {p: 0.01}
+      rot_z: {p: 0.01}
+```
