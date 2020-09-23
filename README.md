@@ -58,6 +58,7 @@ The Cartesian Compliance controller is a merging of impedance, admittance and fo
 Information about the implemented control loop used for the Forward Dynamics Solver provides [this paper](https://arxiv.org/pdf/1908.06252.pdf).
 
 ### Configuration
+Write a yaml.-file with the following entries and store it in ~/MiR200-with-UR5/mir_ur5_description/config
 ```bash
 arm_cartesian_compliance_controller:
   type: "position_controllers/CartesianComplianceController"
