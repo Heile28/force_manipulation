@@ -1,6 +1,8 @@
 #include <ros/ros.h>
 
 #include <mur_force_controller/mur_base.h>
+#include <mur_force_controller/gazebo_ft_publisher.h>
+
 
 int main(int argc, char** argv)
 {
@@ -10,6 +12,9 @@ int main(int argc, char** argv)
 
     MurBase begin;
     begin.startServiceServer();
+
+    gazebo_ft_publisher::WrenchPublisher wrench_publisher;
+
     
     /*
     //Optional service client

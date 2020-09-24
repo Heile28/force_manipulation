@@ -39,7 +39,7 @@ namespace move_compliant{
 
         std::vector<double> initial_pose_, current_pose_, displacement_pose_;
         std::vector<double> initial_global_pose_, initial_local_pose_;
-        std::vector<double> current_global_pose_, current_local_pose_;
+        std::vector<double> current_global_pose_, current_local_pose_, current_map_pose_;
         std::vector<double> last_pose_;
         double delta_x_, delta_y_; 
         int func_case_;
@@ -48,11 +48,12 @@ namespace move_compliant{
         double dt_, vth_;
         double delta_th_; //for MiR
         geometry_msgs::Twist tw_msg_;
+        double PI = M_PI;
 
         //rotate in Force direction
         ros::Subscriber sub_force_;
         tf::StampedTransform transform_;
-        tf::Vector3 tf_force_at_base_, tf_force_at_ee_;
+        tf::Vector3 tf_force_at_base_, tf_force_at_sensor_;
         geometry_msgs::Vector3 force_, force_at_base_;
 
     protected:
@@ -92,6 +93,8 @@ namespace move_compliant{
          * @return std::vector<double> current_pose
          */
         virtual std::vector<double> callCurrentLocalPose();
+
+        virtual std::vector<double> callCurrentWorldPose();
         
         /**
         * @brief Calculates displacement based on previous callbacks of initial and current poses
@@ -124,6 +127,12 @@ namespace move_compliant{
         void nullspace(double theta_);
 
         void rotateToForceDirection();
+
+        void rotateToPoseDirection();
+
+        void poseUpdater();
+
+        void moveStraight();
     };
 }
 

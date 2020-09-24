@@ -26,9 +26,10 @@ void apply_constant_force(ros::NodeHandle nh_)
     srv1.request.reference_point.x = 0.0;
     srv1.request.reference_point.y = 0.0; //0.0823;
     srv1.request.reference_point.z = 0.0;
-    srv1.request.wrench.force.x = 0.0;
-    srv1.request.wrench.force.y = -40.0;
-    srv1.request.wrench.force.z = 0.0;
+    /**** forces specified in global coordinates ****/
+    srv1.request.wrench.force.x = 0.0; 
+    srv1.request.wrench.force.y = 30.0; 
+    srv1.request.wrench.force.z = 0.0; 
     srv1.request.wrench.torque.x = 0.0;
     srv1.request.wrench.torque.y = 0.0;
     srv1.request.wrench.torque.z = 0.0;
@@ -37,6 +38,7 @@ void apply_constant_force(ros::NodeHandle nh_)
     if(srv1.response.success == true){
         ROS_INFO("Force applied for %lf seconds", duration_seconds.toSec());
     }
+    ros::Duration(5.0).sleep();
     ROS_INFO("Force attack has finished!");
         
 }

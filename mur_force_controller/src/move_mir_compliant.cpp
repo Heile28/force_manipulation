@@ -110,14 +110,14 @@ std::vector<double> MoveMir::callCurrentGlobalPose()
     //std::cout<<"Current global pose is "<<current_global_pose_[0]<<", "<<current_global_pose_[1]<<", "<<current_global_pose_[2]
     //                <<", "<<current_global_pose_[3]<<", "<<current_global_pose_[4]<<", "<<current_global_pose_[5]<<std::endl;
     
-    current_time_ = ros::Time::now();
-    dt_ = (current_time_-last_time_).toSec();
+    // current_time_ = ros::Time::now();
+    // dt_ = (current_time_-last_time_).toSec();
 
     current_pose_.clear();
     current_pose_ = current_global_pose_;
-    last_time_ = ros::Time::now();
+    //last_time_ = ros::Time::now();
 
-    return current_pose_;
+    return current_global_pose_;
 }
 
 std::vector<double> MoveMir::callCurrentLocalPose()
@@ -132,21 +132,35 @@ std::vector<double> MoveMir::callCurrentLocalPose()
     //                 <<", "<<current_local_pose_[3]<<", "<<current_local_pose_[4]<<", "<<current_local_pose_[5]<<std::endl;
     
 
-    current_time_ = ros::Time::now();
-    dt_ = (current_time_-last_time_).toSec();
+    // current_time_ = ros::Time::now();
+    // dt_ = (current_time_-last_time_).toSec();
     //std::cout<<"Current dt: "<<dt_<<std::endl;
 
     current_pose_.clear();
     current_pose_ = current_local_pose_;
     last_time_ = ros::Time::now();
 
-    return current_pose_;
+    return current_local_pose_;
+}
+
+std::vector<double> MoveMir::callCurrentWorldPose()
+{
+    const std::string source_frame = "map";
+    const std::string target_frame = "robot1_tf/base_link";
+
+    current_map_pose_ = base_.getCurrentPose(source_frame, target_frame);
+
+    current_map_pose_.clear();
+    last_time_ = ros::Time::now();
+
+    return current_map_pose_;
 }
 
 void MoveMir::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){
     force_.x = wrench_msg_.wrench.force.x;
     force_.y = wrench_msg_.wrench.force.y;
     force_.z = wrench_msg_.wrench.force.z;
+    poseUpdater();
     //std::cout<<"Wrench is"<<force_.x<<", "<<force_.y<<", "<<force_.z<<std::endl;
 
 }
@@ -186,16 +200,15 @@ void MoveMir::nullspace(double theta_)
     tw_msg_.linear.z = 0.0;
     tw_msg_.angular.x = 0.0;
     tw_msg_.angular.y = 0.0;
-    tw_msg_.angular.z = theta_/10;
+    tw_msg_.angular.z = atan2(current_global_pose_[1] - current_map_pose_[1], current_global_pose_[0] - current_map_pose_[1])/dt_;
     
     /***** Publish desired pose to cartesian_compliance_controller *****/
-    callCurrentLocalPose();
     geometry_msgs::PoseStamped x_d;
     x_d.header.frame_id = "robot1_tf/base_link_ur5";
         
-    x_d.pose.position.x = atan(theta_)/current_pose_[1]; //-dsad;
-    x_d.pose.position.y = atan(theta_)*current_pose_[0];
-    x_d.pose.position.z = current_pose_[2];
+    // x_d.pose.position.x = atan(theta_)/current_pose_[1]; //-dsad;
+    // x_d.pose.position.y = atan(theta_)*current_pose_[0];
+    // x_d.pose.position.z = current_pose_[2];
 
     // x_d.pose.orientation.x = current_pose_[6];
     // x_d.pose.orientation.x = current_pose_[7];
@@ -259,25 +272,60 @@ void MoveMir::rotateToPoseDirection()
     {       
         ros::Duration(5.0).sleep();
         double theta0, theta1;
-        callCurrentGlobalPose();
-        if(current_pose_[0] != 0.0)
-        {
-            theta0 = atan(initial_global_pose_[1]/initial_global_pose_[0]);
-            ROS_INFO_STREAM("theta0 is "<<theta0);
-            theta1 = atan(current_pose_[0]/current_pose_[1]);
-            ROS_INFO_STREAM("theta1 is "<<theta1);
-            theta_ = (PI/2)-theta0-theta1;
-            ROS_INFO_STREAM("theta is "<<theta_);
+        // if(current_global_pose_[0] != 0.0)
+        // {
+        //     //theta0 = atan(initial_global_pose_[1]/initial_global_pose_[0]);
+        //     theta0 = atan2(initial_global_pose_[1],initial_global_pose_[0]);
+        //     ROS_INFO_STREAM("theta0 is "<<theta0);
+        //     //theta1 = atan(current_pose_[0]/current_pose_[1]);
+        //     theta1 = atan2(current_pose_[0],current_pose_[1]);
+        //     ROS_INFO_STREAM("theta1 is "<<theta1);
+        //     theta_ = (PI/2)-theta0-theta1;
+        //     ROS_INFO_STREAM("theta is "<<theta_);
 
-        }
-        else
-        {
-            theta_ = 0.0;
-            ROS_INFO("No force attack!!!");
-        }
+        // }
+        // else
+        // {
+        //     theta_ = 0.0;
+        //     ROS_INFO("No force attack!!!");
+        // }
         
         nullspace(theta_);
     }
+}
+
+void MoveMir::poseUpdater()
+{
+    callCurrentGlobalPose();
+    callCurrentLocalPose();
+    current_time_ = ros::Time::now();
+    dt_ = (current_time_-last_time_).toSec();
+    last_time_ = ros::Time::now();
+}
+
+void MoveMir::moveStraight()
+{
+    tw_msg_.linear.x = ( sqrt(pow(current_map_pose_[0]-current_global_pose_[0] - initial_local_pose_[0],2) + 
+                            pow(current_map_pose_[1]-current_global_pose_[1] - initial_local_pose_[1],2)) )/dt_; //Sicherheitsabstand einhalten
+    tw_msg_.linear.y = 0.0;
+    tw_msg_.linear.z = 0.0;
+    tw_msg_.angular.x = 0.0;
+    tw_msg_.angular.y = 0.0;
+    tw_msg_.angular.z = 0.0;
+    
+    geometry_msgs::PoseStamped x_d;
+    x_d.pose.position.x = current_local_pose_[0]-(tw_msg_.linear.x * dt_);
+    x_d.pose.position.y = current_local_pose_[1];
+    x_d.pose.position.z = current_local_pose_[2];
+
+    x_d.pose.orientation.x = 0.0; //MUSS EVTL NOCH FESTGELEGT WERDEN
+    x_d.pose.orientation.y = 0.0;
+    x_d.pose.orientation.z = 0.0;
+    x_d.pose.orientation.w = 0.0;
+
+    pub_pose_.publish(x_d);
+    pub_simple_.publish(tw_msg_);
+    
 }
 
 
