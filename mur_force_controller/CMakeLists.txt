@@ -9,6 +9,7 @@ project(mur_force_controller)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  std_msgs
   tf
   sensor_msgs
   geometry_msgs
@@ -111,6 +112,7 @@ catkin_package(
  LIBRARIES mur_force_controller 
  CATKIN_DEPENDS 
    roscpp
+   std_msgs
    geometry_msgs
    sensor_msgs
    mur_robot_msgs
@@ -132,9 +134,11 @@ include_directories(
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
   include/${PROJECT_NAME}/move_mir_compliant.h
+  include/${PROJECT_NAME}/move_ur_compliant.h
   include/${PROJECT_NAME}/gazebo_ft_publisher.h
   include/${PROJECT_NAME}/mur_base.h
   src/move_mir_compliant.cpp
+  src/move_ur_compliant.cpp
   src/gazebo_ft_publisher.cpp
   src/mur_base.cpp
 )

@@ -1,5 +1,5 @@
 /*
- * File: move_mir_compliant.h
+ * File: move_mir_compliant.cpp
  * Author: Heiko Lenz
  * 
  * Created on 20. August 2020
@@ -20,6 +20,7 @@ MoveMir::MoveMir()
     
     this->pub_simple_ = nh_.advertise<geometry_msgs::Twist>("/robot1_ns/mobile_base_controller/cmd_vel", 100);
     this->pub_pose_ = nh_.advertise<geometry_msgs::PoseStamped>("/robot1_ns/arm_cartesian_compliance_controller/target_pose", 100);
+    this->pub_angle_ = nh_.advertise<std_msgs::Float64>("rotation_angle", 100);
     this->sub_force_ = nh_.subscribe("/robot1_ns/arm_cartesian_compliance_controller/ft_sensor_wrench", 100, &MoveMir::wrenchCallback, this);
     
     //this->scan_pub_=this->nh_.advertise<sensor_msgs::PointCloud>("scan",10);
@@ -59,6 +60,7 @@ void MoveMir::lookupInitialGlobalPosition(){
         }
         initial_pose_.clear();
         initial_pose_ = initial_global_pose_;
+        theta0_global_ = atan2(initial_global_pose[1],initial_global_pose[0]);
         last_time_ = init_time_;
 }
 
@@ -88,11 +90,13 @@ void MoveMir::lookupInitialLocalPosition(){
             std::cout<<"Initial local pose is: "<<initial_local_pose_[0]<<", "<<initial_local_pose_[1]<<", "<<initial_local_pose_[2]<<", "
                         <<initial_local_pose_[3]<<", "<<initial_local_pose_[4]<<", "<<initial_local_pose_[5]<<", "<<initial_local_pose_[6]<<std::endl;
             
+            
         }
         else
         {
             ROS_ERROR("Service call failed!");
         }
+        theta0_local_ = atan2(initial_local_pose[1],initial_local_pose[0]);
 
         initial_pose_.clear();
         initial_pose_ = initial_local_pose_;
@@ -116,6 +120,8 @@ std::vector<double> MoveMir::callCurrentGlobalPose()
     current_pose_.clear();
     current_pose_ = current_global_pose_;
     //last_time_ = ros::Time::now();
+
+    theta_global_ = atan2(current_global_pose[1],current_global_pose[0]);
 
     return current_global_pose_;
 }
@@ -192,7 +198,7 @@ void MoveMir::moveGoal()
     
 }
 
-void MoveMir::nullspace(double theta_)
+void MoveMir::nullspace(double theta_global_)
 {
     /***** Rotate MiR platform *****/
     tw_msg_.linear.x = 0.0;
@@ -245,21 +251,21 @@ void MoveMir::rotateToForceDirection()
         ROS_INFO_STREAM("Force vector in base is: \n"<<force_at_base_.x<<", "<<force_at_base_.y<<", "<<force_at_base_.z);
 
         if(force_at_base_.x != 0.0){
-            theta_ = atan(force_at_base_.y/force_at_base_.x);
-            ROS_INFO_STREAM("Theta is "<<theta_);
+            force_theta_ = atan2(force_at_base_.y,force_at_base_.x);
+            ROS_INFO_STREAM("Force Theta is "<<force_theta_);
         }
         else
         {
-            theta_ = 0.0;
+            force_theta_ = 0.0;
             ROS_INFO("No force attack!!!");
             break;
         }
         //move manipulator and platform inversely
-        nullspace(theta_);
+        nullspace(force_theta_);
         
-        std::cout<<"Theta is "<<theta_<<std::endl;
+        std::cout<<"Force theta is "<<force_theta_<<std::endl;
         
-    }while (theta_ != 0); //Vorteil: erst nach Schleifendurchlauf prüfen
+    }while (force_theta_ != 0.0); //Vorteil: erst nach Schleifendurchlauf prüfen
     
 }
 
@@ -271,10 +277,9 @@ void MoveMir::rotateToPoseDirection()
     while(abs(force_.x) > 5.0 || abs(force_.y) > 5.0|| abs(force_.z) > 5.0)
     {       
         ros::Duration(5.0).sleep();
-        double theta0, theta1;
+        double theta1;
         // if(current_global_pose_[0] != 0.0)
         // {
-        //     //theta0 = atan(initial_global_pose_[1]/initial_global_pose_[0]);
         //     theta0 = atan2(initial_global_pose_[1],initial_global_pose_[0]);
         //     ROS_INFO_STREAM("theta0 is "<<theta0);
         //     //theta1 = atan(current_pose_[0]/current_pose_[1]);
@@ -290,7 +295,7 @@ void MoveMir::rotateToPoseDirection()
         //     ROS_INFO("No force attack!!!");
         // }
         
-        nullspace(theta_);
+        nullspace(theta_global_);
     }
 }
 
@@ -301,6 +306,21 @@ void MoveMir::poseUpdater()
     current_time_ = ros::Time::now();
     dt_ = (current_time_-last_time_).toSec();
     last_time_ = ros::Time::now();
+    
+    if(theta_ > theta0_global_){
+        rotation_angle_.data = theta_;
+        pub_angle_.publish(rotation_angle_);
+    }
+    if(theta_ < theta0_global_){
+        rotation_angle_.data = theta0_local_ - theta_; //angle assigning desired pose x_d
+        pub_angle_.publish(rotation_angle_);
+    }
+    else
+    {
+        rotation_angle_.data = 0.0;
+        pub_angle_.publish(rotation_angle_);
+    }
+
 }
 
 void MoveMir::moveStraight()

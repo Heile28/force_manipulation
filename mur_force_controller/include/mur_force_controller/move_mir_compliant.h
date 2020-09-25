@@ -14,6 +14,7 @@
 
 //ROS msgs
 #include <geometry_msgs/WrenchStamped.h>
+#include <std_msgs/Float64.h>
 
 //other
 #include <eigen3/Eigen/Dense>
@@ -32,10 +33,12 @@ namespace move_compliant{
     private:
         ros::NodeHandle nh_;
         MurBase base_;
-        ros::Publisher pub_simple_, pub_pose_;
+        ros::Publisher pub_simple_, pub_pose_, pub_angle_;
         ros::ServiceClient endeffector_pose_client_;
         ros::Time init_time_, current_time_, last_time_;
-        double theta_;
+        double force_theta_;
+        double theta_; //angle of MiR rotation
+        double theta0_global_, theta0_local_;
 
         std::vector<double> initial_pose_, current_pose_, displacement_pose_;
         std::vector<double> initial_global_pose_, initial_local_pose_;
@@ -48,6 +51,7 @@ namespace move_compliant{
         double dt_, vth_;
         double delta_th_; //for MiR
         geometry_msgs::Twist tw_msg_;
+        std_msgs::Float64 rotation_angle_;
         double PI = M_PI;
 
         //rotate in Force direction
@@ -69,7 +73,7 @@ namespace move_compliant{
 
         //methods
         /**
-         * @brief request initial pose in ~/base_link
+         * @brief request initial global pose in ~/base_link
          * 
          */
         void lookupInitialGlobalPosition();
@@ -88,7 +92,7 @@ namespace move_compliant{
         virtual std::vector<double> callCurrentGlobalPose();
 
         /**
-         * @brief calls for local position of endeffector (inside ~/base_link_ur5)
+         * @brief calls for current local position of endeffector (inside ~/base_link_ur5)
          * 
          * @return std::vector<double> current_pose
          */
@@ -118,7 +122,7 @@ namespace move_compliant{
         void moveGoal();
 
         /**
-         * @brief connects /robot1_ns/arm_cartesian_compliance_controller/target_frame
+         * @brief connects /robot1_ns/arm_cartesian_compliance_controller/target_pose
          * 
          * @param x_d desired pose which to send to cartesian_compliance_controller
          * @param theta_ angle between MiR-x-axis and force direction

@@ -20,13 +20,33 @@ int main(int argc, char** argv)
     // calculate_jacobian::GetJacobian get_jacobian;
     // get_jacobian.urJacobian();
 
+    /***** Lookup initial angle *****/
+    MurBase base;
+    std::vector<double> static_pose;
+    std::string source_frame = "robot1_tf/base_link";
+    std::string target_frame = "robot1_tf/base_link_ur5";
+    static_pose = base.getCurrentPose(source_frame, target_frame);
+    double theta0 = atan2(static_pose[1],static_pose[0]);
+    ROS_INFO_STREAM("Static angle is "<<theta0);
+
+
+
+    /***** rotate MuR in initial pose *****/
+
+
+
     /***** start moving MiR robot *****/
+
+    /*
     move_compliant::MoveMir obj1;
+    move_compliant::MoveUR obj2;
+
 
     while(ros::ok()){
         obj1.rotateToPoseDirection();
         ros::spinOnce();
     }
+    */
     
 
     /*
