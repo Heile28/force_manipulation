@@ -9,6 +9,7 @@
 */
 
 #include <mur_force_controller/move_mir_compliant.h>
+#include <mur_force_controller/move_ur_compliant.h>
 #include <mur_kinematics/get_jacobian.h>
 
 int main(int argc, char** argv)
@@ -21,13 +22,13 @@ int main(int argc, char** argv)
     // get_jacobian.urJacobian();
 
     /***** Lookup initial angle *****/
-    MurBase base;
-    std::vector<double> static_pose;
-    std::string source_frame = "robot1_tf/base_link";
-    std::string target_frame = "robot1_tf/base_link_ur5";
-    static_pose = base.getCurrentPose(source_frame, target_frame);
-    double theta0 = atan2(static_pose[1],static_pose[0]);
-    ROS_INFO_STREAM("Static angle is "<<theta0);
+    // MurBase base;
+    // std::vector<double> static_pose;
+    // std::string source_frame = "robot1_tf/base_link";
+    // std::string target_frame = "robot1_tf/base_link_ur5";
+    // static_pose = base.getCurrentPose(source_frame, target_frame);
+    // double theta0 = atan2(static_pose[1],static_pose[0]);
+    // ROS_INFO_STREAM("Static angle is "<<theta0);
 
 
 
@@ -36,17 +37,15 @@ int main(int argc, char** argv)
 
 
     /***** start moving MiR robot *****/
-
-    /*
     move_compliant::MoveMir obj1;
     move_compliant::MoveUR obj2;
 
 
-    while(ros::ok()){
-        obj1.rotateToPoseDirection();
-        ros::spinOnce();
-    }
-    */
+    // while(ros::ok()){
+    //     obj1.rotateToPoseDirection();
+    //     ros::spinOnce();
+    // }
+    
     
 
     /*

@@ -6,8 +6,8 @@
 
 int main(int argc, char** argv)
 {
-    ros::init(argc,argv,"Services");
-    std::cout<<"Im in test file"<<std::endl;
+    ros::init(argc,argv,"services");
+    ROS_INFO("Services are activated.");
     ros::NodeHandle nh;
 
     MurBase begin;

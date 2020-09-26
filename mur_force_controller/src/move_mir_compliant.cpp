@@ -17,7 +17,7 @@ using namespace move_compliant;
 MoveMir::MoveMir()
 {
     this->nh_=ros::NodeHandle("move_mir_compliant");
-    
+    this->lookupInitialGlobalPosition();
     this->pub_simple_ = nh_.advertise<geometry_msgs::Twist>("/robot1_ns/mobile_base_controller/cmd_vel", 100);
     this->pub_pose_ = nh_.advertise<geometry_msgs::PoseStamped>("/robot1_ns/arm_cartesian_compliance_controller/target_pose", 100);
     this->pub_angle_ = nh_.advertise<std_msgs::Float64>("rotation_angle", 100);
@@ -25,6 +25,7 @@ MoveMir::MoveMir()
     
     //this->scan_pub_=this->nh_.advertise<sensor_msgs::PointCloud>("scan",10);
     init_time_ = ros::Time(0);
+    this->rotation_angle_.data = 0.0;
 }
 
 void MoveMir::lookupInitialGlobalPosition(){
@@ -60,7 +61,7 @@ void MoveMir::lookupInitialGlobalPosition(){
         }
         initial_pose_.clear();
         initial_pose_ = initial_global_pose_;
-        theta0_global_ = atan2(initial_global_pose[1],initial_global_pose[0]);
+        theta0_global_ = atan2(initial_global_pose_[1],initial_global_pose_[0]);
         last_time_ = init_time_;
 }
 
@@ -96,7 +97,7 @@ void MoveMir::lookupInitialLocalPosition(){
         {
             ROS_ERROR("Service call failed!");
         }
-        theta0_local_ = atan2(initial_local_pose[1],initial_local_pose[0]);
+        theta0_local_ = atan2(initial_local_pose_[1],initial_local_pose_[0]);
 
         initial_pose_.clear();
         initial_pose_ = initial_local_pose_;
@@ -121,7 +122,7 @@ std::vector<double> MoveMir::callCurrentGlobalPose()
     current_pose_ = current_global_pose_;
     //last_time_ = ros::Time::now();
 
-    theta_global_ = atan2(current_global_pose[1],current_global_pose[0]);
+    theta_global_ = atan2(current_global_pose_[1],current_global_pose_[0]);
 
     return current_global_pose_;
 }
@@ -198,7 +199,7 @@ void MoveMir::moveGoal()
     
 }
 
-void MoveMir::nullspace(double theta_global_)
+void MoveMir::nullspace(double angle_)
 {
     /***** Rotate MiR platform *****/
     tw_msg_.linear.x = 0.0;
@@ -206,29 +207,8 @@ void MoveMir::nullspace(double theta_global_)
     tw_msg_.linear.z = 0.0;
     tw_msg_.angular.x = 0.0;
     tw_msg_.angular.y = 0.0;
-    tw_msg_.angular.z = atan2(current_global_pose_[1] - current_map_pose_[1], current_global_pose_[0] - current_map_pose_[1])/dt_;
-    
-    /***** Publish desired pose to cartesian_compliance_controller *****/
-    geometry_msgs::PoseStamped x_d;
-    x_d.header.frame_id = "robot1_tf/base_link_ur5";
-        
-    // x_d.pose.position.x = atan(theta_)/current_pose_[1]; //-dsad;
-    // x_d.pose.position.y = atan(theta_)*current_pose_[0];
-    // x_d.pose.position.z = current_pose_[2];
+    tw_msg_.angular.z = angle_/dt_;
 
-    // x_d.pose.orientation.x = current_pose_[6];
-    // x_d.pose.orientation.x = current_pose_[7];
-    // x_d.pose.orientation.x = current_pose_[8];
-    // x_d.pose.orientation.x = current_pose_[9];
-
-    x_d.pose.orientation.x = 0.0;
-    x_d.pose.orientation.y = 0.0;
-    x_d.pose.orientation.z = 0.0;
-    x_d.pose.orientation.w = 0.0;
-
-    std::cout<<"Desired pose: "<<x_d.pose.position.x<<", "<<x_d.pose.position.y<<", "<<x_d.pose.position.z<<std::endl;
-
-    pub_pose_.publish(x_d);
     pub_simple_.publish(tw_msg_);
     
 }
@@ -307,18 +287,40 @@ void MoveMir::poseUpdater()
     dt_ = (current_time_-last_time_).toSec();
     last_time_ = ros::Time::now();
     
-    if(theta_ > theta0_global_){
-        rotation_angle_.data = theta_;
-        pub_angle_.publish(rotation_angle_);
+    //rotation_angle_.data = theta0_local_;
+
+    /***IF CASES FOR INSIDE UR5 ***/
+
+
+    //case for second frame quadrant
+    if(theta_global_<0.0)
+    {
+        if(theta_global_ < theta0_global_)
+        {
+            rotation_angle_.data = theta_global_-theta0_global_;
+            //pub_angle_.publish(rotation_angle_);
+            nullspace(rotation_angle_.data);
+        }
+        else
+        {
+            rotation_angle_.data = theta0_global_-theta_global_;
+            //pub_angle_.publish(rotation_angle_);
+            nullspace(rotation_angle_.data);
+        }
+
     }
-    if(theta_ < theta0_global_){
-        rotation_angle_.data = theta0_local_ - theta_; //angle assigning desired pose x_d
-        pub_angle_.publish(rotation_angle_);
+    
+    //case for first frame quadrant
+    if(theta_global_ >0.0){
+        rotation_angle_.data = theta0_global_ + theta_global_; //angle assigning desired pose x_d
+        //pub_angle_.publish(rotation_angle_);
+        nullspace(rotation_angle_.data);
     }
     else
     {
         rotation_angle_.data = 0.0;
-        pub_angle_.publish(rotation_angle_);
+        //pub_angle_.publish(rotation_angle_);
+        nullspace(rotation_angle_.data);
     }
 
 }

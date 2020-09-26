@@ -29,7 +29,7 @@ void apply_constant_force(ros::NodeHandle nh_)
     /**** forces specified in global coordinates ****/
     srv1.request.wrench.force.x = 0.0; 
     srv1.request.wrench.force.y = 30.0; 
-    srv1.request.wrench.force.z = 0.0; 
+    srv1.request.wrench.force.z = 30.0; 
     srv1.request.wrench.torque.x = 0.0;
     srv1.request.wrench.torque.y = 0.0;
     srv1.request.wrench.torque.z = 0.0;
@@ -49,7 +49,7 @@ void profiled_attack()
 }
 
 
-/**** METHOD publishes  WRENCH referenced to ~/wrist_3_link ****/
+/**** METHOD publishes WRENCH referenced to ~/wrist_3_link ****/
 void directly_to_ee(ros::NodeHandle nh_)
 {
     ros::Publisher pub_wrench = nh_.advertise<geometry_msgs::WrenchStamped>("/robot1_ns/arm_cartesian_compliance_controller/target_wrench",100);
@@ -57,11 +57,13 @@ void directly_to_ee(ros::NodeHandle nh_)
     pub_wrench_msg.header.frame_id = "robot1_tf/wrist_3_link_ur5"; //wrist_3_link_ur5
     pub_wrench_msg.header.stamp = ros::Time::now();
     pub_wrench_msg.wrench.force.x = 0.0;
+    pub_wrench_msg.wrench.force.y = 0.0;
     pub_wrench_msg.wrench.force.z = 0.0;
     pub_wrench_msg.wrench.torque.x = 0.0;
     pub_wrench_msg.wrench.torque.y = 0.0;
     pub_wrench_msg.wrench.torque.z = 0.0;
 
+    /**** Force profile ****/
     double current_time = ros::Time::now().toSec();
     double time1 = 2.0;
     double time2 = 6.0;
@@ -99,16 +101,38 @@ void directly_to_ee(ros::NodeHandle nh_)
     }
     std::cout<<"Publishing finished!"<<std::endl;
 
+    /**** Constant force ****/
+
+
+
+
+}
+
+void apply_force_profile(ros::NodeHandle nh_)
+{
+    ros::Publisher pub_wrench = nh_.advertise<geometry_msgs::WrenchStamped>("/robot1_ns/arm_cartesian_compliance_controller/target_wrench",100);
+    geometry_msgs::WrenchStamped pub_wrench_msg;
+    pub_wrench_msg.header.frame_id = "robot1_tf/base_link_ur5"; //wrist_3_link_ur5
+    pub_wrench_msg.header.stamp = ros::Time::now();
+
+    //Specify force in ee_link related to ~/base_link_ur5
+    pub_wrench_msg.wrench.force.x = 20.0;
+    pub_wrench_msg.wrench.force.y = 0.0;
+    pub_wrench_msg.wrench.force.z = 0.0;
+    pub_wrench_msg.wrench.torque.x = 0.0;
+    pub_wrench_msg.wrench.torque.y = 0.0;
+    pub_wrench_msg.wrench.torque.z = 0.0;
+
+    pub_wrench.publish(pub_wrench_msg);
 }
 
 int main(int argc, char** argv)
 {
     ros::init(argc,argv,"apply_force");
     ros::NodeHandle nh_;
-    apply_constant_force(nh_);
+    //apply_constant_force(nh_);
     //directly_to_ee(nh_);
-
-    
+    apply_force_profile(nh_);
 
     ros::spin();
 }

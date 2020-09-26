@@ -37,7 +37,7 @@ namespace move_compliant{
         ros::ServiceClient endeffector_pose_client_;
         ros::Time init_time_, current_time_, last_time_;
         double force_theta_;
-        double theta_; //angle of MiR rotation
+        double theta_global_, angle_; //angle of MiR rotation
         double theta0_global_, theta0_local_;
 
         std::vector<double> initial_pose_, current_pose_, displacement_pose_;

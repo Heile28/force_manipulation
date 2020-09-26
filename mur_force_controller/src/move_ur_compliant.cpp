@@ -17,13 +17,14 @@ using namespace move_compliant;
 MoveUR::MoveUR()
 {
     this->nh_=ros::NodeHandle("move_ur_compliant");
-    this->rotation_angle_ = nh_.subscribe("/move_compliant/rotation_angle", 100, &MoveUR::angleCallback, this);
+    this->rotation_angle_ = nh_.subscribe("/move_mir_compliant/rotation_angle", 100, &MoveUR::angleCallback, this);
     this->pub_pose_ = nh_.advertise<geometry_msgs::PoseStamped>("/robot1_ns/arm_cartesian_compliance_controller/target_pose", 100);
 }
 
 void MoveUR::angleCallback(std_msgs::Float64 angle_)
 {
-    theta_ = angle_.data;
+    theta_ = -angle_.data;
+    nullspace(theta_);
 }
 
 void MoveUR::lookupInitialLocalPosition(){

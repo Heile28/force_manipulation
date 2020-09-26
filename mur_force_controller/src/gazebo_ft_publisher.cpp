@@ -118,7 +118,7 @@ void WrenchPublisher::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){
 
 void WrenchPublisher::send_directly_to_topic()
 {
-    wrench_.header.frame_id = "robot1_ft/wrist_3_link_ur5";
+    wrench_.header.frame_id = "robot1_tf/wrist_3_link_ur5";
     wrench_.wrench.force = force_.vector;
     wrench_.wrench.torque = torque_.vector;
 
