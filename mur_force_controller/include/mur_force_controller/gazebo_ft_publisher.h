@@ -56,10 +56,10 @@ namespace gazebo_ft_publisher{
         ~WrenchPublisher();
 
         /**
-        * @brief transfers current wrench of Gazebo-F/T-sensor-plugin fixed at 'wrist3_link_ur5' into 'base_link_ur5'
+        * @brief transfers current wrench of Gazebo-F/T-sensor-plugin fixed at 'wrist3_link_ur5' into 'ee_link_ur5'
         * 
         */
-        void transform_wrench_into_local_base();
+        void transform_wrench_into_ee();
 
         /**
         * @brief send wrench directly to FDCC controler topic

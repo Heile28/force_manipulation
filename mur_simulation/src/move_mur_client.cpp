@@ -176,11 +176,11 @@ class MoveRobotClient {
         goal.trajectory.points.resize(2);
         goal.trajectory.points[ind].positions.resize(6);
             
-        goal.trajectory.points[ind].positions[0] = 3.14; //1.899822; //0.0;
-        goal.trajectory.points[ind].positions[1] = -1.0; //-0.320159; //-0.63;
-        goal.trajectory.points[ind].positions[2] = 1.01; //1.082956; //0.63;
-        goal.trajectory.points[ind].positions[3] = -1.57; //4.622043; //0.0;
-        goal.trajectory.points[ind].positions[4] = -1.57; //-4.215287; //1.57;
+        goal.trajectory.points[ind].positions[0] = 0.0; //1.899822; //0.0;
+        goal.trajectory.points[ind].positions[1] = -2.18; //-0.320159; //-0.63;
+        goal.trajectory.points[ind].positions[2] = -1.00; //1.082956; //0.63;
+        goal.trajectory.points[ind].positions[3] = -1.51; //4.622043; //0.0;
+        goal.trajectory.points[ind].positions[4] = 1.57; //-4.215287; //1.57;
         goal.trajectory.points[ind].positions[5] = 0.0; //0.000007; //0.0;
         
 

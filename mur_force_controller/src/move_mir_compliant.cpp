@@ -167,7 +167,9 @@ void MoveMir::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){
     force_.x = wrench_msg_.wrench.force.x;
     force_.y = wrench_msg_.wrench.force.y;
     force_.z = wrench_msg_.wrench.force.z;
-    poseUpdater();
+
+    if(abs(force_.x) > 5.0 || abs(force_.y) > 5.0|| abs(force_.z) > 5.0)
+        poseUpdater();
     //std::cout<<"Wrench is"<<force_.x<<", "<<force_.y<<", "<<force_.z<<std::endl;
 
 }
@@ -207,7 +209,8 @@ void MoveMir::nullspace(double angle_)
     tw_msg_.linear.z = 0.0;
     tw_msg_.angular.x = 0.0;
     tw_msg_.angular.y = 0.0;
-    tw_msg_.angular.z = angle_/dt_;
+    //std::cout<<dt_<<", "<<angle_<<std::endl;
+    tw_msg_.angular.z = angle_/0.01;
 
     pub_simple_.publish(tw_msg_);
     
@@ -295,17 +298,22 @@ void MoveMir::poseUpdater()
     //case for second frame quadrant
     if(theta_global_<0.0)
     {
+        
         if(theta_global_ < theta0_global_)
         {
-            rotation_angle_.data = theta_global_-theta0_global_;
+            rotation_angle_.data = theta_global_+theta0_global_;
+            ROS_INFO_STREAM("Case 1.1: angle is"<<rotation_angle_.data);
             //pub_angle_.publish(rotation_angle_);
-            nullspace(rotation_angle_.data);
+            if(abs(rotation_angle_.data)>0.017453293) //minimally 1 degree
+                nullspace(rotation_angle_.data);
         }
         else
         {
             rotation_angle_.data = theta0_global_-theta_global_;
+            ROS_INFO_STREAM("Case 1.2: angle is"<<rotation_angle_.data);
             //pub_angle_.publish(rotation_angle_);
-            nullspace(rotation_angle_.data);
+            if(abs(rotation_angle_.data)>0.017453293) //minimally 1 degree
+                nullspace(rotation_angle_.data);
         }
 
     }
@@ -313,8 +321,10 @@ void MoveMir::poseUpdater()
     //case for first frame quadrant
     if(theta_global_ >0.0){
         rotation_angle_.data = theta0_global_ + theta_global_; //angle assigning desired pose x_d
+        ROS_INFO_STREAM("Case 2: angle is"<<rotation_angle_.data);
         //pub_angle_.publish(rotation_angle_);
-        nullspace(rotation_angle_.data);
+        if(abs(rotation_angle_.data)>0.017453293) //minimally 1 degree
+            nullspace(rotation_angle_.data);
     }
     else
     {
@@ -349,30 +359,3 @@ void MoveMir::moveStraight()
     pub_simple_.publish(tw_msg_);
     
 }
-
-
-
-/*
-void MoveMir::transferIntoMir(Eigen::VectorXd displ_){
-    // transform into (KS)MiR using following matrix
-    Eigen::MatrixXd T_(4,4);
-    T_ << -0.99988004, -0.01548866, 0, 0.244311,
-        0.01548866, -0.99988004, 0, 0.140242,
-        0, 0, 1, 0.450477,
-        0, 0, 0, 1;
-    Eigen::VectorXd x_mir_;
-    x_mir_ = T_.inverse()*displ_;
-    std::cout<<"x_mir: "<<x_mir_<<std::endl;
-
-    //calculate rotation using for nullspace movement
-    //Bedingung: gazebo_force_torque_publisher muss laufen
-    delta_th_ = atan(x_mir_(1)/x_mir_(0));
-    std::cout<<"Delta th: \n"<<delta_th_<<std::endl;
-    
-    vth_ = delta_th_/dt_;
-
-    //speed of rotation is fundamental -> we want to rotate as fast as possible due to endeffector's changing position
-    
-    moveGoal();
-}
-*/
