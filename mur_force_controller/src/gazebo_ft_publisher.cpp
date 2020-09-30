@@ -19,13 +19,12 @@ WrenchPublisher::~WrenchPublisher()
 void WrenchPublisher::transform_wrench_into_ee(){
 
     ros::Time now = ros::Time(0); //starting time when calling method (when a loop runs through it inside, the time is set as the very starting time)
-    
     //std::cout<<"Transformationsmatrix zwischen robot1_tf/wrist_3_link_ur5 und robot1_tf/ee_link_ur5: "<<std::endl;
     std::string source_frame = "robot1_tf/wrist_3_link_ur5";
     std::string target_frame = "robot1_tf/ee_link_ur5";
     
     try{
-        listener_.waitForTransform(source_frame, target_frame, now, ros::Duration(1.0));
+        listener_.waitForTransform(source_frame, target_frame, now, ros::Duration(5.0));
         listener_.lookupTransform(source_frame, target_frame, now, transform_);
     }
     catch(tf::TransformException ex)
@@ -33,24 +32,28 @@ void WrenchPublisher::transform_wrench_into_ee(){
         ROS_ERROR("%s",ex.what());
         ros::Duration(1.0).sleep();
     }
-    tf::Vector3 tf_force, tf_force_at_base;
-    tf::Vector3 tf_torque, tf_torque_at_base;
-    //force transformation
-    tf::vector3MsgToTF(force_.vector,tf_force);
-    tf_force_at_base = transform_.getBasis() * tf_force;
-    tf::vector3TFToMsg(tf_force_at_base, wrench_.wrench.force);
-
-    //torque transformation
-    tf::vector3MsgToTF(torque_.vector,tf_torque);
-    tf_torque_at_base = transform_.getBasis() * tf_torque;
-    tf::vector3TFToMsg(tf_torque_at_base, wrench_.wrench.torque);
- 
-    // //store wrench values
-    // listener_.transformVector(target_frame, force_, wrench_force_);
-    // listener_.transformVector(target_frame, force_, wrench_torque_);
     
-    // wrench_.wrench.force = wrench_force_.vector;
-    // wrench_.wrench.torque = wrench_torque_.vector;
+    // tf::Vector3 tf_force, tf_force_at_base;
+    // tf::Vector3 tf_torque, tf_torque_at_base;
+    // //force transformation
+    // tf::vector3MsgToTF(force_.vector,tf_force);
+    // tf_force_at_base = transform_.getBasis().inverse() * tf_force;
+    // tf::vector3TFToMsg(tf_force_at_base, wrench_.wrench.force);
+
+    
+    // tf::vector3MsgToTF(torque_.vector,tf_torque);
+    // tf_torque_at_base = transform_.getBasis().inverse() * tf_torque;
+    // tf::vector3TFToMsg(tf_torque_at_base, wrench_.wrench.torque);
+    // ROS_INFO_STREAM("Force at ee is: "<<wrench_.wrench.force.x<<", "<<wrench_.wrench.force.y<<", "<<wrench_.wrench.force.z);
+
+    /*****force/torque transformation ******/
+    listener_.transformVector(target_frame, force_, wrench_force_);
+    listener_.transformVector(target_frame, torque_,wrench_torque_);
+    ROS_INFO_STREAM("Force at ee is: "<<wrench_force_.vector.x<<", "<<wrench_force_.vector.y<<", "<<wrench_force_.vector.z);
+    
+    /***** store wrench values *****/
+    wrench_.wrench.force = wrench_force_.vector;
+    wrench_.wrench.torque = wrench_torque_.vector;
 
     // std::cout<<"Wrench is \n";
     // std::cout<<wrench_.wrench.force.x<<std::endl;
@@ -108,8 +111,6 @@ void WrenchPublisher::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){
     torque_.vector.x = wrench_msg_.wrench.torque.x;
     torque_.vector.y = wrench_msg_.wrench.torque.y;
     torque_.vector.z = wrench_msg_.wrench.torque.z;
-
-    //transform_wrench_into_ee();
 
     /***send directly to topic ***/
     send_directly_to_topic();

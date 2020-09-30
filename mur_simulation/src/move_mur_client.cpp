@@ -21,6 +21,8 @@
 #include <string>
 #include <map>
 
+#include <tf/transform_datatypes.h>
+
 
 /* Action file: PlanTrajectoryAction
 # Goal
@@ -205,6 +207,19 @@ class MoveRobotClient {
     }
 };
 
+void tf_test(){
+    //see API http://docs.ros.org/kinetic/api/tf/html/c++/classtf_1_1Vector3.html#details
+    tfScalar t;
+    tf::Vector3 result;
+    //Interpolation of two vectors
+    result = tf::lerp(tf::Vector3(2.0,5.0,1.0),tf::Vector3(3.0,4.0,2.0),t);
+    ROS_INFO_STREAM("TF scalar is "<<result.getX()<<", "<<result.getY()<<","<<result.getZ());
+
+    //normalize a vector -> return vector with magnitude to 1 -> length is set to 1
+    result = result.normalize();
+    ROS_INFO_STREAM("Normalized "<<result.getX()<<", "<<result.getY()<<","<<result.getZ());
+}
+
 int main(int argc, char** argv){
     //init the ROS node
     ros::init(argc, argv, "robot_action");
@@ -230,5 +245,8 @@ int main(int argc, char** argv){
 
     ros::Duration(8.0).sleep();
     client.switchController();
+
+    tf_test();
+
     ros::waitForShutdown();
 }

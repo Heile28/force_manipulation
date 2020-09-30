@@ -179,13 +179,13 @@ tf::StampedTransform MurBase::transform(const std::string source_frame_, const s
     tf::StampedTransform trans;
 
     try{
-        list.waitForTransform(source_frame_, target_frame_, now, ros::Duration(2.0));
+        list.waitForTransform(source_frame_, target_frame_, now, ros::Duration(1.0));
         list.lookupTransform(source_frame_, target_frame_, now, trans);
     }
     catch(tf::TransformException ex)
     {
         ROS_ERROR("%s",ex.what());
-        ros::Duration(1.0).sleep();
+        ros::Duration(0.5).sleep();
     }
 
     return trans;

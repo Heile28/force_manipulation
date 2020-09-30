@@ -37,6 +37,7 @@ namespace move_compliant{
             ros::Time init_time_, current_time_, last_time_;
 
             std::vector<double> current_local_pose_, initial_local_pose_;
+            geometry_msgs::PoseStamped initial_global_pose_, desired_local_pose_;
             double PI = M_PI;
 
             tf::StampedTransform transform_;
@@ -69,11 +70,19 @@ namespace move_compliant{
             void lookupInitialLocalPosition();
 
             /**
+             * @brief request initial global pose in ~/base_link
+             * 
+             */
+            void lookupInitialGlobalPosition();
+
+            /**
              * @brief calls for local position of endeffector (inside ~/base_link_ur5)
              * 
              * @return std::vector<double> current_local_pose
              */
             virtual std::vector<double> callCurrentLocalPose();
+
+            void moveInitialPose();
 
     };
 

@@ -20,6 +20,7 @@
 #include <eigen3/Eigen/Dense>
 #include <tf/transform_broadcaster.h>
 #include <mur_force_controller/mur_base.h>
+#include <mur_force_controller/move_ur_compliant.h>
 
 
 #ifndef MOVE_MIR_COMPLIANT_H
@@ -33,16 +34,19 @@ namespace move_compliant{
     private:
         ros::NodeHandle nh_;
         MurBase base_;
+        move_compliant::MoveUR start_ur_;
         ros::Publisher pub_simple_, pub_pose_, pub_angle_;
         ros::ServiceClient endeffector_pose_client_;
         ros::Time init_time_, current_time_, last_time_;
         double force_theta_;
-        double theta_global_, angle_; //angle of MiR rotation
+        double theta_global_, theta_world_; //EE orientation in global, world frame
+        double theta_mir_world_; //MiR orientation in world frame
         double theta0_global_, theta0_local_;
+        double rot_angle_old;
 
         std::vector<double> initial_pose_, current_pose_, displacement_pose_;
-        std::vector<double> initial_global_pose_, initial_local_pose_;
-        std::vector<double> current_global_pose_, current_local_pose_, current_map_pose_;
+        std::vector<double> initial_global_pose_, initial_local_pose_, initial_world_pose_;
+        std::vector<double> current_global_pose_, current_local_pose_, current_map_pose_, current_mir_map_pose_;
         std::vector<double> last_pose_;
         double delta_x_, delta_y_; 
         int func_case_;
@@ -53,12 +57,13 @@ namespace move_compliant{
         geometry_msgs::Twist tw_msg_;
         std_msgs::Float64 rotation_angle_;
         double PI = M_PI;
+        bool activate_;
 
         //rotate in Force direction
         ros::Subscriber sub_force_;
         tf::StampedTransform transform_;
-        tf::Vector3 tf_force_at_base_, tf_force_at_sensor_;
-        geometry_msgs::Vector3 force_, force_at_base_;
+        tf::Vector3 tf_force_at_world_, tf_force_at_sensor_;
+        geometry_msgs::Vector3 force_, force_at_world_;
 
     protected:
         /**
@@ -83,6 +88,18 @@ namespace move_compliant{
          * 
          */
         void lookupInitialLocalPosition();
+
+        /**
+         * @brief Normalizes the angle to be 0 to M_PI
+         * 
+         */
+        static inline double normalize_angle(double angle);
+
+        /**
+         * @brief request initial pose in ~/world
+         * 
+         */
+        void lookupInitialWorldPosition();
         
         /**
          * @brief calls for global position of endeffector (inside ~/base_link)
@@ -98,6 +115,7 @@ namespace move_compliant{
          */
         virtual std::vector<double> callCurrentLocalPose();
 
+        
         virtual std::vector<double> callCurrentWorldPose();
         
         /**
@@ -107,6 +125,7 @@ namespace move_compliant{
         */
         void displacementPose();
 
+        void publishVelocityCommand();
         /**
         * @brief Transforms UR5 endeffector pose into mir_base frame
         * 
@@ -136,7 +155,13 @@ namespace move_compliant{
 
         void poseUpdater();
 
-        void moveStraight();
+        void poseUpdater2();
+
+        void poseUpdater3();
+
+        void poseUpdater4(double rot_angle);
+
+        void moveStraight(double v);
     };
 }
 

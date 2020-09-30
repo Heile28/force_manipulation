@@ -38,7 +38,12 @@ int main(int argc, char** argv)
 
     /***** start moving MiR robot *****/
     move_compliant::MoveMir obj1;
-    move_compliant::MoveUR obj2;
+    
+    
+    while(ros::ok()){
+        obj1.poseUpdater2();
+        ros::spinOnce();
+    }
 
 
     // while(ros::ok()){

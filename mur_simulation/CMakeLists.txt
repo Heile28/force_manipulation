@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   actionlib
   actionlib_msgs
+  visualization_msgs
 )
 
 #find_package(cmake_modules REQUIRED)
@@ -152,6 +153,8 @@ add_executable(execution_node1 src/main.cpp)
 add_executable(start_services_node src/start_services.cpp)
 add_executable(move_mur_client_node src/move_mur_client.cpp)
 add_executable(apply_force_node src/apply_force.cpp)
+add_executable(start_ur_node src/start_ur.cpp)
+add_executable(visualize_node src/visualize.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -176,6 +179,8 @@ target_link_libraries(execution_node1 ${catkin_LIBRARIES})
 target_link_libraries(start_services_node ${catkin_LIBRARIES})
 target_link_libraries(move_mur_client_node ${catkin_LIBRARIES})
 target_link_libraries(apply_force_node ${catkin_LIBRARIES})
+target_link_libraries(start_ur_node ${catkin_LIBRARIES})
+target_link_libraries(visualize_node ${catkin_LIBRARIES})
 
 #############
 ## Install ##
