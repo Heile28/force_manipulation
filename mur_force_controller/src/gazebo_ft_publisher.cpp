@@ -6,7 +6,7 @@ WrenchPublisher::WrenchPublisher()
 {
     this->nh_=nh_;
     //this->nh_=ros::NodeHandle("publish_sensor_wrench");
-    this->pub_ = nh_.advertise<geometry_msgs::WrenchStamped>("/robot1_ns/arm_cartesian_compliance_controller/ft_sensor_wrench",100);
+    this->pub_ = nh_.advertise<geometry_msgs::WrenchStamped>("/robot1_ns/arm_cartesian_compliance_controller/ft_sensor_wrench",20);
     this->sub_= nh_.subscribe("/robot1_ns/ee_force_torque_sensor", 100, &WrenchPublisher::wrenchCallback, this);
 }
 
@@ -17,7 +17,6 @@ WrenchPublisher::~WrenchPublisher()
 }
 
 void WrenchPublisher::transform_wrench_into_ee(){
-
     ros::Time now = ros::Time(0); //starting time when calling method (when a loop runs through it inside, the time is set as the very starting time)
     //std::cout<<"Transformationsmatrix zwischen robot1_tf/wrist_3_link_ur5 und robot1_tf/ee_link_ur5: "<<std::endl;
     std::string source_frame = "robot1_tf/wrist_3_link_ur5";
@@ -114,6 +113,7 @@ void WrenchPublisher::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){
 
     /***send directly to topic ***/
     send_directly_to_topic();
+    //ros::Duration(0.5).sleep();
 
 }
 

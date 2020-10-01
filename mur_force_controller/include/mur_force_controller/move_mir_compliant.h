@@ -56,14 +56,15 @@ namespace move_compliant{
         double delta_th_; //for MiR
         geometry_msgs::Twist tw_msg_;
         std_msgs::Float64 rotation_angle_;
-        double PI = M_PI;
+        double x_dot_;
+        const double PI = M_PI;
         bool activate_;
 
         //rotate in Force direction
         ros::Subscriber sub_force_;
         tf::StampedTransform transform_;
-        tf::Vector3 tf_force_at_world_, tf_force_at_sensor_;
-        geometry_msgs::Vector3 force_, force_at_world_;
+        tf::Vector3 tf_force_at_base_, tf_force_at_sensor_;
+        geometry_msgs::Vector3 force_, force_at_base_, torque_;
 
     protected:
         /**
@@ -118,12 +119,6 @@ namespace move_compliant{
         
         virtual std::vector<double> callCurrentWorldPose();
         
-        /**
-        * @brief Calculates displacement based on previous callbacks of initial and current poses
-        * to calculate the rotation speed
-        * 
-        */
-        void displacementPose();
 
         void publishVelocityCommand();
         /**
@@ -144,14 +139,15 @@ namespace move_compliant{
          * @brief connects /robot1_ns/arm_cartesian_compliance_controller/target_pose
          * 
          * @param x_d desired pose which to send to cartesian_compliance_controller
-         * @param theta_ angle between MiR-x-axis and force direction
+         * @param theta_ angle between MiR-x-axis and target direction
          * 
          */
         void nullspace(double theta_);
 
+
         void rotateToForceDirection();
 
-        void rotateToPoseDirection();
+        void rotateToPoseDirection(double rot_angle);
 
         void poseUpdater();
 
@@ -159,9 +155,7 @@ namespace move_compliant{
 
         void poseUpdater3();
 
-        void poseUpdater4(double rot_angle);
-
-        void moveStraight(double v);
+        void moveStraight();
     };
 }
 

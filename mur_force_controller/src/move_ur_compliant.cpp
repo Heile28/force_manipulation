@@ -27,7 +27,7 @@ MoveUR::MoveUR()
 
 void MoveUR::angleCallback(std_msgs::Float64 angle_)
 {
-    theta_ = angle_.data;
+    theta_ = -angle_.data;
     //nullspace(theta_);
     moveInitialPose();
 }

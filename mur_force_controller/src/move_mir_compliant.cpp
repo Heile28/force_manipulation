@@ -28,7 +28,7 @@ MoveMir::MoveMir()
     //this->scan_pub_=this->nh_.advertise<sensor_msgs::PointCloud>("scan",10);
     init_time_ = ros::Time(0);
     this->rotation_angle_.data = 0.0;
-    this->theta_global_=0.0;
+    this->theta_global_ = 0.0;
     this->rot_angle_old = 0.0;
     this->activate_ = 0;
 }
@@ -104,6 +104,7 @@ void MoveMir::lookupInitialGlobalPosition(){
         theta0_global_ = atan2(initial_global_pose_[1],initial_global_pose_[0]);
         std::cout<<"Initial theta0: "<<theta0_global_<<std::endl;
         last_time_ = init_time_;
+        
 }
 
 void MoveMir::lookupInitialLocalPosition(){
@@ -165,6 +166,14 @@ std::vector<double> MoveMir::callCurrentGlobalPose()
 
     theta_global_ = atan2(current_global_pose_[1],current_global_pose_[0]);
 
+    // /**** Create a unit vector directed into x-axis ****/ 
+    // mir_direction_.setX(current_global_pose_[0]);
+    // mir_direction_.setY(current_global_pose_[1]);
+    // mir_direction_.setZ(current_global_pose_[2]);
+    // mir_direction_.normalize();
+    // mir_direction_.setY(0.0);
+    // mir_direction_.setZ(0.0);
+
     return current_global_pose_;
 }
 
@@ -216,6 +225,9 @@ void MoveMir::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){
     force_.x = wrench_msg_.wrench.force.x;
     force_.y = wrench_msg_.wrench.force.y;
     force_.z = wrench_msg_.wrench.force.z;
+    torque_.x = wrench_msg_.wrench.torque.x;
+    torque_.y = wrench_msg_.wrench.torque.y;
+    torque_.z = wrench_msg_.wrench.torque.z;
     
     //std::cout<<"Wrench is"<<force_.x<<", "<<force_.y<<", "<<force_.z<<std::endl;
 
@@ -227,10 +239,6 @@ void MoveMir::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){
     //     poseUpdater2();
     //std::cout<<"Wrench is"<<force_.x<<", "<<force_.y<<", "<<force_.z<<std::endl;
 
-}
-
-void MoveMir::displacementPose(){
-    
 }
 
 void MoveMir::moveGoal()
@@ -247,7 +255,7 @@ void MoveMir::moveGoal()
     
 }
 
-void MoveMir::nullspace(double angle_)
+void MoveMir::nullspace(double theta_)
 {
     /***** Rotate MiR platform *****/
     double v = ( sqrt(pow(current_mir_map_pose_[0]-current_map_pose_[0],2) +
@@ -259,13 +267,15 @@ void MoveMir::nullspace(double angle_)
     tw_msg_.angular.y = 0.0;
     //std::cout<<"MiR angle "<<angle_<<std::endl;
     //tw_msg_.angular.z = angle_/0.01;
-    tw_msg_.angular.z = angle_; ///0.01;
+    tw_msg_.angular.z = theta_; ///0.01;
 
     pub_simple_.publish(tw_msg_);
 
-    
-    
+    /***** Publish angle to compliance controller *****/
+    pub_angle_.publish(rotation_angle_);
 }
+
+
 
 // void MoveMir::publishVelocityCommand()
 // {
@@ -278,76 +288,24 @@ void MoveMir::nullspace(double angle_)
 
 void MoveMir::rotateToForceDirection()
 {
-    do{
-        // /***** Request current global pose *****/
+        /***** Request current global pose *****/
         callCurrentGlobalPose();
-        callCurrentWorldPose();
 
         /***** Transform wrench vector from ft_sensor_ref_link into ~/base_link *****/
-        transform_ = base_.transform("robot1_tf/wrist_3_link_ur5", "/map");
-
-        //tf::Transform( transform_.getRotation(),tf::Vector3(0.0,0.0,0.0) );
-
+        transform_ = base_.transform("robot1_tf/wrist_3_link_ur5", "robot1_tf/base_link");
+        
         tf::vector3MsgToTF(force_,tf_force_at_sensor_);
-        tf_force_at_world_ = transform_.getBasis().inverse() * tf_force_at_sensor_;
-        tf::vector3TFToMsg(tf_force_at_world_, force_at_world_);
+        tf_force_at_base_ = transform_.getBasis().inverse() * tf_force_at_sensor_;
+        tf::vector3TFToMsg(tf_force_at_base_, force_at_base_);
 
-        ROS_INFO_STREAM("Force vector in world is: \n"<<force_at_world_.x<<", "<<force_at_world_.y<<", "<<force_at_world_.z);
-
-        //set z to zero
-        force_at_world_.z = 0.0;
+        /***** Calculate vector orientation in x-y plane *****/
+        force_at_base_.z = 0;
+        double rot_angle2  = atan2(force_at_base_.y, force_at_base_.x);
+        rot_angle2 = normalize_angle(rot_angle2);
+        ROS_INFO_STREAM("Orientation of angle: "<<rot_angle2);
         
-
-
-        
-
-        // if(force_at_world_.x != 0.0){
-        //     force_theta_ = atan2(force_at_base_.y,force_at_base_.x);
-        //     ROS_INFO_STREAM("Force Theta is "<<force_theta_);
-        // }
-        // else
-        // {
-        //     force_theta_ = 0.0;
-        //     ROS_INFO("No force attack!!!");
-        //     break;
-        // }
-        //move manipulator and platform inversely
-        nullspace(force_theta_);
-        
-        std::cout<<"Force theta is "<<force_theta_<<std::endl;
-        
-    }while (force_theta_ != 0.0); //Vorteil: erst nach Schleifendurchlauf prüfen
-    
-}
-
-void MoveMir::rotateToPoseDirection()
-{
-    lookupInitialGlobalPosition();
-    ROS_INFO_STREAM("Force is"<<force_.x<<", "<<force_.y<<", "<<force_.z);
-
-    while(abs(force_.x) > 5.0 || abs(force_.y) > 5.0|| abs(force_.z) > 5.0)
-    {       
-        ros::Duration(5.0).sleep();
-        double theta1;
-        // if(current_global_pose_[0] != 0.0)
-        // {
-        //     theta0 = atan2(initial_global_pose_[1],initial_global_pose_[0]);
-        //     ROS_INFO_STREAM("theta0 is "<<theta0);
-        //     //theta1 = atan(current_pose_[0]/current_pose_[1]);
-        //     theta1 = atan2(current_pose_[0],current_pose_[1]);
-        //     ROS_INFO_STREAM("theta1 is "<<theta1);
-        //     theta_ = (PI/2)-theta0-theta1;
-        //     ROS_INFO_STREAM("theta is "<<theta_);
-
-        // }
-        // else
-        // {
-        //     theta_ = 0.0;
-        //     ROS_INFO("No force attack!!!");
-        // }
-        
-        nullspace(theta_global_);
-    }
+        rotateToPoseDirection(rot_angle2);
+   
 }
 
 void MoveMir::poseUpdater()
@@ -407,30 +365,33 @@ void MoveMir::poseUpdater2()
 {
     callCurrentGlobalPose();
     callCurrentWorldPose();
-    //lookupInitialGlobalPosition();
 
     //double theta_star = atan2(current_map_pose_[1]-current_mir_map_pose_[1],current_map_pose_[0]-current_mir_map_pose_[0]);
     double theta_star = atan2(current_map_pose_[1]-current_mir_map_pose_[1], current_map_pose_[0]-current_mir_map_pose_[0]);
     //std::cout<<"theta_star: "<<theta_star<<std::endl;
 
-    double rot_angle = theta_global_ - theta_star;
-    rot_angle = normalize_angle(rot_angle);
+    double rot_angle1 = theta_global_ - theta_star;
+    rot_angle1 = normalize_angle(rot_angle1);
     //std::cout<<"rot_angle: "<<rot_angle<<std::endl;
 
     //rotation_angle_.data = rot_angle-rot_angle_old-theta0_local_; //for ur5 rotation
-    rotation_angle_.data = rot_angle+theta0_local_; //for ur5 rotation
+    rotation_angle_.data = rot_angle1+theta0_local_; //for ur5 rotation
     //std::cout<<"Rotation angle "<<rotation_angle_.data<<std::endl;
     ROS_INFO_STREAM("Theta global: "<<theta_global_<<" and theta initial: "<<theta0_global_);
     
     if(abs(abs(theta_global_) - abs(theta0_global_)) > 0.1 && activate_ == 1) //1
     {
-        poseUpdater4(rot_angle);
-        activate_ = 0; //0
+        rotateToPoseDirection(rot_angle1);
+        rotateToForceDirection();
+        activate_ = 0;
     }
+    if(abs(abs(theta_global_) - abs(theta0_global_)) < 0.1 && activate_ == 1)
+        moveStraight();
     else
     {
         activate_=0;
     }
+    
     
     /*
     ros::Rate r(3.0);
@@ -504,66 +465,42 @@ void MoveMir::poseUpdater3()
     }
     //}
 
-void MoveMir::poseUpdater4(double rot_angle)
+
+void MoveMir::rotateToPoseDirection(double rot_angle)
 {
-    ROS_INFO("Inside updater4");
-    double theta_current = 0.0;
+    ROS_INFO("Test: Inside updater4");
+    //double theta_current = 0.0;
     ros::Rate r(3.0);
     //PI in 3 seconds -> PI/3 rad/s rotation speed -> 1/3 -> 3Hz
     double current_time = ros::Time(0).toSec();
     double time = 3/ PI * abs(rot_angle);
-    ROS_INFO_STREAM("time: "<<time);
-    ROS_INFO_STREAM("rotation angle: "<<rot_angle);
+    x_dot_ = rot_angle/time * 0.44521/2; //445.21 distance
+    ROS_INFO_STREAM("MiR time: "<<time);
+    ROS_INFO_STREAM("MiR has to execute rotation angle: "<<rot_angle);
     while(current_time < time)
     {
-        //ROS_INFO("Inside moving");
-            
-        //pub_angle_.publish(rotation_angle_);
-        
-        nullspace(rot_angle/time); //anti rotating direction
+        /***** execute nullspace movement *****/   
         rotation_angle_.data = rot_angle/time;
-        pub_angle_.publish(rotation_angle_);
-        //start_ur_.moveInitialPose();    
-
-        //rot_angle_old = rot_angle;
-        //callCurrentGlobalPose();
-        //current_time = current_time + 1/3;
-        //ROS_INFO_STREAM("current time: "<<current_time);
-        //ROS_INFO_STREAM("time: "<<time);
+        nullspace(rotation_angle_.data);
         
         current_time = current_time + time;
-        ROS_INFO_STREAM("Current time is "<<current_time);
+        //ROS_INFO_STREAM("Current time is "<<current_time);
         r.sleep();
     }
-
-
 }
 
-void MoveMir::moveStraight(double v)
+void MoveMir::moveStraight()
 {
-    
-    
-    tw_msg_.linear.x = v;//( sqrt(pow(current_map_pose_[0]-current_global_pose_[0] - initial_local_pose_[0],2) + 
+    tw_msg_.linear.x = x_dot_;//( sqrt(pow(current_map_pose_[0]-current_global_pose_[0] - initial_local_pose_[0],2) + 
                           //  pow(current_map_pose_[1]-current_global_pose_[1] - initial_local_pose_[1],2)) )/dt_; //Sicherheitsabstand einhalten
     tw_msg_.linear.y = 0.0;
     tw_msg_.linear.z = 0.0;
     tw_msg_.angular.x = 0.0;
     tw_msg_.angular.y = 0.0;
     tw_msg_.angular.z = 0.0;
-    
-    geometry_msgs::PoseStamped x_d;
-    x_d.pose.position.x = current_local_pose_[0]-(tw_msg_.linear.x * dt_);
-    x_d.pose.position.y = current_local_pose_[1];
-    x_d.pose.position.z = current_local_pose_[2];
 
-    x_d.pose.orientation.x = 0.0; //MUSS EVTL NOCH FESTGELEGT WERDEN
-    x_d.pose.orientation.y = 0.0;
-    x_d.pose.orientation.z = 0.0;
-    x_d.pose.orientation.w = 0.0;
-
-    pub_pose_.publish(x_d);
     pub_simple_.publish(tw_msg_);
-    
+
 }
 
 double MoveMir::normalize_angle(double angle)
