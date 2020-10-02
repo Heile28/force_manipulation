@@ -175,7 +175,7 @@ class ApplyForce
 
                 //Specify force in ee_link related to ~/base_link_ur5
                 pub_wrench_msg.wrench.force.x = 0.0;
-                pub_wrench_msg.wrench.force.y = 50.0;
+                pub_wrench_msg.wrench.force.y = 80.0;
                 pub_wrench_msg.wrench.force.z = 30.0;
                 pub_wrench_msg.wrench.torque.x = 0.0;
                 pub_wrench_msg.wrench.torque.y = 0.0;
@@ -185,7 +185,7 @@ class ApplyForce
                 force_.y = pub_wrench_msg.wrench.force.y;
                 force_.z = pub_wrench_msg.wrench.force.z;
 
-                //apply_constant_force();
+                apply_constant_force();
                 
                 current_time = current_time + 0.05;
                 std::cout<<"Current time "<<current_time<<std::endl;

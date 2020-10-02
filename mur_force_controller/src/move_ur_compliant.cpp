@@ -241,10 +241,12 @@ void MoveUR::rotateAngle(double rot_angle_)
 
     geometry_msgs::Quaternion quat = tf::createQuaternionMsgFromRollPitchYaw(roll, pitch, yaw);
 
-    x_d.pose.orientation.x = quat.x;
-    x_d.pose.orientation.y = quat.y;
-    x_d.pose.orientation.z = quat.z;
-    x_d.pose.orientation.w = quat.w;
+    x_d.pose.orientation.x = current_local_pose_[6]; //quat.x;
+    x_d.pose.orientation.y = current_local_pose_[7]; //quat.y;
+    x_d.pose.orientation.z = current_local_pose_[8]; //quat.z;
+    x_d.pose.orientation.w = current_local_pose_[9]; //quat.w;
+
+
 
     ROS_INFO_STREAM("Desired pose: "<<x_d.pose.position.x<<", "<<x_d.pose.position.y<<", "<<x_d.pose.position.z<<
     ", "<<x_d.pose.orientation.x<<", "<<x_d.pose.orientation.y<<", "<<x_d.pose.orientation.z<<", "<<x_d.pose.orientation.w);

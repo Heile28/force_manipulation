@@ -30,7 +30,7 @@ MoveMir::MoveMir()
     this->rotation_angle_.data = 0.0;
     this->theta_global_ = 0.0;
     this->rot_angle_old = 0.0;
-    this->activate_ = 1; //CHANGE TO 0 WHEN FT_SENSOR ACTIVE!!!
+    this->activate_ = 0; //CHANGE TO 0 WHEN FT_SENSOR ACTIVE!!!
 }
 void MoveMir::lookupInitialWorldPosition(){
     ros::service::waitForService("/mur_base/listen_frames/request_endeffector/pose");
@@ -375,12 +375,13 @@ void MoveMir::poseUpdater2()
 
     double rot_angle1 = theta_global_ - theta_star;
     rot_angle1 = normalize_angle(rot_angle1);
-    //std::cout<<"rot_angle: "<<rot_angle<<std::endl;
+    std::cout<<"rot_angle: "<<rot_angle1<<std::endl;
 
     //rotation_angle_.data = rot_angle-rot_angle_old-theta0_local_; //for ur5 rotation
-    rotation_angle_.data = rot_angle1+theta0_local_; //for ur5 rotation
+    //rotation_angle_.data = rot_angle1; //+theta0_local_; //for ur5 rotation
     //std::cout<<"Rotation angle "<<rotation_angle_.data<<std::endl;
-    ROS_INFO_STREAM("Theta global: "<<theta_global_<<" and theta initial: "<<theta0_global_);
+    
+    //ROS_INFO_STREAM("Theta global: "<<theta_global_<<" and theta initial: "<<theta0_global_);
     
     if(abs(abs(theta_global_) - abs(theta0_global_)) > 0.1 && activate_ == 1) //1
     {
@@ -390,11 +391,11 @@ void MoveMir::poseUpdater2()
     }
     if(abs(abs(theta_global_) - abs(theta0_global_)) < 0.1 && activate_ == 1)
         moveStraight();
-    /*else
+    else
     {
         activate_=0;
     }
-    */
+    
     
     
     /*
