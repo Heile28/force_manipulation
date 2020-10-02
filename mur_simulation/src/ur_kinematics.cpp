@@ -44,6 +44,8 @@ void callbackJointAngles(const sensor_msgs::JointState& joint_msg){
     }
     //std::cout<<"Inside callback!"<<std::endl;
 
+    std::cout<<"Winkel:"<<std::endl;
+    std::cout<<"["<<theta[0]<<","<<theta[1]<<","<<theta[2]<<","<<theta[3]<<","<<theta[4]<<","<<theta[5]<<"]"<<std::endl;
     forwardKinematics();
 }
 
@@ -60,7 +62,7 @@ void forwardKinematics(){
     }
     printf("\n");
 
-
+    /*
     ur_kinematics::forward_all(theta, T1, T2, T3, T4, T5, T6);  
     for(int i=0;i<4;i++) {
         for(int j=i*4;j<(i+1)*4;j++)
@@ -99,6 +101,7 @@ void forwardKinematics(){
         printf("\n");
     }
     printf("\n");
+    */
 
     Eigen::MatrixXd _T1(4,4), _T2(4,4), _T3(4,4), _T4(4,4), _T5(4,4), _T6(4,4);
     int i = 0;
@@ -121,6 +124,7 @@ void forwardKinematics(){
     std::cout<<"_T6: \n"<<_T6<<std::endl;
     */
     /**** Calculate relative transformation matrices ****/
+    /*
     Eigen::MatrixXd T1_(4,4), T2_(4,4), T3_(4,4), T4_(4,4), T5_(4,4), T6_(4,4);
     T1_ = _T1;
     //T2_ = _T2.inverse()*_T2;
@@ -133,6 +137,7 @@ void forwardKinematics(){
     T6_ = _T5.inverse()*_T6;
 
     /**** Calculate endeffector pose ****/
+    /*
     Eigen::MatrixXd T_E(4,4);
 
     
@@ -140,7 +145,7 @@ void forwardKinematics(){
     T_E = T1_*T2_*T3_*T4_*T5_*T6_;
     std::cout<<"Endeffector pose is: \n"<<T_E<<std::endl;
     
-
+    */
     /*
     T_E = _T1*_T2*_T3*_T4*_T5*_T6;
     std::cout<<"Endeffector pose is: \n"<<T_E<<std::endl;
@@ -164,7 +169,7 @@ void forwardKinematics(){
     inverseKinematics();
     */
 
-    manipulationMeasure();
+    //manipulationMeasure();
 }
 
 void inverseKinematics()

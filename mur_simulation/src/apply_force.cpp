@@ -23,14 +23,13 @@ class ApplyForce
         tf::Vector3 tf_force_apply_, tf_force_at_base_;
         geometry_msgs::Vector3 force_, force_at_base_;
         ros::NodeHandle nh_;
-        
         ros::Publisher pub_wrench = nh_.advertise<geometry_msgs::WrenchStamped>("/robot1_ns/arm_cartesian_compliance_controller/target_wrench",20);
-        
 
     public:
         void apply_constant_force()
         {
             ros::Rate r(20.0); //0.05 seconds publishing rate
+            
             ros::service::waitForService("/gazebo/apply_body_wrench"); //link: https://github.com/ros-simulation/gazebo_ros_pkgs/blob/kinetic-devel/gazebo_msgs/srv/ApplyBodyWrench.srv
             ros::ServiceClient force_client = nh_.serviceClient<gazebo_msgs::ApplyBodyWrench>("/gazebo/apply_body_wrench");
             gazebo_msgs::ApplyBodyWrench srv1; //namespace + servicename
@@ -162,6 +161,8 @@ class ApplyForce
         {
             /**** Constant force ****/
             ros::Rate r(20.0);
+            
+            
             geometry_msgs::WrenchStamped pub_wrench_msg;
             pub_wrench_msg.header.frame_id = "robot1_tf/base_link_ur5"; //wrist_3_link_ur5
             
@@ -184,7 +185,7 @@ class ApplyForce
                 force_.y = pub_wrench_msg.wrench.force.y;
                 force_.z = pub_wrench_msg.wrench.force.z;
 
-                apply_constant_force();
+                //apply_constant_force();
                 
                 current_time = current_time + 0.05;
                 std::cout<<"Current time "<<current_time<<std::endl;

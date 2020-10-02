@@ -11,6 +11,7 @@
 
 #include <mur_force_controller/move_ur_compliant.h>
 #include <eigen3/Eigen/Dense>
+#include <ur_kinematics/ur_kin.h>
 
 
 using namespace move_compliant;
@@ -27,9 +28,10 @@ MoveUR::MoveUR()
 
 void MoveUR::angleCallback(std_msgs::Float64 angle_)
 {
-    theta_ = -angle_.data;
+    theta_ = angle_.data;
     //nullspace(theta_);
-    moveInitialPose();
+    //moveInitialPose();
+    rotateAngle(theta_);
 }
 
 void MoveUR::lookupInitialLocalPosition(){
@@ -125,13 +127,13 @@ void MoveUR::nullspace(double theta_)
     x_d.header.frame_id = "robot1_tf/base_link_ur5";
 
     double r = sqrt(pow(current_local_pose_[0],2)+pow(current_local_pose_[1],2));
-    double delta_x[2] = {r*sin(theta_), r*cos(theta_)};
+    double delta_x[2] = {r*sin(-theta_), r*cos(-theta_)};
     //ROS_INFO_STREAM("Delta theta ist "<<theta_);
 
     //rotation matrix around z
     //R={cos(angle), -sin(angle), 0; sin(angle), cos(angle), 0; 0, 0, 1}
     Eigen::Matrix3d R;
-    R << cos(theta_), -sin(theta_), 0, sin(theta_), cos(theta_), 0, 0, 0, 1;
+    R << cos(-theta_), -sin(-theta_), 0, sin(-theta_), cos(-theta_), 0, 0, 0, 1;
 
     Eigen::Vector3d x, x_current;
     x_current << current_local_pose_[0], current_local_pose_[1], current_local_pose_[2];
@@ -182,7 +184,7 @@ void MoveUR::moveInitialPose()
     // tf::poseStampedTFToMsg(tf_initial_local_, desired_local_pose_);
 
     geometry_msgs::PoseStamped x_d;
-    x_d.header.frame_id = "robot1_tf/ee_link_ur5";
+    x_d.header.frame_id = "robot1_tf/base_link_ur5";
     x_d.header.stamp = ros::Time::now();
 
     tf::Transform _to_initial, _from_initial;
@@ -206,3 +208,67 @@ void MoveUR::moveInitialPose()
 
     pub_pose_.publish(x_d);
 }
+
+void MoveUR::rotateAngle(double rot_angle_)
+{
+    /**** Query current joint configuration ****/
+    joint_theta_.clear();
+    joint_theta_ = base_.getAngles();
+
+    /**** Change first angle to rotation angle ****/
+    joint_theta_[0] = joint_theta_[0] - rot_angle_;
+
+    forwardKinematics();
+
+    geometry_msgs::PoseStamped x_d;
+    x_d.header.frame_id = "robot1_tf/base_link_ur5";
+    x_d.header.stamp = ros::Time::now();
+    x_d.pose.position.x = T[3];
+    x_d.pose.position.y = T[7];
+    x_d.pose.position.z = T[11];
+
+    /*
+    double roll = atan2(-T[6],T[10]);
+    double yaw = atan2(T[1],T[0]);
+    double pitch = atan2(T[2],(T[0]*cos(yaw)-(T[1]*sin(yaw))));
+    */
+
+    
+    double roll = atan2(T[9],T[10]);
+    double yaw = atan2(T[4],T[0]);
+    double pitch = atan2(-T[8], cos(yaw)*T[0]+sin(yaw)*T[4]);
+    
+
+    geometry_msgs::Quaternion quat = tf::createQuaternionMsgFromRollPitchYaw(roll, pitch, yaw);
+
+    x_d.pose.orientation.x = quat.x;
+    x_d.pose.orientation.y = quat.y;
+    x_d.pose.orientation.z = quat.z;
+    x_d.pose.orientation.w = quat.w;
+
+    ROS_INFO_STREAM("Desired pose: "<<x_d.pose.position.x<<", "<<x_d.pose.position.y<<", "<<x_d.pose.position.z<<
+    ", "<<x_d.pose.orientation.x<<", "<<x_d.pose.orientation.y<<", "<<x_d.pose.orientation.z<<", "<<x_d.pose.orientation.w);
+
+    pub_pose_.publish(x_d);
+}
+
+void MoveUR::forwardKinematics(){
+    for(int i =0; i<joint_theta_.size(); i++)
+        theta[i] = joint_theta_.at(i);
+    ur_kinematics::forward(theta, T);
+
+    /*
+    for(int i=0; i<6;i++)
+        ROS_INFO_STREAM(theta[i]);
+
+    for(int i=0;i<4;i++) {
+        for(int j=i*4;j<(i+1)*4;j++)
+            printf("%1.3f ", T[j]);
+        printf("\n");
+    }
+    printf("\n");
+    */
+
+
+}
+

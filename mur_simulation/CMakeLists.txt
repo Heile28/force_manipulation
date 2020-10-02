@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   actionlib
   actionlib_msgs
   visualization_msgs
+  ur_kinematics
 )
 
 #find_package(cmake_modules REQUIRED)
@@ -150,6 +151,7 @@ include_directories(
 # add_executable(${PROJECT_NAME}_node src/mur_simulation_node.cpp)
 
 add_executable(execution_node1 src/main.cpp)
+add_executable(ur_kinematics_node src/ur_kinematics.cpp)
 add_executable(start_services_node src/start_services.cpp)
 add_executable(move_mur_client_node src/move_mur_client.cpp)
 add_executable(apply_force_node src/apply_force.cpp)
@@ -176,6 +178,7 @@ add_executable(visualize_node src/visualize.cpp)
 #)
 
 target_link_libraries(execution_node1 ${catkin_LIBRARIES})
+target_link_libraries(ur_kinematics_node ${catkin_LIBRARIES})
 target_link_libraries(start_services_node ${catkin_LIBRARIES})
 target_link_libraries(move_mur_client_node ${catkin_LIBRARIES})
 target_link_libraries(apply_force_node ${catkin_LIBRARIES})

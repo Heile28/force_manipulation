@@ -30,7 +30,7 @@ MoveMir::MoveMir()
     this->rotation_angle_.data = 0.0;
     this->theta_global_ = 0.0;
     this->rot_angle_old = 0.0;
-    this->activate_ = 0;
+    this->activate_ = 1; //CHANGE TO 0 WHEN FT_SENSOR ACTIVE!!!
 }
 void MoveMir::lookupInitialWorldPosition(){
     ros::service::waitForService("/mur_base/listen_frames/request_endeffector/pose");
@@ -234,7 +234,10 @@ void MoveMir::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){
     if(abs(force_.x) > 5.0 || abs(force_.y) > 5.0|| abs(force_.z) > 5.0){
         activate_ = 1;
         ROS_INFO("Force attack! -> activate_ = 1");
+        poseUpdater2();
     }
+    //else
+    //    activate_ = 0; //UNCOMMENT WHEN FT-SENSOR ACTIVATED
     //     poseUpdater();
     //     poseUpdater2();
     //std::cout<<"Wrench is"<<force_.x<<", "<<force_.y<<", "<<force_.z<<std::endl;
@@ -387,10 +390,11 @@ void MoveMir::poseUpdater2()
     }
     if(abs(abs(theta_global_) - abs(theta0_global_)) < 0.1 && activate_ == 1)
         moveStraight();
-    else
+    /*else
     {
         activate_=0;
     }
+    */
     
     
     /*
@@ -450,7 +454,7 @@ void MoveMir::poseUpdater3()
     //    if(theta == 0)
     //        break;
         
-        if(theta != 0)
+        if(theta != 0.0)
         {
             nullspace(theta/20); //divided in 20 steps
             rotation_angle_.data = theta/20;
@@ -505,7 +509,11 @@ void MoveMir::moveStraight()
 
 double MoveMir::normalize_angle(double angle)
 {
-    const double result = fmod((angle + M_PI), 2.0*M_PI);
-    if(result <= 0.0) return result + M_PI;
-    return result - M_PI;
+    //const double result = fmod((angle + M_PI), 2.0*M_PI);
+    const double result = fmod((angle + M_PI), M_PI);
+    if(result < 0.0) 
+        return result + M_PI;
+
+    //return result - M_PI;
+    return result;
 }

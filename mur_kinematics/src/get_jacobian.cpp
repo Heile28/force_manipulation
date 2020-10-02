@@ -37,6 +37,7 @@ Eigen::MatrixXd calculate_jacobian::GetJacobian::urJacobian()
         Eigen::Vector4d r(0.0, 0.0, 0.0, 1.0);
 
         theta_ = base_.getAngles();
+        ros::Duration(1.0).sleep();
 
         /***** Calculation of Transformation matrices *****/
         /*std::cout<<"Joint angles: "<<theta_[0]<<", "<<theta_[1]<<", "
@@ -58,7 +59,7 @@ Eigen::MatrixXd calculate_jacobian::GetJacobian::urJacobian()
                 sin(theta_[3]), 0, -cos(theta_[3]), 0,
                 0, 1, 0, d4,
                 0, 0, 0, 1;
-        T5 << cos(theta_[4]), 0, -sin(theta_[4]), 0,
+        T5 << cos(theta_[4]), 0, sin(theta_[4]), 0,
                 sin(theta_[4]), 0, cos(theta_[4]), 0,
                 0, -1, 0, d5,
                 0, 0, 0, 1;
@@ -78,7 +79,7 @@ Eigen::MatrixXd calculate_jacobian::GetJacobian::urJacobian()
 
         /***** Endeffector transformation *****/
         T_E << T1*T2*T3*T4*T5*T6;
-        std::cout << "Homogenous transformation of Endeffector=\n" <<T_E<<std::endl;
+        std::cout << "Here: Homogenous transformation of Endeffector=\n" <<T_E<<std::endl;
 
         /***** spin axis (z) relative to ur5_base *****/
         ez_00 << 0.0, 0.0, 1.0;

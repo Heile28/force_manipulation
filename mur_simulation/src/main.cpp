@@ -18,8 +18,8 @@ int main(int argc, char** argv)
     std::cout<<"Im in main file now"<<std::endl;
     ros::NodeHandle nh;
     
-    // calculate_jacobian::GetJacobian get_jacobian;
-    // get_jacobian.urJacobian();
+    //calculate_jacobian::GetJacobian get_jacobian;
+    
 
     /***** Lookup initial angle *****/
     // MurBase base;
@@ -42,8 +42,11 @@ int main(int argc, char** argv)
     
     while(ros::ok()){
         obj1.poseUpdater2();
+        //get_jacobian.urJacobian();
         ros::spinOnce();
     }
+    
+    
 
 
     // while(ros::ok()){

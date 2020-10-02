@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   geometry_msgs
   mur_robot_msgs
+  ur_kinematics
 )
 
 find_package(Eigen3 REQUIRED)

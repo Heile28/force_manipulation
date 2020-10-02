@@ -66,6 +66,7 @@ void MurBase::callbackJointAngles(sensor_msgs::JointState joint_msg_)
     std::cout<<"["<<theta1_<<","<<theta2_<<","<<theta3_<<","<<theta4_<<","<<theta5_<<","<<theta6_<<"]"<<std::endl;
     */
     
+    
 }
 
 void MurBase::startServiceServer()
