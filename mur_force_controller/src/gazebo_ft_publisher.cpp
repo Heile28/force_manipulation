@@ -6,7 +6,7 @@ WrenchPublisher::WrenchPublisher()
 {
     this->nh_=nh_;
     //this->nh_=ros::NodeHandle("publish_sensor_wrench");
-    this->pub_ = nh_.advertise<geometry_msgs::WrenchStamped>("/robot1_ns/arm_cartesian_compliance_controller/ft_sensor_wrench",20);
+    this->pub_ = nh_.advertise<geometry_msgs::WrenchStamped>("/robot1_ns/arm_cartesian_compliance_controller/ft_sensor_wrench",100);
     this->sub_= nh_.subscribe("/robot1_ns/ee_force_torque_sensor", 100, &WrenchPublisher::wrenchCallback, this);
 }
 

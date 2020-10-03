@@ -16,6 +16,8 @@ int main(int argc, char** argv)
     begin.startServiceServer();
 
     gazebo_ft_publisher::WrenchPublisher wrench_publisher;
+
+    
     
     /*
     //Optional service client

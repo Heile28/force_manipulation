@@ -4,7 +4,7 @@
  * 
  * Created on 21. August 2020
  * 
- * Applying force profiles at wrist3_link
+ * Applying force profiles at wrist3_link and send out target wrench
  * 
 */
 
@@ -23,13 +23,10 @@ class ApplyForce
         tf::Vector3 tf_force_apply_, tf_force_at_base_;
         geometry_msgs::Vector3 force_, force_at_base_;
         ros::NodeHandle nh_;
-        ros::Publisher pub_wrench = nh_.advertise<geometry_msgs::WrenchStamped>("/robot1_ns/arm_cartesian_compliance_controller/target_wrench",20);
-
+        ros::Publisher pub_wrench = nh_.advertise<geometry_msgs::WrenchStamped>("/apply_force/target_wrench",100);
     public:
         void apply_constant_force()
-        {
-            ros::Rate r(20.0); //0.05 seconds publishing rate
-            
+        {   
             ros::service::waitForService("/gazebo/apply_body_wrench"); //link: https://github.com/ros-simulation/gazebo_ros_pkgs/blob/kinetic-devel/gazebo_msgs/srv/ApplyBodyWrench.srv
             ros::ServiceClient force_client = nh_.serviceClient<gazebo_msgs::ApplyBodyWrench>("/gazebo/apply_body_wrench");
             gazebo_msgs::ApplyBodyWrench srv1; //namespace + servicename
@@ -45,13 +42,14 @@ class ApplyForce
             /**** forces specified in global coordinates ****/
 
             /***** Transform wrench vector from ft_sensor_ref_link into ~/base_link *****/
-            //transform_ = base_.transform("robot1_tf/ee_link_ur5", "robot1_tf/base_link_ur5");
-            transform_ = base_.transform("robot1_tf/wrist_3_link_ur5", "robot1_tf/base_link_ur5");
+            transform_ = base_.transform("robot1_tf/base_link", "robot1_tf/ee_link_ur5"); //either higher duration
+            //transform_ = base_.transform("robot1_tf/base_link_ur5","robot1_tf/wrist_3_link_ur5");
 
             //tf::Transform( transform_.getRotation(),tf::Vector3(0.0,0.0,0.0) );
 
             tf::vector3MsgToTF(force_,tf_force_apply_);
-            tf_force_at_base_ = transform_.getBasis().inverse() * tf_force_apply_;
+            //tf_force_at_base_ = transform_.getBasis().inverse() * tf_force_apply_;
+            tf_force_at_base_ = transform_.getBasis() * tf_force_apply_;
             tf::vector3TFToMsg(tf_force_at_base_, force_at_base_);
 
             srv1.request.wrench.force.x = force_at_base_.x; 
@@ -60,21 +58,20 @@ class ApplyForce
             srv1.request.wrench.torque.x = 0.0;
             srv1.request.wrench.torque.y = 0.0;
             srv1.request.wrench.torque.z = 0.0;
-            force_client.call(srv1);
+            //ROS_INFO_STREAM("FORCE at base_link: "<<force_at_base_.x<<", "<<force_at_base_.y<<", "<<force_at_base_.z);
 
+            /***** Test whether transformation is correct *****/
             /*
-            if(srv1.response.success == true){
-                ROS_INFO("Force applied");
-            }
+            transform_ = base_.transform("robot1_tf/base_link", "robot1_tf/wrist_3_link_ur5");
+            tf::vector3MsgToTF(force_at_base_,tf_force_apply_);
+            //tf_force_at_base_ = transform_.getBasis().inverse() * tf_force_apply_;
+            tf_force_at_base_ = transform_.getBasis().inverse() * tf_force_apply_;
+            tf::vector3TFToMsg(tf_force_at_base_, force_at_base_);
+            ROS_INFO_STREAM("FORCE at wrist_3_link: "<<force_at_base_.x<<", "<<force_at_base_.y<<", "<<force_at_base_.z);
+            //force_client.call(srv1);
             */
-            //ros::Duration(5.0).sleep();
-            //ROS_INFO("Force attack has finished!");
-                
-        }
 
-        void profiled_attack()
-        {
-
+            force_client.call(srv1);
         }
 
 
@@ -161,10 +158,8 @@ class ApplyForce
         {
             /**** Constant force ****/
             ros::Rate r(20.0);
-            
-            
+             
             geometry_msgs::WrenchStamped pub_wrench_msg;
-            pub_wrench_msg.header.frame_id = "robot1_tf/base_link_ur5"; //wrist_3_link_ur5
             
             double current_time = ros::Time::now().toSec();
             std::cout<<"Current time "<<current_time<<std::endl;
@@ -173,7 +168,7 @@ class ApplyForce
             while(current_time <= time1){
                 pub_wrench_msg.header.stamp = ros::Time::now();
 
-                //Specify force in ee_link related to ~/base_link_ur5
+                //Specify force in ee_link
                 pub_wrench_msg.wrench.force.x = 0.0;
                 pub_wrench_msg.wrench.force.y = 80.0;
                 pub_wrench_msg.wrench.force.z = 30.0;
@@ -186,11 +181,11 @@ class ApplyForce
                 force_.z = pub_wrench_msg.wrench.force.z;
 
                 apply_constant_force();
+                pub_wrench.publish(pub_wrench_msg);
                 
                 current_time = current_time + 0.05;
                 std::cout<<"Current time "<<current_time<<std::endl;
                 r.sleep();
-                pub_wrench.publish(pub_wrench_msg);
             }
             current_time = ros::Time(0).toSec();
             ROS_INFO_STREAM("Current time 2 "<<current_time);
@@ -256,6 +251,7 @@ int main(int argc, char** argv)
     ros::NodeHandle nh_;
 
     ApplyForce obj;
+    //obj.apply_force_profile1();
     obj.apply_force_profile2();
     
     ros::spin();

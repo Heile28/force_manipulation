@@ -94,7 +94,7 @@ namespace move_compliant{
          * @brief Normalizes the angle to be 0 to M_PI
          * 
          */
-        static inline double normalize_angle(double angle);
+        double normalize_angle(double angle);
 
         /**
          * @brief request initial pose in ~/world
