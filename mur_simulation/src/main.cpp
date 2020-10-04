@@ -21,7 +21,7 @@ int main(int argc, char** argv)
     std::cout<<"Im in main file now"<<std::endl;
     ros::NodeHandle nh;
     
-    //calculate_jacobian::GetJacobian get_jacobian;
+    calculate_jacobian::GetJacobian get_jacobian;
     
 
     /***** Lookup initial angle *****/
@@ -40,12 +40,12 @@ int main(int argc, char** argv)
 
 
     /***** start moving MiR robot *****/
-    move_compliant::MoveMir obj1;
+    //move_compliant::MoveMir obj1;
     
     
     while(ros::ok()){
-        obj1.poseUpdater2();
-        //get_jacobian.urJacobian();
+    //    obj1.poseUpdater2();
+        get_jacobian.urJacobian();
         ros::spinOnce();
         
         

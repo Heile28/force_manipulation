@@ -68,14 +68,14 @@ Eigen::MatrixXd calculate_jacobian::GetJacobian::urJacobian()
                 0, 0, 1, d6,
                 0, 0, 0, 1;
                 
-        /*
+        
         std::cout <<"(0)_T_1 =\n "<< T1 <<std::endl;
         std::cout <<"(1)_T_2 =\n "<< T2 <<std::endl;
         std::cout <<"(2)_T_3 =\n "<< T3 <<std::endl;
         std::cout <<"(3)_T_4 =\n "<< T4 <<std::endl;
         std::cout <<"(4)_T_5 =\n "<< T5 <<std::endl;
         std::cout <<"(5)_T_E =\n "<< T6 <<std::endl;
-        */
+        
 
         /***** Endeffector transformation *****/
         T_E << T1*T2*T3*T4*T5*T6;

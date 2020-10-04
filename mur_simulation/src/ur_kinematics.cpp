@@ -62,7 +62,7 @@ void forwardKinematics(){
     }
     printf("\n");
 
-    /*
+    
     ur_kinematics::forward_all(theta, T1, T2, T3, T4, T5, T6);  
     for(int i=0;i<4;i++) {
         for(int j=i*4;j<(i+1)*4;j++)
@@ -101,68 +101,52 @@ void forwardKinematics(){
         printf("\n");
     }
     printf("\n");
-    */
+    
 
-    Eigen::MatrixXd _T1(4,4), _T2(4,4), _T3(4,4), _T4(4,4), _T5(4,4), _T6(4,4);
+    Eigen::MatrixXd _T01(4,4), _T02(4,4), _T03(4,4), _T04(4,4), _T05(4,4), _T06(4,4);
     int i = 0;
     
     for (int k = 0; k<4; k++){
         for (int l = 0; l<4; l++){
-            _T1(k,l) = T1[i];
-            _T2(k,l) = T2[i];
-            _T3(k,l) = T3[i];
-            _T4(k,l) = T4[i];
-            _T5(k,l) = T5[i];
-            _T6(k,l) = T6[i];
+            _T01(k,l) = T1[i];
+            _T02(k,l) = T2[i];
+            _T03(k,l) = T3[i];
+            _T04(k,l) = T4[i];
+            _T05(k,l) = T5[i];
+            _T06(k,l) = T6[i];
             i++;
         }
     }
-    /*
-    std::cout<<"_T3: \n"<<_T3<<std::endl;
-    std::cout<<"_T4: \n"<<_T4<<std::endl;
-    std::cout<<"_T5: \n"<<_T5<<std::endl;
-    std::cout<<"_T6: \n"<<_T6<<std::endl;
-    */
+    std::cout<<"_T01: \n"<<_T01<<std::endl;
+    std::cout<<"_T02: \n"<<_T02<<std::endl;
+    std::cout<<"_T03: \n"<<_T03<<std::endl;
+    std::cout<<"_T04: \n"<<_T04<<std::endl;
+    std::cout<<"_T05: \n"<<_T05<<std::endl;
+    std::cout<<"_T06: \n"<<_T06<<std::endl;
+    
     /**** Calculate relative transformation matrices ****/
-    /*
+    
     Eigen::MatrixXd T1_(4,4), T2_(4,4), T3_(4,4), T4_(4,4), T5_(4,4), T6_(4,4);
-    T1_ = _T1;
-    //T2_ = _T2.inverse()*_T2;
-    T2_ = (_T1.inverse())*_T2;
-    T2_ = T2_.inverse();
-    std::cout<<"T2_: \n"<<T2_<<std::endl;
-    T3_ = _T2.inverse()*_T3;
-    T4_ = _T3.inverse()*_T4;
-    T5_ = _T4.inverse()*_T5;
-    T6_ = _T5.inverse()*_T6;
+    T1_ = _T01;
+    std::cout<<"T1_: \n"<<T1_<<std::endl;
 
+    T2_ = _T01.inverse()*_T02;
+    std::cout<<"T2_: \n"<<T2_<<std::endl;
+    T3_ = _T02.inverse()*_T03;
+    std::cout<<"T3_: \n"<<T3_<<std::endl;
+    T4_ = _T03.inverse()*_T04;
+    std::cout<<"T4_: \n"<<T4_<<std::endl;
+    T5_ = _T04.inverse()*_T05;
+    std::cout<<"T5_: \n"<<T5_<<std::endl;
+    T6_ = _T05.inverse()*_T06;
+    std::cout<<"T6_: \n"<<T6_<<std::endl;
+    
     /**** Calculate endeffector pose ****/
-    /*
+
     Eigen::MatrixXd T_E(4,4);
 
-    
-    //with inverses
     T_E = T1_*T2_*T3_*T4_*T5_*T6_;
     std::cout<<"Endeffector pose is: \n"<<T_E<<std::endl;
-    
-    */
-    /*
-    T_E = _T1*_T2*_T3*_T4*_T5*_T6;
-    std::cout<<"Endeffector pose is: \n"<<T_E<<std::endl;
-    */
-    
-    /*
-    std::cout<<"_T1 pose is: \n"<<_T1<<std::endl;
-    std::cout<<"_T2 pose is: \n"<<_T2<<std::endl;
-    std::cout<<"_T3 pose is: \n"<<_T3<<std::endl;
-    std::cout<<"_T4 pose is: \n"<<_T4<<std::endl;
-    std::cout<<"_T5 pose is: \n"<<_T5<<std::endl;
-    
-    std::cout<<"_T6 pose is: \n"<<_T6<<std::endl;
-
-    T_E = _T6*_T5*_T4*_T3*_T2*_T1;
-    std::cout<<"Neue Endeffector pose is: \n"<<T_E<<std::endl;
-    */
 
     /*
     //execute inverse kinematics

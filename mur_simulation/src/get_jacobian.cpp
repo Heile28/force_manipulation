@@ -329,6 +329,7 @@ class CalculateJacobians{
         std::cout<<"Analytical Jacobian J_v is:\n"<<J_anal<<std::endl;
 
         /***** Manipulation ellipsoid *****/
+        /*
         //eigenvalues and eigenvectors
         Eigen::EigenSolver<Eigen::MatrixXd> es;
 
@@ -345,6 +346,8 @@ class CalculateJacobians{
         double w;
         w = sqrt(JJ.determinant());
         std::cout<<"Manipulation measure is: "<<w<<std::endl;
+
+        */
 
 
     }
@@ -567,10 +570,11 @@ class CalculateJacobians{
         J_ur << ez_00.cross(r_0E), ez_01.cross(r_1E), ez_02.cross(r_2E),
                 ez_03.cross(r_3E), ez_04.cross(r_4E), ez_05.cross(r_5E),
                 ez_00, ez_01, ez_02, ez_03, ez_04, ez_05;
-        //std::cout <<"Jacobian matrix of UR=\n"<<J_ur<<std::endl;
+        std::cout <<"Jacobian matrix of UR=\n"<<J_ur<<std::endl;
 
         
         /***** Manipulation ellipsoid *****/
+        /*
         //eigenvalues and eigenvectors
         Eigen::EigenSolver<Eigen::MatrixXd> es;
         

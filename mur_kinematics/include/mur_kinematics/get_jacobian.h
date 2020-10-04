@@ -34,11 +34,11 @@ namespace calculate_jacobian{
             const double d6 = 0.0823; //caution: set the right distance between wrist_3_link_ur5 and ee_link_ur5 !!!
 
             const double PI = M_PI;
-            const double alpha1 = -PI/2; //+
+            const double alpha1 = PI/2; //+
             const double alpha2 = 0.0;
             const double alpha3 = 0.0;
-            const double alpha4 = -PI/2; //+
-            const double alpha5 = PI/2; //-
+            const double alpha4 = PI/2; //+
+            const double alpha5 = -PI/2; //-
             const double alpha6 = 0.0;
 
             std::vector<double> theta_;
