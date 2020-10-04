@@ -12,6 +12,9 @@
 #include <mur_force_controller/move_ur_compliant.h>
 #include <mur_kinematics/get_jacobian.h>
 
+#include <realtime_tools/realtime_buffer.h>
+#include <realtime_tools/realtime_box.h>
+
 int main(int argc, char** argv)
 {
     ros::init(argc,argv,"Drive_MiR");
@@ -44,6 +47,8 @@ int main(int argc, char** argv)
         obj1.poseUpdater2();
         //get_jacobian.urJacobian();
         ros::spinOnce();
+        
+        
     }
     
     
