@@ -92,7 +92,7 @@ arm_cartesian_compliance_controller:
       rot_z: {p: 0.01}
 ```
 
-## Configure UR Kinematics
+## Configure UR Kinematics Package
 The [universal_robot](https://github.com/ros-industrial/universal_robot) -package provides the repo namely "[ur_kinematics](https://github.com/ros-industrial/universal_robot/tree/kinetic-devel/ur_kinematics)". Adapt its file [ur_kin.cpp](https://github.com/ros-industrial/universal_robot/blob/kinetic-devel/ur_kinematics/src/ur_kin.cpp) by uncommenting line 16-26:
 ```bash
 /*
