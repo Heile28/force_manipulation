@@ -22,8 +22,9 @@ const std::string names[6]={"robot1_tf/shoulder_pan_joint", "robot1_tf/shoulder_
 
 void forwardKinematics();
 void inverseKinematics();
-void manipulationMeasure();
-Eigen::MatrixXd urJacobian();
+void manipulationMeasure(Eigen::MatrixXd J_ur);
+Eigen::MatrixXd urJacobian(Eigen::MatrixXd T_E, Eigen::MatrixXd T1_, Eigen::MatrixXd T2_, 
+                            Eigen::MatrixXd T3_, Eigen::MatrixXd T4_, Eigen::MatrixXd T5_);
 
 int mapIndizes(std::string name)
 {
@@ -50,8 +51,11 @@ void callbackJointAngles(const sensor_msgs::JointState& joint_msg){
 }
 
 void forwardKinematics(){
+
+    /**** Get endeffector pose ****/
     ur_kinematics::forward(theta, T);
 
+    /*
     for(int i=0; i<6;i++)
         ROS_INFO_STREAM(theta[i]);
 
@@ -61,16 +65,31 @@ void forwardKinematics(){
         printf("\n");
     }
     printf("\n");
+    */
 
     
+
+    /**** Store endeffector pose ****/
+    Eigen::MatrixXd T_E(4,4);
+    int i = 0;
+    for (int k = 0; k<4; k++){
+        for (int l = 0; l<4; l++){
+        T_E(k,l)=T[i];
+        i++;
+        }
+    }
+    std::cout<<"Endeffector pose is: \n"<<T_E<<std::endl;
+
+    /**** Calculate transformation mtarices ****/
     ur_kinematics::forward_all(theta, T1, T2, T3, T4, T5, T6);  
+    /*
     for(int i=0;i<4;i++) {
         for(int j=i*4;j<(i+1)*4;j++)
             printf("%1.3f ", T1[j]);
         printf("\n");
 
     }
-    printf("\n");
+    printf("\n The following transformation matrices out of ur_kinematics library \n");
     for(int i=0;i<4;i++) {
         for(int j=i*4;j<(i+1)*4;j++)
             printf("%1.3f ", T2[j]);
@@ -101,10 +120,10 @@ void forwardKinematics(){
         printf("\n");
     }
     printf("\n");
+    */
     
-
     Eigen::MatrixXd _T01(4,4), _T02(4,4), _T03(4,4), _T04(4,4), _T05(4,4), _T06(4,4);
-    int i = 0;
+    i = 0;
     
     for (int k = 0; k<4; k++){
         for (int l = 0; l<4; l++){
@@ -117,43 +136,45 @@ void forwardKinematics(){
             i++;
         }
     }
+    /*
     std::cout<<"_T01: \n"<<_T01<<std::endl;
     std::cout<<"_T02: \n"<<_T02<<std::endl;
     std::cout<<"_T03: \n"<<_T03<<std::endl;
     std::cout<<"_T04: \n"<<_T04<<std::endl;
     std::cout<<"_T05: \n"<<_T05<<std::endl;
     std::cout<<"_T06: \n"<<_T06<<std::endl;
+    */
     
     /**** Calculate relative transformation matrices ****/
-    
+
     Eigen::MatrixXd T1_(4,4), T2_(4,4), T3_(4,4), T4_(4,4), T5_(4,4), T6_(4,4);
     T1_ = _T01;
     std::cout<<"T1_: \n"<<T1_<<std::endl;
 
     T2_ = _T01.inverse()*_T02;
-    std::cout<<"T2_: \n"<<T2_<<std::endl;
+    //std::cout<<"T2_: \n"<<T2_<<std::endl;
     T3_ = _T02.inverse()*_T03;
-    std::cout<<"T3_: \n"<<T3_<<std::endl;
+    //std::cout<<"T3_: \n"<<T3_<<std::endl;
     T4_ = _T03.inverse()*_T04;
-    std::cout<<"T4_: \n"<<T4_<<std::endl;
+    //std::cout<<"T4_: \n"<<T4_<<std::endl;
     T5_ = _T04.inverse()*_T05;
-    std::cout<<"T5_: \n"<<T5_<<std::endl;
+    //std::cout<<"T5_: \n"<<T5_<<std::endl;
     T6_ = _T05.inverse()*_T06;
-    std::cout<<"T6_: \n"<<T6_<<std::endl;
-    
-    /**** Calculate endeffector pose ****/
+    //std::cout<<"T6_: \n"<<T6_<<std::endl;
 
-    Eigen::MatrixXd T_E(4,4);
-
-    T_E = T1_*T2_*T3_*T4_*T5_*T6_;
-    std::cout<<"Endeffector pose is: \n"<<T_E<<std::endl;
+    /**** Calculate Jacobian ****/
+    Eigen::MatrixXd J_ur(6,6);
+    J_ur = urJacobian(T_E, T1_, T2_, T3_, T4_, T5_);
+    //ROS_INFO_STREAM("Jacobian is: \n"<<J_ur);
 
     /*
     //execute inverse kinematics
     inverseKinematics();
     */
 
-    //manipulationMeasure();
+    /**** Manipulation measure ****/
+    manipulationMeasure(J_ur);
+    
 }
 
 void inverseKinematics()
@@ -171,11 +192,12 @@ void inverseKinematics()
     // printf("\n");
 }
 
-Eigen::MatrixXd urJacobian()
+Eigen::MatrixXd urJacobian(Eigen::MatrixXd T_E, Eigen::MatrixXd T1_, Eigen::MatrixXd T2_, 
+                            Eigen::MatrixXd T3_, Eigen::MatrixXd T4_, Eigen::MatrixXd T5_)
 {
-    MurBase base_;
-    Eigen::MatrixXd T_E(4,4);
-    Eigen::MatrixXd _T1(4,4), _T2(4,4), _T3(4,4), _T4(4,4), _T5(4,4), _T6(4,4);
+    //MurBase base_;
+    //Eigen::MatrixXd T_E(4,4);
+    //Eigen::MatrixXd _T1(4,4), _T2(4,4), _T3(4,4), _T4(4,4), _T5(4,4), _T6(4,4);
 
     Eigen::Vector3d ez_00, ez_01, ez_02, ez_03, ez_04, ez_05;
     Eigen::Vector3d r_0E, r_1E, r_2E, r_3E, r_4E, r_5E;
@@ -189,10 +211,12 @@ Eigen::MatrixXd urJacobian()
     /***** Calculation of Transformation matrices *****/
 
     //Endeffector transformation
+    /*
     T_E << T[0], T[1], T[2], T[3],
             T[4], T[5], T[6], T[7], 
             T[8], T[9], T[10], T[11];
     std::cout << "Homogenous transformation of Endeffector=\n" <<T_E<<std::endl;
+    
 
     int i = 0;
     for (int k = 0; k<4; k++){
@@ -206,22 +230,23 @@ Eigen::MatrixXd urJacobian()
             i++;
         }
     }
+    /*
 
     /***** spin axis (z) relative to ur5_base *****/
     ez_00 << 0.0, 0.0, 1.0;
-    ez_01 = _T1.block(0,0,3,3)*ez_00;
-    ez_02 = (_T1*_T2).block(0,0,3,3)*ez_00;
-    ez_03 = (_T1*_T2*_T3).block(0,0,3,3)*ez_00;
-    ez_04 = (_T1*_T2*_T3*_T4).block(0,0,3,3)*ez_00;
-    ez_05 = (_T1*_T2*_T3*_T4*_T5).block(0,0,3,3)*ez_00;
+    ez_01 = T1_.block(0,0,3,3)*ez_00;
+    ez_02 = (T1_*T2_).block(0,0,3,3)*ez_00;
+    ez_03 = (T1_*T2_*T3_).block(0,0,3,3)*ez_00;
+    ez_04 = (T1_*T2_*T3_*T4_).block(0,0,3,3)*ez_00;
+    ez_05 = (T1_*T2_*T3_*T4_*T5_).block(0,0,3,3)*ez_00;
 
     /***** homogenous directional vectors *****/
     r_0E = (T_E * r - r).head(3);
-    r_1E = (T_E * r - _T1*r).head(3);
-    r_2E = (T_E * r - (_T1*_T2)*r).head(3);
-    r_3E = (T_E * r - (_T1*_T2*_T3)*r).head(3);
-    r_4E = (T_E * r - (_T1*_T2*_T3*_T4)*r).head(3);
-    r_5E = (T_E * r - (_T1*_T2*_T3*_T4*_T5)*r).head(3);
+    r_1E = (T_E * r - T1_*r).head(3);
+    r_2E = (T_E * r - (T1_*T2_)*r).head(3);
+    r_3E = (T_E * r - (T1_*T2_*T3_)*r).head(3);
+    r_4E = (T_E * r - (T1_*T2_*T3_*T4_)*r).head(3);
+    r_5E = (T_E * r - (T1_*T2_*T3_*T4_*T5_)*r).head(3);
 
     /***** Jacobian matrix *****/
     Eigen::MatrixXd J_ur_(6,6);
@@ -233,14 +258,12 @@ Eigen::MatrixXd urJacobian()
     return J_ur_;
 }
 
-void manipulationMeasure()
+void manipulationMeasure(Eigen::MatrixXd J_ur)
 {
     /***** Manipulation ellipsoid *****/
+
     //eigenvalues and eigenvectors
     Eigen::EigenSolver<Eigen::MatrixXd> es;
-    
-    Eigen::MatrixXd J_ur(6,6);
-    J_ur = urJacobian();
 
     Eigen::MatrixXd J_v(3,6);
     J_v = J_ur.block(0,0,3,6);
@@ -256,7 +279,7 @@ void manipulationMeasure()
     
     //Manipulation measure
     double w = sqrt(JJ.determinant());
-    //std::cout<<"Manipulation measure is: "<<w<<std::endl;
+    std::cout<<"Manipulation measure is: "<<w<<std::endl;
 }
 
 int main(int argc, char** argv){
