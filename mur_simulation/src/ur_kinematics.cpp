@@ -45,8 +45,8 @@ void callbackJointAngles(const sensor_msgs::JointState& joint_msg){
     }
     //std::cout<<"Inside callback!"<<std::endl;
 
-    std::cout<<"Winkel:"<<std::endl;
-    std::cout<<"["<<theta[0]<<","<<theta[1]<<","<<theta[2]<<","<<theta[3]<<","<<theta[4]<<","<<theta[5]<<"]"<<std::endl;
+    //std::cout<<"Winkel:"<<std::endl;
+    //std::cout<<"["<<theta[0]<<","<<theta[1]<<","<<theta[2]<<","<<theta[3]<<","<<theta[4]<<","<<theta[5]<<"]"<<std::endl;
     forwardKinematics();
 }
 
@@ -149,8 +149,6 @@ void forwardKinematics(){
 
     Eigen::MatrixXd T1_(4,4), T2_(4,4), T3_(4,4), T4_(4,4), T5_(4,4), T6_(4,4);
     T1_ = _T01;
-    std::cout<<"T1_: \n"<<T1_<<std::endl;
-
     T2_ = _T01.inverse()*_T02;
     //std::cout<<"T2_: \n"<<T2_<<std::endl;
     T3_ = _T02.inverse()*_T03;
@@ -274,7 +272,34 @@ void manipulationMeasure(Eigen::MatrixXd J_ur)
     es.compute(J_v*J_v.transpose(), true);
     Eigen::VectorXd eigen_values = es.eigenvalues().real(); //just the real part
     Eigen::MatrixXd eigen_vectors = es.eigenvectors().real(); //just the real part
-    //std::cout<<"The eigenvalues of Jacobian are: \n"<<eigen_values<<std::endl;
+    
+    /*
+    double max(0), min(0);
+    
+    if(eigen_values.x() > eigen_values.y())
+    {
+        max = eigen_values.x();
+        if(eigen_values.z() > max)
+            max = eigen_values.z();
+        if(eigen_values.w() > max)
+            max = eigen_values.w();
+    }
+    if(eigen_values.x() < eigen_values.y())
+    {
+        min = eigen_values.x();
+        max = eigen_values.y();
+        if(eigen_values.z() < min)
+            min = eigen_values.z();
+        if(eigen_values.z() > min && eigen_values.z() > max)
+            max = eigen_values.z();
+        if(eigen_values.w() < min)
+            min = eigen_values.w();
+    }
+    ROS_INFO_STREAM("Max. EW: "<<max<<", Min. EW: "<<min);
+    */
+    
+
+    std::cout<<"The eigenvalues of Jacobian are: \n"<<eigen_values<<std::endl;
     std::cout<<"\n";
     
     //Manipulation measure

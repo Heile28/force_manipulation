@@ -112,8 +112,77 @@ void WrenchPublisher::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){
     torque_.vector.z = wrench_msg_.wrench.torque.z;
 
     /***send directly to topic ***/
-    send_directly_to_topic();
+    gravitation_compensation();
+    //send_directly_to_topic();
     //ros::Duration(0.5).sleep();
+
+}
+
+void WrenchPublisher::gravitation_compensation()
+{
+    ROS_INFO("Inside gravitation compensation");
+    Eigen::VectorXd target_wrench(6);
+    Eigen::VectorXd gazebo_wrench(6);
+    Eigen::VectorXd gravitation(3); //gravitation based on ~/base_link
+    Eigen::VectorXd dead_wrench(6); //wrench by gravitation
+    Eigen::VectorXd wrench_compensated(6);
+    Eigen::Vector3d dead_force;
+    Eigen::Vector3d dead_torque;
+    Eigen::Matrix3d Rotation; //rotation matrix
+    Eigen::Vector3d through;
+    Eigen::Vector3d lever; //distance between wrist_3 pose and ee pose
+    double mass = 0.01; //wrist 3 mass
+    
+
+    gazebo_wrench << force_.vector.x, force_.vector.y, force_.vector.z,  torque_.vector.x, torque_.vector.y, torque_.vector.z;
+    
+    lever << 0.0, 0.0823, 0.0; 
+    
+    gravitation << 0.0, 0.0, 9.81;
+
+    std::string source_frame = "robot1_tf/base_link";
+    std::string target_frame = "robot1_tf/wrist_3_link_ur5";
+    
+    ros::Time now = ros::Time(0);
+    try{
+        listener_.waitForTransform(source_frame, target_frame, now, ros::Duration(5.0));
+        listener_.lookupTransform(source_frame, target_frame, now, transform_ft_);
+    }
+    catch(tf::TransformException ex)
+    {
+        ROS_ERROR("%s",ex.what());
+        ros::Duration(1.0).sleep();
+    }
+
+    R = transform_ft_.getBasis().inverse();
+    
+    Rotation << R[0][0], R[0][1], R[0][2],
+                R[1][0], R[1][1], R[1][2],
+                R[2][0], R[2][1], R[2][2];
+    //ROS_INFO_STREAM("Rotation matrix: \n"<<Rotation);
+
+    /**** Calculate dead load in wrist 3 ****/
+    
+    dead_force = Rotation.transpose()*mass*gravitation;
+    through = Rotation.transpose()*lever;
+
+    dead_torque = through.cross(dead_force);
+
+    dead_wrench << dead_force(0), dead_force(1), dead_force(2), dead_torque(0), dead_torque(1), dead_torque(2);
+
+    wrench_compensated = gazebo_wrench + dead_wrench;
+
+    ROS_INFO_STREAM("Compensated wrench is: \n"<<wrench_compensated);
+
+    wrench_.wrench.force.x = wrench_compensated(0);
+    wrench_.wrench.force.y = wrench_compensated(1);
+    wrench_.wrench.force.z = wrench_compensated(2);
+
+    wrench_.wrench.torque.x = wrench_compensated(3);
+    wrench_.wrench.torque.y = wrench_compensated(4);
+    wrench_.wrench.torque.z = wrench_compensated(5);
+
+    pub_.publish(wrench_);
 
 }
 

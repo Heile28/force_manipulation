@@ -36,10 +36,9 @@ namespace gazebo_ft_publisher{
         geometry_msgs::Vector3Stamped force_, torque_;
         geometry_msgs::Vector3Stamped wrench_force_, wrench_torque_;
 
-        tf::StampedTransform transform_;
+        tf::StampedTransform transform_, transform_ft_;
         tf::TransformListener listener_;
-
-        
+        tf::Matrix3x3 R;
         
     protected:
         /**
@@ -67,7 +66,10 @@ namespace gazebo_ft_publisher{
         */
         void send_directly_to_topic();
         
-        
+        /**
+        * @brief compensate f/t-data with mass of wrist_3
+        */
+        void gravitation_compensation();
         
 
     };

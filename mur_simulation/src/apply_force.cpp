@@ -58,7 +58,7 @@ class ApplyForce
             srv1.request.wrench.torque.x = 0.0;
             srv1.request.wrench.torque.y = 0.0;
             srv1.request.wrench.torque.z = 0.0;
-            //ROS_INFO_STREAM("FORCE at base_link: "<<force_at_base_.x<<", "<<force_at_base_.y<<", "<<force_at_base_.z);
+            ROS_INFO_STREAM("FORCE at base_link: "<<force_at_base_.x<<", "<<force_at_base_.y<<", "<<force_at_base_.z);
 
             /***** Test whether transformation is correct *****/
             /*
@@ -251,8 +251,8 @@ int main(int argc, char** argv)
     ros::NodeHandle nh_;
 
     ApplyForce obj;
-    //obj.apply_force_profile1();
-    obj.apply_force_profile2();
+    obj.apply_force_profile1();
+    //obj.apply_force_profile2();
     
     ros::spin();
 }
