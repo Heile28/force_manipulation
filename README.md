@@ -65,7 +65,7 @@ arm_cartesian_compliance_controller:
   end_effector_link: "$(arg tf_prefix)ee_link_ur5"    # All links below must come before this link
   robot_base_link: "$(arg tf_prefix)base_link_ur5"
   ft_sensor_ref_link: "$(arg tf_prefix)wrist_3_link_ur5"
-  compliance_ref_link: "$(arg tf_prefix)tool_link_ur5"
+  compliance_ref_link: "$(arg tf_prefix)ee_link_ur5"
   target_frame_topic: "target_pose" #target_frame
   joints:
     - $(arg tf_prefix)shoulder_pan_joint
