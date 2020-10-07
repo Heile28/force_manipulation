@@ -33,7 +33,7 @@ namespace move_compliant{
             ros::Publisher pub_pose_;
             ros::Subscriber rotation_angle_;
             ros::ServiceClient endeffector_pose_client_;
-            double theta_;
+            double q0_;
             std::vector<double> joint_theta_;
 
             ros::Time init_time_, current_time_, last_time_;
@@ -67,6 +67,9 @@ namespace move_compliant{
 
             //standard constructor
             MoveUR();
+
+            //destructor
+            ~MoveUR();
         
             /*
             * @brief connects /robot1_ns/arm_cartesian_compliance_controller/target_pose

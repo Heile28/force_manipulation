@@ -85,7 +85,7 @@ class MurBase
         double theta1_, theta2_, theta3_, theta4_, theta5_, theta6_;
 
         /**
-         * @brief starts the ServiceServer to query current poses
+         * @brief starts a ServiceServer to query current poses for external nodes
          * 
          */
         void startServiceServer();

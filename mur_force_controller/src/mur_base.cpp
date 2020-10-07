@@ -33,7 +33,7 @@ MurBase::MurBase()
 //destructor
 MurBase::~MurBase()
 {
-    printf("Angles have been deleted\n");
+    //printf("Angles have been deleted\n");
 }
 
 int MurBase::mapIndizes(std::string name)

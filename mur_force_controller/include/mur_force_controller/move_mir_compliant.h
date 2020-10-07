@@ -58,7 +58,9 @@ namespace move_compliant{
         std_msgs::Float64 rotation_angle_;
         double x_dot_;
         const double PI = M_PI;
-        bool activate_;
+        bool activate_force_; //switcher for force attack
+        bool activate_rotation1_; //switcher for rotation towards ee pose
+        bool activate_rotation2_; //switcher for rotation towards force direction
 
         //rotate in Force direction
         ros::Subscriber sub_force_;
@@ -76,6 +78,9 @@ namespace move_compliant{
     public:
         //standard constructor
         MoveMir();
+
+        //destructor
+        ~MoveMir();
 
         //methods
         /**
@@ -152,8 +157,6 @@ namespace move_compliant{
         void poseUpdater();
 
         void poseUpdater2();
-
-        void poseUpdater3();
 
         void moveStraight();
     };

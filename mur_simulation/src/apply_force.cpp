@@ -102,6 +102,7 @@ class ApplyForce
 
             while(current_time <= time1){
                 pub_wrench_msg.wrench.force.y = 7.5*pow(current_time, 2);
+                pub_wrench_msg.wrench.force.z = 7.5*pow(current_time, 2);
                 //std::cout<<"Force in z: "<<pub_wrench_msg.wrench.force.y<<std::endl
                 pub_wrench_msg.header.stamp = ros::Time::now();
                 force_.x = pub_wrench_msg.wrench.force.x;
@@ -116,6 +117,7 @@ class ApplyForce
 
             while(current_time <= time2){
                 pub_wrench_msg.wrench.force.y = 30.0;
+                pub_wrench_msg.wrench.force.z = 30.0;
                 pub_wrench_msg.header.stamp = ros::Time::now();
                 //std::cout<<"Force in z: "<<pub_wrench_msg.wrench.force.y<<std::endl;
                 force_.x = pub_wrench_msg.wrench.force.x;
@@ -130,6 +132,7 @@ class ApplyForce
 
             while(current_time <= time3){
                 pub_wrench_msg.wrench.force.y = 7.5*pow(current_time-8.0, 2);
+                pub_wrench_msg.wrench.force.z = 7.5*pow(current_time-8.0, 2);
                 pub_wrench_msg.header.stamp = ros::Time::now();
                 //std::cout<<"Force in z: "<<pub_wrench_msg.wrench.force.y<<std::endl;
                 force_.x = pub_wrench_msg.wrench.force.x;
@@ -240,9 +243,6 @@ class ApplyForce
 
 
 };
-
-
-
 
 
 int main(int argc, char** argv)

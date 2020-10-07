@@ -10,6 +10,7 @@ int main(int argc, char** argv)
     ros::NodeHandle nh;
 
     move_compliant::MoveUR obj2;
+    ROS_INFO("Ready to receive new poses");
 
     ros::spin();
 }

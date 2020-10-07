@@ -10,6 +10,7 @@
 
 #include <mur_force_controller/move_mir_compliant.h>
 #include <mur_force_controller/mur_base.h>
+#include <ur_kinematics/ur_kin.h>
 
 #ifndef GET_JACOBIAN_H
 #define GET_JACOBIAN_H
@@ -25,7 +26,19 @@ namespace calculate_jacobian{
             ros::ServiceClient endeffector_pose_client;
             ros::Subscriber get_joint_angles_;
 
+            double* theta = new double[6];
+            double* T = new double[16];
+            double* T1 = new double[16];
+            double* T2 = new double[16];
+            double* T3 = new double[16];
+            double* T4 = new double[16];
+            double* T5 = new double[16];
+            double* T6 = new double[16];
+            const std::string names[6]={"robot1_tf/shoulder_pan_joint", "robot1_tf/shoulder_lift_joint", "robot1_tf/elbow_joint",
+                             "robot1_tf/wrist_1_joint", "robot1_tf/wrist_2_joint", "robot1_tf/wrist_3_joint"};
+            
             //DH parameters
+            /*
             const double d1 = 0.089159;
             const double a2 = 0.42500; //-
             const double a3 = 0.39225; //-
@@ -42,9 +55,18 @@ namespace calculate_jacobian{
             const double alpha6 = 0.0;
 
             std::vector<double> theta_;
+            */
         
         protected:
             double w; //Manipulation measure
+
+            /**
+            * @brief callback function of joints data
+            * 
+            */
+            void callbackJointAngles(sensor_msgs::JointState joint_msg_);
+
+            int mapIndizes(std::string name_);
 
         public:
             //standard constructor
@@ -55,12 +77,9 @@ namespace calculate_jacobian{
 
             //methods
             /**
-            * @brief callback function of joints data
-            * 
+             * @brief calculates the geometric jacobian matrix based on DH-convention
             */
-            /*
-            virtual void callbackJointAngles(const sensor_msgs::JointState& joint_msg);
-            */
+            void forwardKinematics();
 
 
             /**
@@ -68,20 +87,17 @@ namespace calculate_jacobian{
              * 
              * @return Eigen::MatrixXd 
              */
-            Eigen::MatrixXd urJacobian();
+            Eigen::MatrixXd urJacobian(Eigen::MatrixXd T_E, Eigen::MatrixXd T1_, Eigen::MatrixXd T2_, 
+                            Eigen::MatrixXd T3_, Eigen::MatrixXd T4_, Eigen::MatrixXd T5_);
 
 
             /**
              * @brief manipulation measure based on manipulation ellipsoid method
              * 
              */
-            void manipulationMeasure();
+            void manipulationMeasure(Eigen::MatrixXd J_ur);
 
-            /**
-            * @brief callback function of joints data
-            * 
-            */
-            void callbackJointAngles(const sensor_msgs::JointState::ConstPtr& joint_msg_);
+            
 
     };
 

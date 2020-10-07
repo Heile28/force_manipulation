@@ -1,3 +1,14 @@
+/*
+ * File: ur_kinematics.cpp
+ * Author: Heiko Lenz
+ * 
+ * Created on 20. September 2020
+ * 
+ * Only one source file providing methods calculating ur_kinematics 
+ * to MiR movement
+ * 
+*/
+
 #include <ros/ros.h>
 #include <sensor_msgs/JointState.h>
 

@@ -120,7 +120,6 @@ void WrenchPublisher::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){
 
 void WrenchPublisher::gravitation_compensation()
 {
-    ROS_INFO("Inside gravitation compensation");
     Eigen::VectorXd target_wrench(6);
     Eigen::VectorXd gazebo_wrench(6);
     Eigen::VectorXd gravitation(3); //gravitation based on ~/base_link
@@ -154,7 +153,7 @@ void WrenchPublisher::gravitation_compensation()
         ros::Duration(1.0).sleep();
     }
 
-    R = transform_ft_.getBasis().inverse();
+    R = transform_ft_.getBasis(); //.inverse();
     
     Rotation << R[0][0], R[0][1], R[0][2],
                 R[1][0], R[1][1], R[1][2],
@@ -172,7 +171,7 @@ void WrenchPublisher::gravitation_compensation()
 
     wrench_compensated = gazebo_wrench + dead_wrench;
 
-    ROS_INFO_STREAM("Compensated wrench is: \n"<<wrench_compensated);
+    //ROS_INFO_STREAM("Compensated wrench is: \n"<<wrench_compensated);
 
     wrench_.wrench.force.x = wrench_compensated(0);
     wrench_.wrench.force.y = wrench_compensated(1);

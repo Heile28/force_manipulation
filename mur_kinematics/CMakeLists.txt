@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   mur_robot_msgs
   tf
   mur_force_controller
+  ur_kinematics
 )
 
 ## System dependencies are found with CMake's conventions

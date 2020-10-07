@@ -21,7 +21,7 @@ int main(int argc, char** argv)
     std::cout<<"Im in main file now"<<std::endl;
     ros::NodeHandle nh;
     
-    calculate_jacobian::GetJacobian get_jacobian;
+    //calculate_jacobian::GetJacobian get_jacobian;
     
 
     /***** Lookup initial angle *****/
@@ -40,16 +40,36 @@ int main(int argc, char** argv)
 
 
     /***** start moving MiR robot *****/
-    //move_compliant::MoveMir obj1;
+    move_compliant::MoveMir obj1;
     
+    /*
+    ros::Publisher pub_simple_ = nh.advertise<geometry_msgs::Twist>("/robot1_ns/mobile_base_controller/cmd_vel", 100);
+    geometry_msgs::Twist tw_msg_;
+    tw_msg_.linear.x = 0.0;
+    tw_msg_.linear.y = 0.0;
+    tw_msg_.linear.z = 0.0;
+    tw_msg_.angular.x = 0.0;
+    tw_msg_.angular.y = 0.0;
+    tw_msg_.angular.z = 0.0;
+
+    pub_simple_.publish(tw_msg_);
+    ros::Rate r(2.0);
+    r.sleep();
+
+    tw_msg_.angular.z = 2.0;
+    pub_simple_.publish(tw_msg_);
+    */
+
     
     while(ros::ok()){
-    //    obj1.poseUpdater2();
-        get_jacobian.urJacobian();
+        obj1.poseUpdater2();
+        //get_jacobian.forwardKinematics();
         ros::spinOnce();
         
         
     }
+    
+    
     
     
 
