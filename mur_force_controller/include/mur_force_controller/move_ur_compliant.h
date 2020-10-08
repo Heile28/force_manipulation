@@ -71,13 +71,13 @@ namespace move_compliant{
             //destructor
             ~MoveUR();
         
-            /*
-            * @brief connects /robot1_ns/arm_cartesian_compliance_controller/target_pose
-            * 
-            * @param x_d desired pose which to send to cartesian_compliance_controller
-            * @param theta_ angle between MiR-x-axis and force direction
-            * 
-            */
+            /**
+             * @brief connects /robot1_ns/arm_cartesian_compliance_controller/target_pose
+             * 
+             * @param x_d desired pose which to send to cartesian_compliance_controller
+             * @param theta_ angle between MiR-x-axis and force direction
+             * 
+             */
             void nullspace(double theta_);
 
             /**

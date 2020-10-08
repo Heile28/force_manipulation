@@ -95,9 +95,17 @@ namespace calculate_jacobian{
              * @brief manipulation measure based on manipulation ellipsoid method
              * 
              */
-            void manipulationMeasure(Eigen::MatrixXd J_ur);
+            void manipulationMeasure(Eigen::MatrixXd J_ur_);
 
-            
+            /**
+             * @brief calculate torque by specified wrench and jacobian matrix
+             * 
+             * @param J_ur_ Jacobian matrix
+             * @param target_wrench_ specified wrench vector
+             * 
+             * @return Eigen::MatrixXd
+             */ 
+            Eigen::VectorXd getTorque(Eigen::MatrixXd J_ur_, Eigen::VectorXd target_wrench_);
 
     };
 

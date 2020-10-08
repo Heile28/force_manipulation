@@ -217,10 +217,13 @@ void MoveUR::moveInitialPose()
 
 void MoveUR::rotateAngle(double rot_angle_)
 {
+    lookupInitialLocalPosition();
     /**** Query current joint configuration ****/
     joint_theta_.clear();
     joint_theta_ = base_.getAngles();
     ROS_INFO_STREAM("Current theta: "<<joint_theta_[0]);
+
+    transform_ = base_.transform("robot1_tf/base_link", "robot1_tf/ee_link_ur5");
 
     /**** Change first angle to rotation angle ****/
     joint_theta_[0] = joint_theta_[0] - rot_angle_;
@@ -243,11 +246,13 @@ void MoveUR::rotateAngle(double rot_angle_)
     double pitch = atan2(T[2],(T[0]*cos(yaw)-(T[1]*sin(yaw))));
     */
 
+    /*
     double roll = atan2(T[9],T[10]);
     double yaw = atan2(T[4],T[0]);
     double pitch = atan2(-T[8], cos(yaw)*T[0]+sin(yaw)*T[4]);
+    */
     
-    geometry_msgs::Quaternion quat = tf::createQuaternionMsgFromRollPitchYaw(roll, pitch, yaw);
+    //geometry_msgs::Quaternion quat = tf::createQuaternionMsgFromRollPitchYaw(roll, pitch, yaw);
 
     x_d.pose.orientation.x = initial_local_pose_[6]; //quat.x; //current_local_pose_[6]; //
     x_d.pose.orientation.y = initial_local_pose_[7]; //quat.y; //current_local_pose_[7]; //
@@ -269,6 +274,7 @@ void MoveUR::forwardKinematics(){
     /*
     for(int i=0; i<6;i++)
         ROS_INFO_STREAM(theta[i]);
+        */
 
     for(int i=0;i<4;i++) {
         for(int j=i*4;j<(i+1)*4;j++)
@@ -276,7 +282,7 @@ void MoveUR::forwardKinematics(){
         printf("\n");
     }
     printf("\n");
-    */
+    
 
 
 }

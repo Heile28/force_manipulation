@@ -47,6 +47,18 @@ void calculate_jacobian::GetJacobian::callbackJointAngles(sensor_msgs::JointStat
         //std::cout<<"["<<theta[0]<<","<<theta[1]<<","<<theta[2]<<","<<theta[3]<<","<<theta[4]<<","<<theta[5]<<"]"<<std::endl;
         //forwardKinematics();
 }
+
+Eigen::VectorXd calculate_jacobian::GetJacobian::getTorque(Eigen::MatrixXd J_ur_, Eigen::VectorXd target_wrench_)
+{
+        /**** Calculate torque due to specified force ****/
+        Eigen::VectorXd torque(6);
+
+        torque = J_ur_.transpose()*target_wrench_;
+        //ROS_INFO_STREAM("torque is: \n"<<torque);
+
+        return torque;
+}
+
 void calculate_jacobian::GetJacobian::manipulationMeasure(Eigen::MatrixXd J_ur)
 {
         /***** eigenvalues and eigenvectors *****/
@@ -61,11 +73,26 @@ void calculate_jacobian::GetJacobian::manipulationMeasure(Eigen::MatrixXd J_ur)
         es.compute(J_v*J_v.transpose(), true);
         Eigen::VectorXd eigen_values = es.eigenvalues().real(); //just the real part
         Eigen::MatrixXd eigen_vectors = es.eigenvectors().real(); //just the real part
-        
+        std::cout<<"The eigenvalues of Jacobian are: \n"<<eigen_values<<std::endl;
 
         /***** Manipulation measure *****/
-        double w = sqrt(JJ.determinant());
+        double w = sqrt(eigen_values(0)*eigen_values(1)*eigen_values(2));
         std::cout<<"Manipulation measure is: "<<w<<std::endl;
+        
+        //Alternatively
+        /*
+        w = sqrt(JJ.determinant());
+        std::cout<<"Manipulation measure is: "<<w<<std::endl;
+        */
+
+        /***** Calculate torque *****/
+        Eigen::VectorXd f(6);
+        Eigen::VectorXd tau(6);
+        f << 0, 80, 30, 0, 0, 0;
+
+        tau = calculate_jacobian::GetJacobian::getTorque(J_ur, f);
+        ROS_INFO_STREAM("torque is: \n"<<tau);
+        
 }
 
 void calculate_jacobian::GetJacobian::forwardKinematics()
@@ -82,7 +109,7 @@ void calculate_jacobian::GetJacobian::forwardKinematics()
                         i++;
                 }
         }
-        //std::cout<<"Endeffector pose is: \n"<<T_E<<std::endl;
+        std::cout<<"Endeffector pose is: \n"<<T_E<<std::endl;
 
         /**** Calculate transformation mtarices ****/
         ur_kinematics::forward_all(theta, T1, T2, T3, T4, T5, T6);
