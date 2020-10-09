@@ -50,6 +50,8 @@ int main(int argc, char** argv)
     ros::init(argc,argv,"send_target_wrench");
     ros::NodeHandle nh_;
 
+    ROS_INFO("Ready to send new target to compliance controller.");
+
     SendTarget obj;
     ros::spin();
 }

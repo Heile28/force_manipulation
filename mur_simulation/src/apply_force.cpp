@@ -145,6 +145,7 @@ class ApplyForce
                 r.sleep();
             }
             /*** Reset ****/
+            ros::Duration(0.2).sleep();
             pub_wrench_msg.wrench.force.x = 0.0;
             pub_wrench_msg.wrench.force.y = 0.0;
             pub_wrench_msg.wrench.force.z = 0.0;

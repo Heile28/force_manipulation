@@ -227,7 +227,7 @@ void MoveUR::rotateAngle(double rot_angle_)
 
     /**** Change first angle to rotation angle ****/
     joint_theta_[0] = joint_theta_[0] - rot_angle_;
-    ROS_INFO_STREAM("New theta: "<<joint_theta_[0]);
+    //ROS_INFO_STREAM("New theta: "<<joint_theta_[0]);
 
 
     /**** Calculate new pose rotated by rot_angle_ ****/
@@ -274,7 +274,7 @@ void MoveUR::forwardKinematics(){
     /*
     for(int i=0; i<6;i++)
         ROS_INFO_STREAM(theta[i]);
-        */
+        
 
     for(int i=0;i<4;i++) {
         for(int j=i*4;j<(i+1)*4;j++)
@@ -282,6 +282,7 @@ void MoveUR::forwardKinematics(){
         printf("\n");
     }
     printf("\n");
+    */
     
 
 

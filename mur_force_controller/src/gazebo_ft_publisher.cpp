@@ -144,7 +144,7 @@ void WrenchPublisher::gravitation_compensation()
     
     ros::Time now = ros::Time(0);
     try{
-        listener_.waitForTransform(source_frame, target_frame, now, ros::Duration(5.0));
+        listener_.waitForTransform(source_frame, target_frame, now, ros::Duration(2.0));
         listener_.lookupTransform(source_frame, target_frame, now, transform_ft_);
     }
     catch(tf::TransformException ex)
@@ -165,7 +165,8 @@ void WrenchPublisher::gravitation_compensation()
     dead_force = Rotation.transpose()*mass*gravitation;
     through = Rotation.transpose()*lever;
 
-    dead_torque = through.cross(dead_force);
+    //dead_torque = through.cross(dead_force);
+    dead_torque = Rotation.transpose()*lever.cross(dead_force);
 
     dead_wrench << dead_force(0), dead_force(1), dead_force(2), dead_torque(0), dead_torque(1), dead_torque(2);
 
@@ -173,6 +174,8 @@ void WrenchPublisher::gravitation_compensation()
 
     //ROS_INFO_STREAM("Compensated wrench is: \n"<<wrench_compensated);
 
+    wrench_.header.frame_id = force_.header.frame_id;
+    wrench_.header.stamp = ros::Time::now();
     wrench_.wrench.force.x = wrench_compensated(0);
     wrench_.wrench.force.y = wrench_compensated(1);
     wrench_.wrench.force.z = wrench_compensated(2);

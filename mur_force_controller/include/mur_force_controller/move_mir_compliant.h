@@ -61,6 +61,7 @@ namespace move_compliant{
         bool activate_force_; //switcher for force attack
         bool activate_rotation1_; //switcher for rotation towards ee pose
         bool activate_rotation2_; //switcher for rotation towards force direction
+        bool isPositiveForce_;
 
         //rotate in Force direction
         ros::Subscriber sub_force_;
@@ -149,6 +150,7 @@ namespace move_compliant{
          */
         void nullspace(double theta_);
 
+        double getCurrentForceAngle();
 
         void rotateToForceDirection();
 
