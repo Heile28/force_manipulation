@@ -78,6 +78,17 @@ void calculate_jacobian::GetJacobian::manipulationMeasure(Eigen::MatrixXd J_ur)
         /***** Manipulation measure *****/
         double w = sqrt(eigen_values(0)*eigen_values(1)*eigen_values(2));
         std::cout<<"Manipulation measure is: "<<w<<std::endl;
+
+        /***** Force ellipsoid *****/
+        /*
+        es.compute((J_v*J_v.transpose()).inverse(), true);
+        eigen_values = es.eigenvalues().real(); //just the real part
+        eigen_vectors = es.eigenvectors().real(); //just the real part
+        std::cout<<"The force eigenvalues of Jacobian are: \n"<<eigen_values<<std::endl;
+        w = sqrt(eigen_values(0)*eigen_values(1)*eigen_values(2));
+        std::cout<<"Force manipulation measure is: "<<w<<std::endl;
+        */
+
         
         //Alternatively
         /*
@@ -86,12 +97,13 @@ void calculate_jacobian::GetJacobian::manipulationMeasure(Eigen::MatrixXd J_ur)
         */
 
         /***** Calculate torque *****/
-        Eigen::VectorXd f(6);
+        /*Eigen::VectorXd f(6);
         Eigen::VectorXd tau(6);
         f << 0, 80, 30, 0, 0, 0;
 
         tau = calculate_jacobian::GetJacobian::getTorque(J_ur, f);
         ROS_INFO_STREAM("torque is: \n"<<tau);
+        */
         
 }
 
@@ -109,7 +121,8 @@ void calculate_jacobian::GetJacobian::forwardKinematics()
                         i++;
                 }
         }
-        std::cout<<"Endeffector pose is: \n"<<T_E<<std::endl;
+        //std::cout<<"Endeffector pose is: \n"<<T_E<<std::endl;
+        std::cout<<"Offset l is: "<<T[3]<<std::endl;
 
         /**** Calculate transformation mtarices ****/
         ur_kinematics::forward_all(theta, T1, T2, T3, T4, T5, T6);
@@ -181,6 +194,18 @@ Eigen::MatrixXd calculate_jacobian::GetJacobian::urJacobian(Eigen::MatrixXd T_E,
                 ez_03.cross(r_3E), ez_04.cross(r_4E), ez_05.cross(r_5E),
                 ez_00, ez_01, ez_02, ez_03, ez_04, ez_05;
         //std::cout <<"Jacobian matrix of UR=\n"<<J_ur_<<std::endl;
+
+        //Check correctness
+        /*
+        Eigen::VectorXd x_e(6);
+        Eigen::VectorXd theta1(6);
+        Eigen::VectorXd theta2(6);
+        theta1 << theta[0], theta[1], theta[2], theta[3], theta[4], theta[5];
+        theta2 << theta[0], theta[1], theta[2], theta[3], theta[4], theta[5];
+        std::cout<<"Angles: "<<theta1<<std::endl;
+        x_e = J_ur_*theta1;
+        std::cout<<"X_e: "<<x_e<<std::endl;
+        */
 
         return J_ur_;
 }

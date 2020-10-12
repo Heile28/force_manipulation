@@ -157,8 +157,168 @@ class ApplyForce
             std::cout<<"Force attack finished!"<<std::endl;
 
         }
-
         void apply_force_profile2()
+        {
+            ros::Rate r(20.0);
+            double force[3]={0.0,0.0,0.0};
+            geometry_msgs::WrenchStamped pub_wrench_msg;
+            //pub_wrench_msg.header.frame_id = "robot1_tf/wrist_3_link_ur5"; //wrist_3_link_ur5
+
+            /**** Force profile ****/
+            double current_time = ros::Time::now().toSec();
+            double time1 = 4.0;
+
+            ROS_INFO("Force attack 8 seconds in real.");
+            std::cout<<"Current time: "<<current_time<<std::endl;
+
+            pub_wrench_msg.wrench.force.x = 0.0;
+            pub_wrench_msg.wrench.force.y = 0.0;
+            pub_wrench_msg.wrench.force.z = 0.0;
+            pub_wrench_msg.wrench.torque.x = 0.0;
+            pub_wrench_msg.wrench.torque.y = 0.0;
+            pub_wrench_msg.wrench.torque.z = 0.0;
+
+            while(current_time <= time1){
+                pub_wrench_msg.wrench.force.y = -8.75*pow(current_time-2, 2)+35;
+                pub_wrench_msg.wrench.force.z = -(-8.75*pow(current_time-2, 2)+35);
+                //std::cout<<"Force in z: "<<pub_wrench_msg.wrench.force.y<<std::endl
+                pub_wrench_msg.header.stamp = ros::Time::now();
+                force_.x = pub_wrench_msg.wrench.force.x;
+                force_.y = pub_wrench_msg.wrench.force.y;
+                force_.z = pub_wrench_msg.wrench.force.z;
+                apply_constant_force();
+                pub_wrench.publish(pub_wrench_msg);
+                current_time = current_time + 0.05;
+                //std::cout<<"Current time: "<<current_time<<std::endl;
+                r.sleep();
+            }
+            /*** Reset ****/
+            ros::Duration(0.2).sleep();
+            pub_wrench_msg.wrench.force.x = 0.0;
+            pub_wrench_msg.wrench.force.y = 0.0;
+            pub_wrench_msg.wrench.force.z = 0.0;
+            pub_wrench_msg.wrench.torque.x = 0.0;
+            pub_wrench_msg.wrench.torque.y = 0.0;
+            pub_wrench_msg.wrench.torque.z = 0.0;
+            pub_wrench.publish(pub_wrench_msg);
+            
+            std::cout<<"Force attack finished!"<<std::endl;
+        }
+
+        void apply_force_profile3()
+        {
+            ros::Rate r(20.0);
+            double force[3]={0.0,0.0,0.0};
+            geometry_msgs::WrenchStamped pub_wrench_msg;
+            //pub_wrench_msg.header.frame_id = "robot1_tf/wrist_3_link_ur5"; //wrist_3_link_ur5
+
+            /**** Force profile ****/
+            double current_time = ros::Time::now().toSec();
+            double time1 = 1.0;
+            double time2 = 3.0;
+            double time3 = 3.5;
+            double time4 = 10;
+            double time5 = 10.5;
+
+            ROS_INFO("Force attack 8 seconds in real.");
+            std::cout<<"Current time: "<<current_time<<std::endl;
+
+            pub_wrench_msg.wrench.force.x = 0.0;
+            pub_wrench_msg.wrench.force.y = 0.0;
+            pub_wrench_msg.wrench.force.z = 0.0;
+            pub_wrench_msg.wrench.torque.x = 0.0;
+            pub_wrench_msg.wrench.torque.y = 0.0;
+            pub_wrench_msg.wrench.torque.z = 0.0;
+
+            while(current_time <= time1){
+                pub_wrench_msg.wrench.force.y = 20*current_time;
+                pub_wrench_msg.wrench.force.z = 20*current_time;
+                //std::cout<<"Force in z: "<<pub_wrench_msg.wrench.force.y<<std::endl
+                pub_wrench_msg.header.stamp = ros::Time::now();
+                force_.x = pub_wrench_msg.wrench.force.x;
+                force_.y = pub_wrench_msg.wrench.force.y;
+                force_.z = pub_wrench_msg.wrench.force.z;
+                apply_constant_force();
+                pub_wrench.publish(pub_wrench_msg);
+                current_time = current_time + 0.05;
+                //std::cout<<"Current time: "<<current_time<<std::endl;
+                r.sleep();
+            }
+
+            while(current_time <= time2){
+                pub_wrench_msg.wrench.force.y = -3/2 * current_time + 21.5;
+                pub_wrench_msg.wrench.force.z = -3/2 * current_time + 21.5;
+                pub_wrench_msg.header.stamp = ros::Time::now();
+                //std::cout<<"Force in z: "<<pub_wrench_msg.wrench.force.y<<std::endl;
+                force_.x = pub_wrench_msg.wrench.force.x;
+                force_.y = pub_wrench_msg.wrench.force.y;
+                force_.z = pub_wrench_msg.wrench.force.z;
+                apply_constant_force();
+                pub_wrench.publish(pub_wrench_msg);
+                current_time = current_time + 0.05;
+                //std::cout<<"Current time: "<<current_time<<std::endl;
+                r.sleep();
+            }
+
+            while(current_time <= time3){
+                pub_wrench_msg.wrench.force.y = 26*current_time - 61;
+                pub_wrench_msg.wrench.force.z = 26*current_time - 61;
+                pub_wrench_msg.header.stamp = ros::Time::now();
+                //std::cout<<"Force in z: "<<pub_wrench_msg.wrench.force.y<<std::endl;
+                force_.x = pub_wrench_msg.wrench.force.x;
+                force_.y = pub_wrench_msg.wrench.force.y;
+                force_.z = pub_wrench_msg.wrench.force.z;
+                apply_constant_force();
+                pub_wrench.publish(pub_wrench_msg);
+                current_time = current_time + 0.05;
+                //std::cout<<"Current time: "<<current_time<<std::endl;
+                r.sleep();
+            }
+
+            while(current_time <= time4){
+                pub_wrench_msg.wrench.force.y = 30;
+                pub_wrench_msg.wrench.force.z = 30;
+                pub_wrench_msg.header.stamp = ros::Time::now();
+                //std::cout<<"Force in z: "<<pub_wrench_msg.wrench.force.y<<std::endl;
+                force_.x = pub_wrench_msg.wrench.force.x;
+                force_.y = pub_wrench_msg.wrench.force.y;
+                force_.z = pub_wrench_msg.wrench.force.z;
+                apply_constant_force();
+                pub_wrench.publish(pub_wrench_msg);
+                current_time = current_time + 0.05;
+                //std::cout<<"Current time: "<<current_time<<std::endl;
+                r.sleep();
+            }
+            while(current_time <= time5){
+                pub_wrench_msg.wrench.force.y = -60*current_time + 630;
+                pub_wrench_msg.wrench.force.z = -60*current_time + 630;
+                pub_wrench_msg.header.stamp = ros::Time::now();
+                //std::cout<<"Force in z: "<<pub_wrench_msg.wrench.force.y<<std::endl;
+                force_.x = pub_wrench_msg.wrench.force.x;
+                force_.y = pub_wrench_msg.wrench.force.y;
+                force_.z = pub_wrench_msg.wrench.force.z;
+                apply_constant_force();
+                pub_wrench.publish(pub_wrench_msg);
+                current_time = current_time + 0.05;
+                //std::cout<<"Current time: "<<current_time<<std::endl;
+                r.sleep();
+            }
+            /*** Reset ****/
+            ros::Duration(0.2).sleep();
+            pub_wrench_msg.wrench.force.x = 0.0;
+            pub_wrench_msg.wrench.force.y = 0.0;
+            pub_wrench_msg.wrench.force.z = 0.0;
+            pub_wrench_msg.wrench.torque.x = 0.0;
+            pub_wrench_msg.wrench.torque.y = 0.0;
+            pub_wrench_msg.wrench.torque.z = 0.0;
+            pub_wrench.publish(pub_wrench_msg);
+            
+            std::cout<<"Force attack finished!"<<std::endl;
+
+        }
+
+
+        void apply_force_profile4()
         {
             /**** Constant force ****/
             ros::Rate r(20.0);
@@ -252,7 +412,7 @@ int main(int argc, char** argv)
     ros::NodeHandle nh_;
 
     ApplyForce obj;
-    obj.apply_force_profile1();
+    obj.apply_force_profile3();
     //obj.apply_force_profile2();
     
     ros::spin();

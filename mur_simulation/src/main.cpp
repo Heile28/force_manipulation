@@ -21,6 +21,7 @@ int main(int argc, char** argv)
     std::cout<<"Im in main file now"<<std::endl;
     ros::NodeHandle nh;
     
+    /***** Test manipulation measure w *****/
     //calculate_jacobian::GetJacobian get_jacobian;
     
 
@@ -63,6 +64,7 @@ int main(int argc, char** argv)
     
     while(ros::ok()){
         obj1.poseUpdater2();
+
         //get_jacobian.forwardKinematics();
         ros::spinOnce();
         
