@@ -126,3 +126,11 @@ and line 34-44:
     #endif
 */
 ```
+Again execute
+```bash
+catkin_make
+```
+## Start UR Kinematics Package
+```bash
+roslaunch mir_ur5 system_sim.launch
+```
