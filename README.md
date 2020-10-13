@@ -130,7 +130,7 @@ Again execute
 ```bash
 catkin_make
 ```
-## Start UR Kinematics Package
+## Start simulation
 ```bash
 roslaunch mir_ur5 system_sim.launch
 ```
