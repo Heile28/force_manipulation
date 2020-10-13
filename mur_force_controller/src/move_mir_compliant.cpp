@@ -332,7 +332,7 @@ void MoveMir::rotateToForceDirection()
         rotateToPoseDirection(rot_angle2);
         
         /***** Reset switcher *****/
-        if(abs(rot_angle2) < 0.01)
+        if(abs(rot_angle2) < 0.0095)
         {
             activate_rotation2_ = 0; //SECOND ROTATION DISABLED
             ROS_INFO("Overall rotation finished!");
@@ -457,6 +457,8 @@ void MoveMir::poseUpdater2()
     {
         activate_rotation2_ = 0;
     }
+    if(abs(force_angle) >= 0.01)
+        activate_rotation2_ = 1;
 
     if(activate_force_ == 1 && activate_rotation2_ == 1)
         rotateToForceDirection();
@@ -558,13 +560,15 @@ void MoveMir::moveStraight()
     //x_dot_ = force_angle/time * 0.44521/2;
 
     ROS_INFO("Inside straight movement");
-
-    tw_msg_.linear.x = (isPositiveForce_==1) ? -x_dot_ : x_dot_;
+    tw_msg_.linear.x = 0.0;
     tw_msg_.linear.y = 0.0;
     tw_msg_.linear.z = 0.0;
     tw_msg_.angular.x = 0.0;
     tw_msg_.angular.y = 0.0;
     tw_msg_.angular.z = 0.0;
+    pub_simple_.publish(tw_msg_);
+
+    tw_msg_.linear.x = (isPositiveForce_==1) ? -x_dot_ : x_dot_;
 
     pub_simple_.publish(tw_msg_);
 }

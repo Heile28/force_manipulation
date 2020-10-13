@@ -137,7 +137,7 @@ void WrenchPublisher::gravitation_compensation()
     
     lever << 0.0, 0.0823, 0.0; 
     
-    gravitation << 0.0, 0.0, 9.81;
+    gravitation << 0.0, 0.0, -9.81;
 
     std::string source_frame = "robot1_tf/base_link";
     std::string target_frame = "robot1_tf/wrist_3_link_ur5";
@@ -170,7 +170,7 @@ void WrenchPublisher::gravitation_compensation()
 
     dead_wrench << dead_force(0), dead_force(1), dead_force(2), dead_torque(0), dead_torque(1), dead_torque(2);
 
-    wrench_compensated = gazebo_wrench + dead_wrench;
+    wrench_compensated = gazebo_wrench - dead_wrench;
 
     //ROS_INFO_STREAM("Compensated wrench is: \n"<<wrench_compensated);
 
