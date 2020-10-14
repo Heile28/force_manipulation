@@ -63,7 +63,8 @@ int main(int argc, char** argv)
 
     
     while(ros::ok()){
-        obj1.poseUpdater2();
+        //obj1.poseUpdater2();
+        obj1.poseUpdater();
 
         //get_jacobian.forwardKinematics();
         ros::spinOnce();

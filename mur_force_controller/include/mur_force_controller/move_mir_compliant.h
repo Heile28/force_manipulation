@@ -45,9 +45,10 @@ namespace move_compliant{
         double rot_angle_old;
 
         std::vector<double> initial_pose_, current_pose_, displacement_pose_;
-        std::vector<double> initial_global_pose_, initial_local_pose_, initial_world_pose_;
+        std::vector<double> initial_global_pose_, initial_local_pose_, initial_world_pose_, initial_mir_pose_;
         std::vector<double> current_global_pose_, current_local_pose_, current_map_pose_, current_mir_map_pose_;
         std::vector<double> last_pose_;
+        std::vector<double> old_mir_pose;
         double delta_x_, delta_y_; 
         int func_case_;
 
@@ -85,34 +86,36 @@ namespace move_compliant{
 
         //methods
         /**
-         * @brief request initial global pose in ~/base_link
+         * @brief service request initial global pose of endeffector in ~/base_link
          * 
          */
         void lookupInitialGlobalPosition();
 
         /**
-         * @brief request initial pose in ~/base_link_ur5
+         * @brief service request initial pose of endeffector in ~/base_link_ur5
          * 
          */
         void lookupInitialLocalPosition();
 
-        /**
-         * @brief Normalizes the angle to be 0 to M_PI
-         * 
-         */
-        double normalize_angle(double angle);
 
         /**
-         * @brief request initial pose in ~/world
+         * @brief service request initial pose of endeffector in ~/world
          * 
          */
         void lookupInitialWorldPosition();
+
+        /**
+         * @brief service request initial pose of MiR in ~/world
+         * 
+         */
+        void lookupInitialMiRPosition();
         
         /**
          * @brief calls for global position of endeffector (inside ~/base_link)
          * 
          * @return std::vector<double> current_pose
          */
+
         virtual std::vector<double> callCurrentGlobalPose();
 
         /**
@@ -125,8 +128,15 @@ namespace move_compliant{
         
         virtual std::vector<double> callCurrentWorldPose();
         
+        /**
+         * @brief Normalizes the angle to be 0 to M_PI
+         * 
+         */
+        double normalize_angle(double angle);
 
+        
         void publishVelocityCommand();
+
         /**
         * @brief Transforms UR5 endeffector pose into mir_base frame
         * 

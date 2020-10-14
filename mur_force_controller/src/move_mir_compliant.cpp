@@ -20,8 +20,9 @@ MoveMir::MoveMir()
     this->lookupInitialGlobalPosition();
     this->lookupInitialWorldPosition();
     this->lookupInitialLocalPosition();
+    this->lookupInitialMiRPosition();
     this->pub_simple_ = nh_.advertise<geometry_msgs::Twist>("/robot1_ns/mobile_base_controller/cmd_vel", 100);
-    //this->pub_pose_ = nh_.advertise<geometry_msgs::PoseStamped>("/robot1_ns/arm_cartesian_compliance_controller/target_pose", 100);
+    this->pub_pose_ = nh_.advertise<geometry_msgs::PoseStamped>("/robot1_ns/arm_cartesian_compliance_controller/target_pose", 100);
     this->pub_angle_ = nh_.advertise<std_msgs::Float64>("/move_mir_compliant/rotation_angle", 100);
     this->sub_force_ = nh_.subscribe("/robot1_ns/arm_cartesian_compliance_controller/ft_sensor_wrench", 100, &MoveMir::wrenchCallback, this);
     
@@ -36,6 +37,7 @@ MoveMir::MoveMir()
     this->activate_rotation1_ = 0;
     this->activate_rotation2_ = 1;
     this->x_dot_ = 0.2331114;
+    
 
 }
 
@@ -73,6 +75,40 @@ void MoveMir::lookupInitialWorldPosition(){
     //theta0_world_ = atan2(initial_world_pose_[1],initial_world_pose_[0]);
     //std::cout<<"Initial theta0: "<<theta0_world_<<std::endl;
     last_time_ = init_time_;
+}
+
+void MoveMir::lookupInitialMiRPosition(){
+    ros::service::waitForService("/mur_base/listen_frames/request_endeffector/pose");
+    this->endeffector_pose_client_ = nh_.serviceClient<mur_robot_msgs::PoseRequest>("/mur_base/listen_frames/request_endeffector/pose");
+
+    mur_robot_msgs::PoseRequest pose_msg_;
+    pose_msg_.request.request = true;
+    pose_msg_.request.source_frame = "map";
+    pose_msg_.request.target_frame = "robot1_tf/base_link";
+
+    //ros::service::waitForService("/mur_base/listen_frames/request_endeffector/pose", ros::Duration(2));
+    
+    if(endeffector_pose_client_.call(pose_msg_))
+    {
+        initial_mir_pose_.clear();
+        initial_mir_pose_.push_back(pose_msg_.response.position.x);
+        initial_mir_pose_.push_back(pose_msg_.response.position.y);
+        initial_mir_pose_.push_back(pose_msg_.response.position.z);
+        initial_mir_pose_.push_back(pose_msg_.response.rpy_orientation.x);
+        initial_mir_pose_.push_back(pose_msg_.response.rpy_orientation.y);
+        initial_mir_pose_.push_back(pose_msg_.response.rpy_orientation.z);
+        initial_mir_pose_.push_back(pose_msg_.response.orientation.x);
+        initial_mir_pose_.push_back(pose_msg_.response.orientation.y);
+        initial_mir_pose_.push_back(pose_msg_.response.orientation.z);
+        initial_mir_pose_.push_back(pose_msg_.response.orientation.w);
+        
+    }
+    else
+    {
+        ROS_ERROR("Service call failed!");
+    }
+    last_time_ = init_time_;
+    old_mir_pose = initial_mir_pose_;
 }
 
 void MoveMir::lookupInitialGlobalPosition(){
@@ -193,7 +229,7 @@ std::vector<double> MoveMir::callCurrentLocalPose()
     current_local_pose_.clear();
     current_local_pose_ = base_.getCurrentPose(source_frame, target_frame);
 
-    // std::cout<<"Current pose is "<<current_local_pose_[0]<<", "<<current_local_pose_[1]<<", "<<current_local_pose_[2]
+    //std::cout<<"Current pose is "<<current_local_pose_[0]<<", "<<current_local_pose_[1]<<", "<<current_local_pose_[2]
     //                 <<", "<<current_local_pose_[3]<<", "<<current_local_pose_[4]<<", "<<current_local_pose_[5]<<std::endl;
     
 
@@ -370,53 +406,62 @@ double MoveMir::getCurrentForceAngle()
 
 void MoveMir::poseUpdater()
 {
-    callCurrentGlobalPose();
-    callCurrentLocalPose();
-    current_time_ = ros::Time::now();
-    dt_ = (current_time_-last_time_).toSec();
-    last_time_ = ros::Time::now();
-    
-    //rotation_angle_.data = theta0_local_;
+    /***** Query angle of force attack *****/
+    double force_angle2 = getCurrentForceAngle();
 
-    /***IF CASES FOR INSIDE UR5 ***/
+    //rotateToPoseDirection(force_angle);
+    //std::vector<double> old_mir_pose = initial_mir_pose_;
+    std::vector<double> delta_pose;
 
-    
-    //case for second frame quadrant
-    if(theta_global_<0.0)
+    ROS_INFO("Move MiR");
+    // tw_msg_.linear.x = 0.0;
+    tw_msg_.linear.y = 0.0;
+    tw_msg_.linear.z = 0.0;
+    tw_msg_.angular.x = 0.0;
+    tw_msg_.angular.y = 0.0;
+    // tw_msg_.angular.z = 0.0;
+
+    if(abs(force_angle2) >= 0.01) // && activate_force_ == 1)
     {
-        
-        if(theta_global_ < theta0_global_)
-        {
-            rotation_angle_.data = theta_global_+theta0_global_;
-            ROS_INFO_STREAM("Case 1.1: angle is"<<rotation_angle_.data);
-            //pub_angle_.publish(rotation_angle_);
-            if(abs(rotation_angle_.data)>0.017453293) //minimally 1 degree
-                nullspace(rotation_angle_.data);
-        }
-        else
-        {
-            rotation_angle_.data = theta0_global_-theta_global_;
-            ROS_INFO_STREAM("Case 1.2: angle is"<<rotation_angle_.data);
-            //pub_angle_.publish(rotation_angle_);
-            if(abs(rotation_angle_.data)>0.017453293) //minimally 1 degree
-                nullspace(rotation_angle_.data);
-        }
+        //do{
+            //force_angle = getCurrentForceAngle();
+            tw_msg_.angular.z = force_angle2;
+            tw_msg_.linear.x = 0.2;
+            
+            /**** Query current MiR pose ****/
+            callCurrentWorldPose();
 
-    }
-    
-    //case for first frame quadrant
-    if(theta_global_ >0.0){
-        rotation_angle_.data = theta0_global_ + theta_global_; //angle assigning desired pose x_d
-        ROS_INFO_STREAM("Case 2: angle is"<<rotation_angle_.data);
-        //pub_angle_.publish(rotation_angle_);
-        if(abs(rotation_angle_.data)>0.017453293) //minimally 1 degree
-            nullspace(rotation_angle_.data);
-    }
-    else
-    {
-        rotation_angle_.data = 0.0;
-        //pub_angle_.publish(rotation_angle_);
-        nullspace(rotation_angle_.data);
+            /**** Query current EE pose in local frame ****/
+            callCurrentLocalPose();
+
+            /**** Update displacement ****/
+            //ROS_INFO("IM here begin");
+            ROS_INFO_STREAM("delta_pose size is"<<current_mir_map_pose_.size());
+            delta_pose.clear();
+            for(int i = 0; i<10; i++)
+                delta_pose[i] = current_mir_map_pose_[i]- old_mir_pose[i];
+
+            ROS_INFO_STREAM("delta_pose size is"<<delta_pose.size());
+            
+            geometry_msgs::PoseStamped new_pose;
+            new_pose.header.stamp = ros::Time::now();
+            new_pose.header.frame_id = "robot1_tf/base_link_ur5";
+            new_pose.pose.position.x = current_local_pose_[0] - delta_pose[0];
+            new_pose.pose.position.y = current_local_pose_[1] - delta_pose[1];
+            new_pose.pose.position.z = current_local_pose_[2] - delta_pose[2];
+
+            new_pose.pose.orientation.x = current_local_pose_[6] - delta_pose[6];
+            new_pose.pose.orientation.y = current_local_pose_[7] - delta_pose[7];
+            new_pose.pose.orientation.z = current_local_pose_[8] - delta_pose[8];
+            new_pose.pose.orientation.w = current_local_pose_[9] - delta_pose[9];
+            ROS_INFO("IM here end");
+
+            pub_simple_.publish(tw_msg_);
+            pub_pose_.publish(new_pose);
+            old_mir_pose.clear();
+            old_mir_pose = current_mir_map_pose_;
+
+        //}while(force_angle != 0.0)
     }
 
 }
