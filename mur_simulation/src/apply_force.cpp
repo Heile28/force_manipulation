@@ -185,7 +185,7 @@ class ApplyForce
 
             while(current_time <= time1){
                 pub_wrench_msg.wrench.force.y = -8.75*pow(current_time-2, 2)+35;
-                pub_wrench_msg.wrench.force.z = -(-8.75*pow(current_time-2, 2)+35);
+                pub_wrench_msg.wrench.force.z = -8.75*pow(current_time-2, 2)+35;
                 //std::cout<<"Force in z: "<<pub_wrench_msg.wrench.force.y<<std::endl
                 pub_wrench_msg.header.stamp = ros::Time::now();
                 force_.x = pub_wrench_msg.wrench.force.x;
@@ -506,7 +506,7 @@ int main(int argc, char** argv)
     ros::NodeHandle nh_;
 
     ApplyForce obj;
-    obj.apply_force_profile3();
+    obj.apply_force_profile2();
     //obj.apply_force_profile2();
     
     ros::spin();

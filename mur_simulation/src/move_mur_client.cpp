@@ -246,7 +246,5 @@ int main(int argc, char** argv){
     ros::Duration(8.0).sleep();
     client.switchController();
 
-    tf_test();
-
     ros::waitForShutdown();
 }

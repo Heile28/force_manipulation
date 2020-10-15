@@ -41,6 +41,9 @@ int main(int argc, char** argv)
         pose.orientation.z = current_pose.at(8);
         pose.orientation.w = current_pose.at(9);
 
+        ROS_INFO_STREAM("Aktuelle Lage: "<<pose.position.x<<", "<<pose.position.y<<", "<<pose.position.z);
+        ROS_INFO_STREAM("Aktuelle Orientierung: "<<pose.orientation.x<<", "<<pose.orientation.y<<", "<<pose.orientation.z<<", "<<pose.orientation.w);
+
         /***** Set current twist *****/
         twist.linear.x = (current_pose.at(0) - old_pose.at(0))/0.01;
         twist.linear.y = (current_pose.at(1) - old_pose.at(1))/0.01;
