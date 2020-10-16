@@ -50,7 +50,7 @@ sudo rosdep install --from-paths ./ -i -y --rosdistro melodic
 
 catkin_make
 
-# activate this workspace
+# activate this workspace via ~/.bashrc
 source $HOME/catkin_ws/devel/setup.bash
 ```
 ## FDCC-Solver
