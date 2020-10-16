@@ -36,8 +36,10 @@ chmod +x rep117_filter.py
 cd $HOME/catkin_ws
 
 # Install 
-sudo apt install ros-melodic-cob-gazebo-ros-control
+sudo apt-get install ros-melodic-moveit
 sudo apt-get install ros-melodic-moveit-visual-tools
+sudo apt install ros-melodic-cob-gazebo-ros-control
+sudo apt-get install ros-melodic-plotjuggler
 
 # checking dependencies
 sudo apt-get update -qq
@@ -48,7 +50,7 @@ sudo rosdep install --from-paths ./ -i -y --rosdistro melodic
 
 catkin_make
 
-# activate this workspace
+# activate this workspace via ~/.bashrc
 source $HOME/catkin_ws/devel/setup.bash
 ```
 ## FDCC-Solver
