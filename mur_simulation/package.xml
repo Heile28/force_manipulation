@@ -53,14 +53,34 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>geometry_msgs</build_depend>
   <build_depend>tf</build_depend>
+  <build_depend>mur_force_controller</build_depend>
+  <build_depend>mur_kinematics</build_depend>
+  <build_depend>ur_kinematics</build_depend>
+  <build_depend>visualization_msgs</build_depend>
+  <build_depend>actionlib_msgs</build_depend>
+  <build_depend>actionlib</build_depend>
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>std_msgs</build_export_depend>
   <build_export_depend>geometry_msgs</build_export_depend>
   <build_export_depend>tf</build_export_depend>
+  <build_export_depend>mur_force_controller</build_export_depend>
+  <build_export_depend>mur_kinematics</build_export_depend>
+  <build_export_depend>ur_kinematics</build_export_depend>
+  <build_export_depend>visualization_msgs</build_export_depend>
+  <build_export_depend>actionlib_msgs</build_export_depend>
+  <build_export_depend>actionlib</build_export_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>tf</exec_depend>
+  <exec_depend>mur_force_controller</exec_depend>
+  <exec_depend>mur_kinematics</exec_depend>
+  <exec_depend>ur_kinematics</exec_depend>
+  <exec_depend>visualization_msgs</exec_depend>
+  <exec_depend>actionlib_msgs</exec_depend>
+  <exec_depend>actionlib</exec_depend>
+
+
 
 
   <!-- The export tag contains other, unspecified, tags -->

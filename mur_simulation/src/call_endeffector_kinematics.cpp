@@ -1,3 +1,13 @@
+/*
+ * File: call_endeffector_kinematics.cpp
+ * Author: Heiko Lenz
+ * 
+ * Created on 10. Oktober 2020
+ * 
+ * Source file providing a topic publishing current endeffector pose and twist referenced to UR frame 
+ * 
+*/
+
 #include <ros/ros.h>
 
 #include <mur_force_controller/mur_base.h>
@@ -28,7 +38,7 @@ int main(int argc, char** argv)
 
     while(ros::ok())
     {
-        /***** Call current pose *****/
+        /***** Call current local pose *****/
         current_pose.clear();
         current_pose = base_.getCurrentPose(source_frame, target_frame);
 

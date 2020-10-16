@@ -159,6 +159,7 @@ add_executable(send_target_wrench_node src/send_target_wrench.cpp)
 add_executable(start_ur_node src/start_ur.cpp)
 add_executable(visualize_node src/visualize.cpp)
 add_executable(call_endeffector_kinematics_node src/call_endeffector_kinematics.cpp)
+add_executable(call_mir_kinematics_node src/call_mir_kinematics.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -188,6 +189,7 @@ target_link_libraries(start_ur_node ${catkin_LIBRARIES})
 target_link_libraries(visualize_node ${catkin_LIBRARIES})
 target_link_libraries(send_target_wrench_node ${catkin_LIBRARIES})
 target_link_libraries(call_endeffector_kinematics_node ${catkin_LIBRARIES})
+target_link_libraries(call_mir_kinematics_node ${catkin_LIBRARIES})
 
 #############
 ## Install ##

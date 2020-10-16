@@ -506,7 +506,7 @@ int main(int argc, char** argv)
     ros::NodeHandle nh_;
 
     ApplyForce obj;
-    obj.apply_force_profile2();
+    obj.apply_force_profile3();
     //obj.apply_force_profile2();
     
     ros::spin();

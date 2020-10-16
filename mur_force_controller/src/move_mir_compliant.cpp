@@ -37,6 +37,7 @@ MoveMir::MoveMir()
     this->activate_rotation1_ = 0;
     this->activate_rotation2_ = 1;
     this->x_dot_ = 0.2331114;
+    this->old_mir_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     
 
 }
@@ -292,7 +293,7 @@ void MoveMir::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){
         this->activate_force_ = 0;
         //this->activate_rotation1_ = 1; //READY FOR FIRST ROTATION
         //this->activate_rotation2_ = 0; //NOT READY SECOND ROTATION
-        this->activate_rotation2_ = 1;
+        //this->activate_rotation2_ = 1;
     }
     //else
     //    activate_ = 0; //UNCOMMENT WHEN FT-SENSOR ACTIVATED
@@ -300,21 +301,6 @@ void MoveMir::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){
     //     poseUpdater2();
     //std::cout<<"Wrench is"<<force_.x<<", "<<force_.y<<", "<<force_.z<<std::endl;
 
-}
-
-void MoveMir::moveGoal()
-{
-    do{
-        double x_length = sqrt(pow((displacement_pose_.at(0)),2)+pow((displacement_pose_.at(1)),2) );
-        tw_msg_.linear.x = x_length*cos(delta_th_)/dt_;
-        tw_msg_.angular.z = vth_;
-        pub_simple_.publish(tw_msg_);
-        last_pose_.clear();
-        last_pose_ = current_pose_;
-        func_case_ = 1;
-        callCurrentLocalPose();
-    }while (current_local_pose_==last_pose_);
-    
 }
 
 void MoveMir::nullspace(double theta_)
@@ -343,32 +329,21 @@ void MoveMir::nullspace(double theta_)
 }
 
 
-
-// void MoveMir::publishVelocityCommand()
-// {
-//     geometry_msgs::Twist msg_vel;
-//     msg_vel.linear.x=this->control_.v;
-//     msg_vel.angular.z=this->control_.omega;
-//     this->pub_cmd_vel.publish(msg_vel);
-//}
-
-
-
 void MoveMir::rotateToForceDirection()
 {
         ROS_INFO("Now is time for rotation in force direction!");
         
         /***** Query angle of force attack *****/
-        double rot_angle2 = getCurrentForceAngle();
+        double rot_angle = getCurrentForceAngle();
         
         /***** Set angle for manipulator *****/
-        rotation_angle_.data = rot_angle2;
+        rotation_angle_.data = rot_angle;
         
         /***** Rotate MiR in direction *****/
-        rotateToPoseDirection(rot_angle2);
+        rotateToPoseDirection(rot_angle);
         
         /***** Reset switcher *****/
-        if(abs(rot_angle2) < 0.0095)
+        if(abs(rot_angle) < 0.0095)
         {
             activate_rotation2_ = 0; //SECOND ROTATION DISABLED
             ROS_INFO("Overall rotation finished!");
@@ -394,24 +369,23 @@ double MoveMir::getCurrentForceAngle()
 
     /***** Calculate vector orientation in x-y plane *****/
     force_at_base_.z = 0;
-    double rot_angle2  = atan2((int)force_at_base_.y, (int)force_at_base_.x);
-    ROS_INFO_STREAM("Rotation angle2 is "<<rot_angle2);
-    rot_angle2 = normalize_angle(rot_angle2);
-    if(abs(rot_angle2) == PI)
-        rot_angle2 = 0;
-    ROS_INFO_STREAM("Yaw angle of force: "<<rot_angle2);
+    double rot_angle  = atan2((int)force_at_base_.y, (int)force_at_base_.x);
+    ROS_INFO_STREAM("Rotation angle2 is "<<rot_angle);
+    rot_angle = normalize_angle(rot_angle);
+    if(abs(rot_angle) == PI)
+        rot_angle = 0;
+    ROS_INFO_STREAM("Yaw angle of force: "<<rot_angle);
 
-    return rot_angle2;
+    return rot_angle;
 }
 
-void MoveMir::poseUpdater()
+void MoveMir::controlMethod1()
 {
     /***** Query angle of force attack *****/
     double force_angle2 = getCurrentForceAngle();
 
     //rotateToPoseDirection(force_angle);
     //std::vector<double> old_mir_pose = initial_mir_pose_;
-    std::vector<double> delta_pose;
 
     ROS_INFO("Move MiR");
     // tw_msg_.linear.x = 0.0;
@@ -421,44 +395,58 @@ void MoveMir::poseUpdater()
     tw_msg_.angular.y = 0.0;
     // tw_msg_.angular.z = 0.0;
 
-    if(abs(force_angle2) >= 0.01) // && activate_force_ == 1)
+    /**** Query current MiR pose ****/
+    callCurrentWorldPose();
+
+    /**** Query current EE pose in local frame ****/
+    callCurrentLocalPose();
+    
+
+    if(abs(force_angle2) >= 0.0095) // && activate_force_ == 1)
     {
         //do{
             //force_angle = getCurrentForceAngle();
             tw_msg_.angular.z = force_angle2;
-            tw_msg_.linear.x = 0.2;
+
+            tw_msg_.linear.x = (isPositiveForce_==1) ? -x_dot_ : x_dot_;
+
+            std::cout<<"Current MiR pose:\n";
+            for(int i=0; i<current_mir_map_pose_.size();i++)
+                std::cout<<current_mir_map_pose_[i]<<", ";
+            std::cout<<"\n";
+
+            std::cout<<"Old MiR pose:\n";
+            for(int i=0; i<old_mir_pose.size();i++)
+                std::cout<<old_mir_pose[i]<<", ";
+            std::cout<<"\n";
             
-            /**** Query current MiR pose ****/
-            callCurrentWorldPose();
-
-            /**** Query current EE pose in local frame ****/
-            callCurrentLocalPose();
-
             /**** Update displacement ****/
             //ROS_INFO("IM here begin");
-            ROS_INFO_STREAM("delta_pose size is"<<current_mir_map_pose_.size());
-            delta_pose.clear();
-            for(int i = 0; i<10; i++)
-                delta_pose[i] = current_mir_map_pose_[i]- old_mir_pose[i];
-
-            ROS_INFO_STREAM("delta_pose size is"<<delta_pose.size());
+            //delta_pose.clear();
+            //for(int i = 0; i<current_mir_map_pose_.size(); i++)
+            //    this->delta_pose[i] = current_mir_map_pose_[i]- old_mir_pose[i];
             
-            geometry_msgs::PoseStamped new_pose;
-            new_pose.header.stamp = ros::Time::now();
-            new_pose.header.frame_id = "robot1_tf/base_link_ur5";
-            new_pose.pose.position.x = current_local_pose_[0] - delta_pose[0];
-            new_pose.pose.position.y = current_local_pose_[1] - delta_pose[1];
-            new_pose.pose.position.z = current_local_pose_[2] - delta_pose[2];
 
-            new_pose.pose.orientation.x = current_local_pose_[6] - delta_pose[6];
-            new_pose.pose.orientation.y = current_local_pose_[7] - delta_pose[7];
-            new_pose.pose.orientation.z = current_local_pose_[8] - delta_pose[8];
-            new_pose.pose.orientation.w = current_local_pose_[9] - delta_pose[9];
-            ROS_INFO("IM here end");
+            // ROS_INFO_STREAM("delta_pose size is"<< delta_pose.size());
+            // for(int i=0; i<delta_pose.size();i++)
+            //     std::cout<<delta_pose[i]<<", ";
+            // std::cout<<"\n";
+            
+            this->new_pose.header.stamp = ros::Time::now();
+            this->new_pose.header.frame_id = "robot1_tf/base_link_ur5";
+            this->new_pose.pose.position.x = current_local_pose_[0] - (current_mir_map_pose_[0]- old_mir_pose[0]);
+            this->new_pose.pose.position.y = current_local_pose_[1] - (current_mir_map_pose_[1]- old_mir_pose[1]);
+            this->new_pose.pose.position.z = current_local_pose_[2] - (current_mir_map_pose_[2]- old_mir_pose[2]);
+
+            this->new_pose.pose.orientation.x = current_local_pose_[6] - (current_mir_map_pose_[6]- old_mir_pose[6]);
+            this->new_pose.pose.orientation.y = current_local_pose_[7] - (current_mir_map_pose_[7]- old_mir_pose[7]);
+            this->new_pose.pose.orientation.z = current_local_pose_[8] - (current_mir_map_pose_[8]- old_mir_pose[8]);
+            this->new_pose.pose.orientation.w = current_local_pose_[9] - (current_mir_map_pose_[9]- old_mir_pose[9]);
+            old_mir_pose.clear();
 
             pub_simple_.publish(tw_msg_);
             pub_pose_.publish(new_pose);
-            old_mir_pose.clear();
+            
             old_mir_pose = current_mir_map_pose_;
 
         //}while(force_angle != 0.0)
@@ -466,25 +454,27 @@ void MoveMir::poseUpdater()
 
 }
 
-void MoveMir::poseUpdater2()
+void MoveMir::controlMethod2()
 {
-    //double theta_star = atan2(current_map_pose_[1]-current_mir_map_pose_[1],current_map_pose_[0]-current_mir_map_pose_[0]);
-    
-    /***** Sleep until manipulator has moved *****/
-    //ros::Duration(1.0).sleep();
+
+    //ros::Duration(1.0).sleep(); //sleep until manipulator has moved
     callCurrentGlobalPose();
     callCurrentWorldPose();
+
+    /*
     double theta_star = atan2(current_map_pose_[1]-current_mir_map_pose_[1], current_map_pose_[0]-current_mir_map_pose_[0]);
     //std::cout<<"theta_star: "<<theta_star<<std::endl;
 
     double rot_angle1 = theta_star - theta_mir_world_;
     rot_angle1 = normalize_angle(rot_angle1);
     std::cout<<"rot_angle1 normalized: "<<rot_angle1<<std::endl;
+    */
 
     /***** Store as rotation angle for ur5 controller *****/
+    /*
     rotation_angle_.data = rot_angle1;
     
-    /*
+    
     if(activate_force_ == 1 && activate_rotation1_ == 1 && abs(rot_angle1) > 0.055)
     {
         ROS_INFO("Now is rotation time!");
@@ -495,7 +485,7 @@ void MoveMir::poseUpdater2()
     }
     */
 
-    /***** Query force angle and decide about translation and rotation *****/
+    /***** Query force angle and decide about translation or rotation *****/
     double force_angle = getCurrentForceAngle();
     ROS_INFO_STREAM("Force angle is "<<force_angle);
     if(abs(force_angle) < 0.01)
@@ -557,11 +547,8 @@ void MoveMir::poseUpdater2()
 
 void MoveMir::rotateToPoseDirection(double rot_angle)
 {
-    //ROS_INFO("Now is rotation time!");
-    //double theta_current = 0.0;
+
     ros::Rate r(3.0);
-    //PI in 3 seconds -> PI/3 rad/s rotation speed -> 1/3 -> 3Hz
-    
     
     //double current_time = ros::Time(0).toSec();
     //double time = 3/ PI * abs(rot_angle);
@@ -601,7 +588,7 @@ void MoveMir::moveStraight()
 {
     //information: the velocity doesn't depend on the force amount
     //is calculated as following and always equals 0.2331114
-    //double time = 3/PI * rot_angle2;
+    //double time = 3/PI * rot_angle;
     //x_dot_ = force_angle/time * 0.44521/2;
 
     ROS_INFO("Inside straight movement");
@@ -613,9 +600,12 @@ void MoveMir::moveStraight()
     tw_msg_.angular.z = 0.0;
     pub_simple_.publish(tw_msg_);
 
-    tw_msg_.linear.x = (isPositiveForce_==1) ? -x_dot_ : x_dot_;
-
-    pub_simple_.publish(tw_msg_);
+    do{
+        tw_msg_.linear.x = (isPositiveForce_==1) ? -x_dot_ : x_dot_;
+        pub_simple_.publish(tw_msg_);
+        ros::spinOnce();
+    }while(activate_force_ == 1 && activate_rotation2_ == 0);
+    
 }
 
 double MoveMir::normalize_angle(double angle)

@@ -69,6 +69,8 @@ namespace move_compliant{
         tf::StampedTransform transform_;
         tf::Vector3 tf_force_at_base_, tf_force_at_sensor_;
         geometry_msgs::Vector3 force_, force_at_base_, torque_;
+        geometry_msgs::PoseStamped new_pose;
+        std::vector<double> delta_pose;
 
     protected:
         /**
@@ -143,13 +145,6 @@ namespace move_compliant{
         */
         //void transferIntoMir(Eigen::VectorXd displ_);
 
-        /**
-        * @brief diff_drive controller for the MiR NEUES
-        * 
-        * @param x_length length of displacement vector "DELTA{x}"
-        * 
-        */
-        void moveGoal();
 
         /**
          * @brief connects /robot1_ns/arm_cartesian_compliance_controller/target_pose
@@ -166,10 +161,22 @@ namespace move_compliant{
 
         void rotateToPoseDirection(double rot_angle);
 
-        void poseUpdater();
+        /**
+         * @brief position related controller rotation and translation in parallel 
+         *  
+         */
+        void controlMethod1();
 
-        void poseUpdater2();
+        /**
+         * @brief position related controller rotation and translation in sequence 
+         *  
+         */
+        void controlMethod2();
 
+        /**
+         * @brief method driving MiR on straight line 
+         *  
+         */
         void moveStraight();
     };
 }

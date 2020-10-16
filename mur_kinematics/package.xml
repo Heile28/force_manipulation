@@ -56,6 +56,8 @@
   <build_depend>mur_robot_msgs</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>tf</build_depend>
+  <build_depend>mur_force_controller</build_depend>
+  <build_depend>ur_kinematics</build_depend>
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>rospy</build_export_depend>
   <build_export_depend>std_msgs</build_export_depend>
@@ -63,6 +65,8 @@
   <build_export_depend>mur_robot_msgs</build_export_depend>
   <build_export_depend>sensor_msgs</build_export_depend>
   <build_export_depend>tf</build_export_depend>
+  <build_export_depend>mur_force_controller</build_export_depend>
+  <build_export_depend>ur_kinematics</build_export_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>rospy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
@@ -70,6 +74,8 @@
   <exec_depend>mur_robot_msgs</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>tf</exec_depend>
+  <exec_depend>mur_force_controller</exec_depend>
+  <exec_depend>ur_kinematics</exec_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
