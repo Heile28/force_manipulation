@@ -36,6 +36,7 @@ chmod +x rep117_filter.py
 cd $HOME/catkin_ws
 
 # Install 
+sudo apt-get install ros-melodic-moveit
 sudo apt install ros-melodic-cob-gazebo-ros-control
 sudo apt-get install ros-melodic-moveit-visual-tools
 
