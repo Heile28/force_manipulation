@@ -330,7 +330,7 @@ void MoveMir::nullspace(double theta_)
 
 void MoveMir::poseUpdater()
 {
-    callCurrentGlobalPose();
+    //callCurrentGlobalPose();
     callCurrentWorldPose();
 
     /***** Query force angle and decide about translation or rotation *****/
@@ -507,31 +507,9 @@ void MoveMir::controlMethod1()
 void MoveMir::controlMethod2()
 {
     //ros::Duration(1.0).sleep(); //sleep until manipulator has moved
+    
+    /**** Query current poses ****/
     poseUpdater();
-
-    /*
-    double theta_star = atan2(current_map_pose_[1]-current_mir_map_pose_[1], current_map_pose_[0]-current_mir_map_pose_[0]);
-    //std::cout<<"theta_star: "<<theta_star<<std::endl;
-
-    double rot_angle1 = theta_star - theta_mir_world_;
-    rot_angle1 = normalize_angle(rot_angle1);
-    std::cout<<"rot_angle1 normalized: "<<rot_angle1<<std::endl;
-    */
-
-    /***** Store as rotation angle for ur5 controller *****/
-    /*
-    rotation_angle_.data = rot_angle1;
-    
-    
-    if(activate_force_ == 1 && activate_rotation1_ == 1 && abs(rot_angle1) > 0.055)
-    {
-        ROS_INFO("Now is rotation time!");
-        ROS_INFO_STREAM("Rotation angle in DEG: "<<rot_angle1*180/PI);
-        rotateToPoseDirection(rot_angle1);
-        activate_rotation1_ = 0;
-        activate_rotation2_ = 1; //READY FOR SECOND ROTATION
-    }
-    */
 
     if(activate_force_ == 1 && activate_rotation2_ == 1)
         rotateToForceDirection();
@@ -587,39 +565,9 @@ void MoveMir::rotateToPoseDirection(double rot_angle)
 {
 
     ros::Rate r(3.0);
-    
-    //double current_time = ros::Time(0).toSec();
-    //double time = 3/ PI * abs(rot_angle);
-    //x_dot_ = rot_angle/time * 0.44521/2; //445.21 distance
-    //ROS_INFO_STREAM("MiR time: "<<time);
-    //ROS_INFO_STREAM("MiR has to execute rotation angle: "<<rot_angle);
 
-    /**** Rotation in a specified time *****/
-    /*
-    while(current_time < time)
-    {
-    */
-    
-        /***** execute nullspace movement *****/
-    /*    
-        rotation_angle_.data = rot_angle/time;
-        nullspace(rotation_angle_.data-0.0633);
-        
-        current_time = current_time + time;
-        ROS_INFO_STREAM("Current time is "<<current_time);
-        r.sleep();
-    }
-    if(current_time == time)
-    {
-        ROS_INFO("Rotation finished");
-        activate_rotation1_ = 0;
-        activate_rotation2_ = 1; //READY FOR SECOND ROTATION
-    }
-    */
-
-    /***** Rotation in 1rad/s *****/
-    ROS_INFO_STREAM("Compensated Rotation angle: "<<rotation_angle_.data); //-0.0633);
-    nullspace(rot_angle);//-0.0633);
+    ROS_INFO_STREAM("Compensated Rotation angle: "<<rotation_angle_.data);
+    nullspace(rot_angle);
 }
 
 void MoveMir::moveStraight()
