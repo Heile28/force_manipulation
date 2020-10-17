@@ -64,8 +64,8 @@ int main(int argc, char** argv)
     
     while(ros::ok()){
         
-        obj1.controlMethod1();
-        //obj1.controlMethod2();
+        //obj1.controlMethod1();
+        obj1.controlMethod2();
 
         //get_jacobian.forwardKinematics();
         ros::spinOnce();

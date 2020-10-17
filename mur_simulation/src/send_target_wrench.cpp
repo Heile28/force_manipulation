@@ -38,7 +38,9 @@ class SendTarget
         {
             /*** Sends wrench to ~/arm_cartesian_compliance_controller/target_wrench ***/
 
-            ROS_INFO("TARGET WRENCH sent");
+            //ROS_INFO("TARGET WRENCH sent");
+
+            ROS_INFO_STREAM("Target wrench force z: "<<pub_wrench_msg.wrench.force.z);
 
             pub_wrench_msg.header.stamp = ros::Time::now();
             pub_wrench.publish(pub_wrench_msg);

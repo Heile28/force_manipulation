@@ -137,14 +137,17 @@ namespace move_compliant{
         double normalize_angle(double angle);
 
         
-        void publishVelocityCommand();
-
         /**
-        * @brief Transforms UR5 endeffector pose into mir_base frame
+        * @brief check current force angle
         * 
         */
-        //void transferIntoMir(Eigen::VectorXd displ_);
+        void poseUpdater();
 
+        /**
+        * @brief check current pose relation between MiR and endeffector
+        * 
+        */
+        void relativeAngleUpdater();
 
         /**
          * @brief connects /robot1_ns/arm_cartesian_compliance_controller/target_pose
