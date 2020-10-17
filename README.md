@@ -57,8 +57,7 @@ source $HOME/catkin_ws/devel/setup.bash
 
 ## Main Control Loop
 The mobile robot is driven by two seperated systems of MiR and UR5. As the movement - in observance of non-holomic constraints - is controlled by the well-known diff_drive_controller, the UR5 reacts compliant to any force attack. The main controller connects both systems by interchanging relative motions. The current version reduces the linear velocity to 0.233 m/s in advance whereas the compliance controller absorbs the force intensity.
-<img src="img src="https://github.com/Heile28/force_manipulation/blob/master/etc/main_control.png" alt="Your image title" width="250"/>
-
+![Image of Main_Control](https://github.com/Heile28/force_manipulation/blob/master/etc/main_control.png)
 
 ## FDCC-Solver
 The Cartesian Compliance controller is a merging of impedance, admittance and force control visibly as following:
