@@ -40,6 +40,8 @@ sudo apt-get install ros-melodic-moveit
 sudo apt-get install ros-melodic-moveit-visual-tools
 sudo apt install ros-melodic-cob-gazebo-ros-control
 sudo apt-get install ros-melodic-plotjuggler
+sudo apt-get install ros-melodic-joint-trajectory-controller
+
 
 # checking dependencies
 sudo apt-get update -qq
@@ -141,4 +143,9 @@ catkin_make
 ## Start simulation
 ```bash
 roslaunch mir_ur5 system_sim.launch
+```
+### Feature
+```bash
+sudo apt-get install ros-melodic-rqt-joint-trajectory-controller
+rosrun rqt-joint
 ```
