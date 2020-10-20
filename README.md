@@ -41,6 +41,7 @@ sudo apt-get install ros-melodic-moveit-visual-tools
 sudo apt install ros-melodic-cob-gazebo-ros-control
 sudo apt-get install ros-melodic-plotjuggler
 sudo apt-get install ros-melodic-joint-trajectory-controller
+sudo apt-get install ros-melodic-dwa-local-planner
 
 
 # checking dependencies
