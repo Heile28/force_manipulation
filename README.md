@@ -70,7 +70,7 @@ Information about the implemented control loop used for the Forward Dynamics Sol
 
 ## Configurations
 ### Configure the cartesian compliance controller
-#### Write a yaml.-file with the following entries and store it in ~/MiR200-with-UR5/mir_ur5_description/config
+#### Write a yaml.-file with the following entries
 ```bash
 arm_cartesian_compliance_controller:
   type: "position_controllers/CartesianComplianceController"
@@ -103,17 +103,18 @@ arm_cartesian_compliance_controller:
       rot_y: {p: 0.01}
       rot_z: {p: 0.01}
 ```
+and store it in ~/MiR200-with-UR5/mir_ur5_description/config
 #### Get this configuration launched as ROS controller with Gazebo
-1) Browse into MiR200-with-UR5/mir_ur5/launch/mir_ur5.launch
+* Browse into MiR200-with-UR5/mir_ur5/launch/mir_ur5.launch
 and include cartesian controller as argument
 ```bash
 <arg name="active_controllers" default="arm_cartesian_compliance_controller"/>
 ```
-and load controller configuration from YAML file
+* and load controller configuration from YAML file by
 ```bash
 <rosparam file="$(find mir_ur5_description)/config/cartesian_compliance_controller.yaml" command="load" subst_value="true"/>
 ```
-Spawn the controller (besides joint_state_controller
+* Spawn the controller (besides joint_state_controller) by
 ```bash
 <!-- spawn controller manager with all active controllers (args are all namespaces from inside controller_configurations files-->
 <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/$(arg robot_namespace)"
@@ -146,16 +147,17 @@ Spawn the controller (besides joint_state_controller
   </xacro:macro>
 </robot>
 ```
-and store it in ~/MiR200-with-UR5/mir_ur5_desription/urdf/include
+* and store it in ~/MiR200-with-UR5/mir_ur5_desription/urdf/include
 
-Browse into MiR200-with-UR5/mir_ur5_desription/urdf/mir_ur5.urdf.xacro
+* Browse into MiR200-with-UR5/mir_ur5_desription/urdf/mir_ur5.urdf.xacro and add
 ```bash
 <!--add force_torque sensor-->
 <xacro:include filename="$(find mir_ur5_description)/urdf/include/force_sensor.gazebo.xacro" />
 <xacro:sensor_force_torque joint_name="$(arg tf_prefix)wrist_3_joint" topic_name="ee_force_torque_sensor"/>
 ```
 ### Configure UR Kinematics Package
-The [universal_robot](https://github.com/ros-industrial/universal_robot) -package provides the repo namely "[ur_kinematics](https://github.com/ros-industrial/universal_robot/tree/kinetic-devel/ur_kinematics)". Adapt its file [ur_kin.cpp](https://github.com/ros-industrial/universal_robot/blob/kinetic-devel/ur_kinematics/src/ur_kin.cpp) by uncommenting line 16-26:
+The [universal_robot](https://github.com/ros-industrial/universal_robot) -package provides the repo namely "[ur_kinematics](https://github.com/ros-industrial/universal_robot/tree/kinetic-devel/ur_kinematics)". 
+* Adapt its file [ur_kin.cpp](https://github.com/ros-industrial/universal_robot/blob/kinetic-devel/ur_kinematics/src/ur_kin.cpp) by uncommenting line 16-26:
 ```bash
 /*
     #define UR10_PARAMS
@@ -172,7 +174,7 @@ The [universal_robot](https://github.com/ros-industrial/universal_robot) -packag
     #ifdef UR5_PARAMS
 */
 ```
-and line 34-44:
+* and line 34-44:
 ```bash
 /*
     #endif
@@ -188,7 +190,7 @@ and line 34-44:
     #endif
 */
 ```
-Again execute
+* Again execute
 ```bash
 catkin_make
 ```
