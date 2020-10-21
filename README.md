@@ -201,5 +201,5 @@ roslaunch mir_ur5 system_sim.launch
 ### Feature
 ```bash
 sudo apt-get install ros-melodic-rqt-joint-trajectory-controller
-rosrun rqt-joint
+rosrun rqt_joint_trajectory_controller rqt_joint_trajectory_controller
 ```
