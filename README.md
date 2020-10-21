@@ -48,7 +48,7 @@ sudo apt-get install ros-melodic-dwa-local-planner
 sudo apt-get update -qq
 sudo apt-get install -qq -y python-rosdep
 sudo rosdep init (or sudo rm /etc/ros/rosdep/sources.list.d/20-default.list)
-sudo rosdep update
+sudo rosdep update or sudo apt update + ~ upgrade
 sudo rosdep install --from-paths ./ -i -y --rosdistro melodic
 
 catkin_make
