@@ -47,7 +47,7 @@ sudo apt-get install ros-melodic-dwa-local-planner
 # checking dependencies
 sudo apt-get update -qq
 sudo apt-get install -qq -y python-rosdep
-sudo rosdep init
+sudo rosdep init (or sudo rm /etc/apt/sources.list.d/*)
 sudo rosdep update
 sudo rosdep install --from-paths ./ -i -y --rosdistro melodic
 
