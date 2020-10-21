@@ -59,7 +59,7 @@ source $HOME/catkin_ws/devel/setup.bash
 # Getting Started
 ## Preamble
 ### Main Control Loop
-The mobile robot is driven by two seperated systems of MiR and UR5. As the movement - in observance of non-holomic constraints - is controlled by the well-known diff_drive_controller, the UR5 reacts compliant to any force attack. The main controller connects both systems by interchanging relative motions. The current version reduces the linear velocity to 0.233 m/s in advance whereas the compliance controller absorbs the force intensity.
+The mobile robot is driven by two separated systems of MiR and UR5. As the movement - in observance of non-holomic constraints - is controlled by the well-known diff_drive_controller, the UR5 reacts compliant to any force attack. The main controller connects both systems by interchanging relative motions. The current version reduces the linear velocity to 0.233 m/s in advance whereas the compliance controller absorbs the force intensity.
 ![Image of Main_Control](https://github.com/Heile28/force_manipulation/blob/master/etc/main_control.png)
 
 ### FDCC-Solver
