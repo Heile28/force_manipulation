@@ -70,7 +70,7 @@ Information about the implemented control loop used for the Forward Dynamics Sol
 
 ## Configurations
 ### Configure the cartesian compliance controller
-#### Write a yaml.-file with the following entries
+#### Write a yaml.-file with the following entries saved as 'cartesian_compliance_controller.yaml'
 ```bash
 arm_cartesian_compliance_controller:
   type: "position_controllers/CartesianComplianceController"
@@ -125,7 +125,7 @@ and include cartesian controller as argument
  </node>
 ```
 ### Add Gazebo Force Torque Sensor
-#### Create a configuration file for the F/T-plugin as 'force_sensor.gazebo.xacro'
+#### Create a configuration file for the F/T-plugin saved as 'force_sensor.gazebo.xacro'
 ```bash
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://wiki.ros.org/wiki/xacro"> 
