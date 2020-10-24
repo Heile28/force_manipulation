@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['listenframes',['ListenFrames',['../d6/dd3/classListenFrames.html',1,'']]]
+  ['frames_58',['Frames',['../d1/d72/structFrames.html',1,'']]]
 ];

@@ -1,0 +1,32 @@
+\hypertarget{classgazebo__ft__publisher_1_1WrenchPublisher}{}\doxysection{gazebo\+\_\+ft\+\_\+publisher\+::Wrench\+Publisher Class Reference}
+\label{classgazebo__ft__publisher_1_1WrenchPublisher}\index{gazebo\_ft\_publisher::WrenchPublisher@{gazebo\_ft\_publisher::WrenchPublisher}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classgazebo__ft__publisher_1_1WrenchPublisher_ab5b70297a68b9baa5fe8c5e5f2dab350}\label{classgazebo__ft__publisher_1_1WrenchPublisher_ab5b70297a68b9baa5fe8c5e5f2dab350}} 
+\mbox{\hyperlink{classgazebo__ft__publisher_1_1WrenchPublisher_ab5b70297a68b9baa5fe8c5e5f2dab350}{Wrench\+Publisher}} ()
+\begin{DoxyCompactList}\small\item\em Construct a new Wrench Publisher object. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classgazebo__ft__publisher_1_1WrenchPublisher_afccf7ab2a81419db8b9590d0630a28d0}\label{classgazebo__ft__publisher_1_1WrenchPublisher_afccf7ab2a81419db8b9590d0630a28d0}} 
+\mbox{\hyperlink{classgazebo__ft__publisher_1_1WrenchPublisher_afccf7ab2a81419db8b9590d0630a28d0}{$\sim$\+Wrench\+Publisher}} ()
+\begin{DoxyCompactList}\small\item\em Destroy the Wrench Publisher object. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classgazebo__ft__publisher_1_1WrenchPublisher_a2364056bf9eaa8dfc7d4021107c89e10}\label{classgazebo__ft__publisher_1_1WrenchPublisher_a2364056bf9eaa8dfc7d4021107c89e10}} 
+void \mbox{\hyperlink{classgazebo__ft__publisher_1_1WrenchPublisher_a2364056bf9eaa8dfc7d4021107c89e10}{transform\+\_\+wrench\+\_\+into\+\_\+ee}} ()
+\begin{DoxyCompactList}\small\item\em transfers current wrench of Gazebo-\/\+F/\+T-\/sensor-\/plugin fixed at \textquotesingle{}wrist3\+\_\+link\+\_\+ur5\textquotesingle{} into \textquotesingle{}ee\+\_\+link\+\_\+ur5\textquotesingle{} \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classgazebo__ft__publisher_1_1WrenchPublisher_a55b16ff1fc3553cf437c7119054d8e5e}\label{classgazebo__ft__publisher_1_1WrenchPublisher_a55b16ff1fc3553cf437c7119054d8e5e}} 
+void \mbox{\hyperlink{classgazebo__ft__publisher_1_1WrenchPublisher_a55b16ff1fc3553cf437c7119054d8e5e}{send\+\_\+directly\+\_\+to\+\_\+topic}} ()
+\begin{DoxyCompactList}\small\item\em send wrench directly to FDCC controler topic \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classgazebo__ft__publisher_1_1WrenchPublisher_ad6565b7fb09efa49e852a4ffc6b239bd}\label{classgazebo__ft__publisher_1_1WrenchPublisher_ad6565b7fb09efa49e852a4ffc6b239bd}} 
+void \mbox{\hyperlink{classgazebo__ft__publisher_1_1WrenchPublisher_ad6565b7fb09efa49e852a4ffc6b239bd}{gravitation\+\_\+compensation}} ()
+\begin{DoxyCompactList}\small\item\em compensate f/t-\/data with mass of wrist\+\_\+3 \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classgazebo__ft__publisher_1_1WrenchPublisher_a63b73dcdc8c175d6f1391a3a7a51b71c}\label{classgazebo__ft__publisher_1_1WrenchPublisher_a63b73dcdc8c175d6f1391a3a7a51b71c}} 
+void \mbox{\hyperlink{classgazebo__ft__publisher_1_1WrenchPublisher_a63b73dcdc8c175d6f1391a3a7a51b71c}{wrench\+Callback}} (geometry\+\_\+msgs\+::\+Wrench\+Stamped wrench\+\_\+msg)
+\begin{DoxyCompactList}\small\item\em Callbacks current wrench and publishes it to cartesian\+\_\+admittance\+\_\+controller. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+mur\+\_\+force\+\_\+controller/include/mur\+\_\+force\+\_\+controller/gazebo\+\_\+ft\+\_\+publisher.\+h\item 
+mur\+\_\+force\+\_\+controller/src/gazebo\+\_\+ft\+\_\+publisher.\+cpp\end{DoxyCompactItemize}

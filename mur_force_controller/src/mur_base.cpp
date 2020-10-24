@@ -18,7 +18,7 @@ MurBase::Quaternion quaternion;
 //constructor
 MurBase::MurBase()
 {
-    this->nh_ = ros::NodeHandle("mur_base");
+    this->nh_ = ros::NodeHandle(nh_.getNamespace() + "mur_base");
     this->joint_angles_ = nh_.subscribe("/robot1_ns/joint_states", 10, &MurBase::callbackJointAngles, this);
     /*
     this->theta1_ = 0.0; 
@@ -71,7 +71,7 @@ void MurBase::callbackJointAngles(sensor_msgs::JointState joint_msg_)
 
 void MurBase::startServiceServer()
 {
-  this->server_pose_ = nh_.advertiseService("listen_frames/request_endeffector/pose", &MurBase::callbackRequestEndeffector, this);
+  this->server_pose_ = nh_.advertiseService("/mur_base/listen_frames/request_endeffector/pose", &MurBase::callbackRequestEndeffector, this);
 }
 
 std::vector<double> MurBase::getAngles()

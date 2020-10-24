@@ -18,7 +18,7 @@ using namespace move_compliant;
 
 MoveUR::MoveUR()
 {
-    this->nh_=ros::NodeHandle("move_ur_compliant");
+    //this->nh_=nh_;
     this->rotation_angle_ = nh_.subscribe("/move_mir_compliant/rotation_angle", 100, &MoveUR::angleCallback, this);
     this->pub_pose_ = nh_.advertise<geometry_msgs::PoseStamped>("/robot1_ns/arm_cartesian_compliance_controller/target_pose", 100);
     this->lookupInitialLocalPosition();
@@ -31,6 +31,8 @@ MoveUR::~MoveUR(){}
 void MoveUR::angleCallback(std_msgs::Float64 angle_)
 {
     q0_ = angle_.data;
+
+    /**** Methods proceeding subscribed angle ****/
     //nullspace(theta_);
     //moveInitialPose();
     rotateAngle(q0_);
@@ -174,20 +176,8 @@ void MoveUR::nullspace(double q0_)
 
 void MoveUR::moveInitialPose()
 {
-    //callCurrentLocalPose();
-    
+
     transform_ = base_.transform("robot1_tf/base_link", "robot1_tf/ee_link_ur5");
-
-    // tf::Stamped<tf::Transform> tf_initial_global_, tf_initial_local_;
-    
-    // tf::Transform transform_global_pose, transform_local_pose;
-    // tf::poseStampedMsgToTF(initial_global_pose_,tf_initial_global_);
-    
-    // transform_global_pose = tf_initial_global_.inverse();
-    // transform_local_pose = transform_global_pose*transform_;
-
-    // tf_initial_local_.setData(transform_local_pose);
-    // tf::poseStampedTFToMsg(tf_initial_local_, desired_local_pose_);
 
     geometry_msgs::PoseStamped x_d;
     x_d.header.frame_id = "robot1_tf/base_link_ur5";
@@ -197,9 +187,6 @@ void MoveUR::moveInitialPose()
     tf::poseMsgToTF(initial_global_pose_.pose,_from_initial);
     _to_initial = transform_*_from_initial;
     tf::poseTFToMsg(_to_initial,x_d.pose);
-    
-    
-    
     
     // x_d.pose.position.x = desired_local_pose_.pose.position.x; //+initial_local_pose_[0]; //-dsad;
     // x_d.pose.position.y = desired_local_pose_.pose.position.y; //+initial_local_pose_[1];
@@ -240,27 +227,13 @@ void MoveUR::rotateAngle(double rot_angle_)
     x_d.pose.position.y = T[7];
     x_d.pose.position.z = T[11];
 
-    /*
-    double roll = atan2(-T[6],T[10]);
-    double yaw = atan2(T[1],T[0]);
-    double pitch = atan2(T[2],(T[0]*cos(yaw)-(T[1]*sin(yaw))));
-    */
-
-    /*
-    double roll = atan2(T[9],T[10]);
-    double yaw = atan2(T[4],T[0]);
-    double pitch = atan2(-T[8], cos(yaw)*T[0]+sin(yaw)*T[4]);
-    */
-    
-    //geometry_msgs::Quaternion quat = tf::createQuaternionMsgFromRollPitchYaw(roll, pitch, yaw);
-
     x_d.pose.orientation.x = initial_local_pose_[6]; //quat.x; //current_local_pose_[6]; //
     x_d.pose.orientation.y = initial_local_pose_[7]; //quat.y; //current_local_pose_[7]; //
     x_d.pose.orientation.z = initial_local_pose_[8]; //quat.z; //current_local_pose_[8]; //
     x_d.pose.orientation.w = initial_local_pose_[9]; //quat.w; //current_local_pose_[9]; //
 
-    ROS_INFO_STREAM("Desired pose: "<<x_d.pose.position.x<<", "<<x_d.pose.position.y<<", "<<x_d.pose.position.z<<
-    ", "<<x_d.pose.orientation.x<<", "<<x_d.pose.orientation.y<<", "<<x_d.pose.orientation.z<<", "<<x_d.pose.orientation.w);
+    //ROS_INFO_STREAM("Desired pose: "<<x_d.pose.position.x<<", "<<x_d.pose.position.y<<", "<<x_d.pose.position.z<<
+    //", "<<x_d.pose.orientation.x<<", "<<x_d.pose.orientation.y<<", "<<x_d.pose.orientation.z<<", "<<x_d.pose.orientation.w);
 
     /**** Publish to compliance controller input *****/
     pub_pose_.publish(x_d);
@@ -283,8 +256,6 @@ void MoveUR::forwardKinematics(){
     }
     printf("\n");
     */
-    
-
 
 }
 

@@ -16,7 +16,7 @@ class SendTarget
     private:
         ros::NodeHandle nh_;
         ros::Publisher pub_wrench = nh_.advertise<geometry_msgs::WrenchStamped>("/robot1_ns/arm_cartesian_compliance_controller/target_wrench",100);
-        ros::Subscriber sub_wrench = nh_.subscribe("/apply_force/target_wrench", 100, &SendTarget::wrenchCallback, this);
+        ros::Subscriber sub_wrench = nh_.subscribe(nh_.getNamespace() + "/apply_force/target_wrench", 100, &SendTarget::wrenchCallback, this);
         geometry_msgs::WrenchStamped pub_wrench_msg;
 
     public:

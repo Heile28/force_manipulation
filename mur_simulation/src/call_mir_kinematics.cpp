@@ -19,7 +19,7 @@ int main(int argc, char** argv)
     ros::init(argc,argv,"mir_kinematics");
     ROS_INFO("Endeffector publishes data.");
     ros::NodeHandle nh;
-    ros::Publisher pub_pose_ = nh.advertise<geometry_msgs::Pose>("/get_mir_kinematics/current_pose", 100);
+    ros::Publisher pub_pose_ = nh.advertise<geometry_msgs::Pose>(nh.getNamespace() + "/get_mir_kinematics/current_pose", 100);
 
     MurBase base_;
     geometry_msgs::Pose pose;

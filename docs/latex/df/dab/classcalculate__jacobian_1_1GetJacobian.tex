@@ -1,49 +1,71 @@
-\hypertarget{classcalculate__jacobian_1_1GetJacobian}{}\section{calculate\+\_\+jacobian\+:\+:Get\+Jacobian Class Reference}
-\label{classcalculate__jacobian_1_1GetJacobian}\index{calculate\+\_\+jacobian\+::\+Get\+Jacobian@{calculate\+\_\+jacobian\+::\+Get\+Jacobian}}
+\hypertarget{classcalculate__jacobian_1_1GetJacobian}{}\doxysection{calculate\+\_\+jacobian\+::Get\+Jacobian Class Reference}
+\label{classcalculate__jacobian_1_1GetJacobian}\index{calculate\_jacobian::GetJacobian@{calculate\_jacobian::GetJacobian}}
 
 
-class to calculate the jacobian matrix through D\+H-\/transformations  
+class to calculate the jacobian matrix through DH-\/transformations  
 
 
 
 
 {\ttfamily \#include $<$get\+\_\+jacobian.\+h$>$}
 
-
-
-Inheritance diagram for calculate\+\_\+jacobian\+:\+:Get\+Jacobian\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=177pt]{df/d1f/classcalculate__jacobian_1_1GetJacobian__inherit__graph}
-\end{center}
-\end{figure}
-
-
-Collaboration diagram for calculate\+\_\+jacobian\+:\+:Get\+Jacobian\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=177pt]{dc/d69/classcalculate__jacobian_1_1GetJacobian__coll__graph}
-\end{center}
-\end{figure}
-\subsection*{Public Member Functions}
+\doxysubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-virtual void \hyperlink{classcalculate__jacobian_1_1GetJacobian_abe5c223f433aa0d50c40c43fefe95542}{ur\+Jacobian} ()
-\begin{DoxyCompactList}\small\item\em callback function of joints data \end{DoxyCompactList}\end{DoxyCompactItemize}
+\mbox{\Hypertarget{classcalculate__jacobian_1_1GetJacobian_ae689d143fef797eadd7661ff83cbf058}\label{classcalculate__jacobian_1_1GetJacobian_ae689d143fef797eadd7661ff83cbf058}} 
+void \mbox{\hyperlink{classcalculate__jacobian_1_1GetJacobian_ae689d143fef797eadd7661ff83cbf058}{forward\+Kinematics}} ()
+\begin{DoxyCompactList}\small\item\em calculates the geometric jacobian matrix based on DH-\/convention \end{DoxyCompactList}\item 
+Eigen\+::\+Matrix\+Xd \mbox{\hyperlink{classcalculate__jacobian_1_1GetJacobian_abd9cc65f49ec44b1cbbbafd1db15e6b4}{ur\+Jacobian}} (Eigen\+::\+Matrix\+Xd T\+\_\+E, Eigen\+::\+Matrix\+Xd T1\+\_\+, Eigen\+::\+Matrix\+Xd T2\+\_\+, Eigen\+::\+Matrix\+Xd T3\+\_\+, Eigen\+::\+Matrix\+Xd T4\+\_\+, Eigen\+::\+Matrix\+Xd T5\+\_\+)
+\begin{DoxyCompactList}\small\item\em calculates the geometric jacobian matrix based on DH-\/convention \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalculate__jacobian_1_1GetJacobian_a75493fcdeea05849e845073d4546389a}\label{classcalculate__jacobian_1_1GetJacobian_a75493fcdeea05849e845073d4546389a}} 
+void \mbox{\hyperlink{classcalculate__jacobian_1_1GetJacobian_a75493fcdeea05849e845073d4546389a}{manipulation\+Measure}} (Eigen\+::\+Matrix\+Xd J\+\_\+ur\+\_\+)
+\begin{DoxyCompactList}\small\item\em manipulation measure based on manipulation ellipsoid method \end{DoxyCompactList}\item 
+Eigen\+::\+Vector\+Xd \mbox{\hyperlink{classcalculate__jacobian_1_1GetJacobian_a5f53cf3e2cb5204c934b3daf5d6565e0}{get\+Torque}} (Eigen\+::\+Matrix\+Xd J\+\_\+ur\+\_\+, Eigen\+::\+Vector\+Xd target\+\_\+wrench\+\_\+)
+\begin{DoxyCompactList}\small\item\em calculate torque by specified wrench and jacobian matrix \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalculate__jacobian_1_1GetJacobian_a1bb3b478702d7d6a72d033db575105fa}\label{classcalculate__jacobian_1_1GetJacobian_a1bb3b478702d7d6a72d033db575105fa}} 
+void \mbox{\hyperlink{classcalculate__jacobian_1_1GetJacobian_a1bb3b478702d7d6a72d033db575105fa}{callback\+Joint\+Angles}} (sensor\+\_\+msgs\+::\+Joint\+State joint\+\_\+msg\+\_\+)
+\begin{DoxyCompactList}\small\item\em callback function of joints data \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalculate__jacobian_1_1GetJacobian_a6b74a9362690f5204e935da50ce40eee}\label{classcalculate__jacobian_1_1GetJacobian_a6b74a9362690f5204e935da50ce40eee}} 
+int {\bfseries map\+Indizes} (std\+::string name\+\_\+)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalculate__jacobian_1_1GetJacobian_a77538543388f93db6ba514a4d1889ba8}\label{classcalculate__jacobian_1_1GetJacobian_a77538543388f93db6ba514a4d1889ba8}} 
+double {\bfseries w}
+\end{DoxyCompactItemize}
 
 
-\subsection{Member Function Documentation}
-\mbox{\Hypertarget{classcalculate__jacobian_1_1GetJacobian_abe5c223f433aa0d50c40c43fefe95542}\label{classcalculate__jacobian_1_1GetJacobian_abe5c223f433aa0d50c40c43fefe95542}} 
-\index{calculate\+\_\+jacobian\+::\+Get\+Jacobian@{calculate\+\_\+jacobian\+::\+Get\+Jacobian}!ur\+Jacobian@{ur\+Jacobian}}
-\index{ur\+Jacobian@{ur\+Jacobian}!calculate\+\_\+jacobian\+::\+Get\+Jacobian@{calculate\+\_\+jacobian\+::\+Get\+Jacobian}}
-\subsubsection{\texorpdfstring{ur\+Jacobian()}{urJacobian()}}
-{\footnotesize\ttfamily void Get\+Jacobian\+::ur\+Jacobian (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcalculate__jacobian_1_1GetJacobian_a5f53cf3e2cb5204c934b3daf5d6565e0}\label{classcalculate__jacobian_1_1GetJacobian_a5f53cf3e2cb5204c934b3daf5d6565e0}} 
+\index{calculate\_jacobian::GetJacobian@{calculate\_jacobian::GetJacobian}!getTorque@{getTorque}}
+\index{getTorque@{getTorque}!calculate\_jacobian::GetJacobian@{calculate\_jacobian::GetJacobian}}
+\doxysubsubsection{\texorpdfstring{getTorque()}{getTorque()}}
+{\footnotesize\ttfamily Eigen\+::\+Vector\+Xd calculate\+\_\+jacobian\+::\+Get\+Jacobian\+::get\+Torque (\begin{DoxyParamCaption}\item[{Eigen\+::\+Matrix\+Xd}]{J\+\_\+ur\+\_\+,  }\item[{Eigen\+::\+Vector\+Xd}]{target\+\_\+wrench\+\_\+ }\end{DoxyParamCaption})}
 
-calculates the jacobian matrix 
+
+\begin{DoxyParams}{Parameters}
+{\em J\+\_\+ur\+\_\+} & Jacobian matrix \\
+\hline
+{\em target\+\_\+wrench\+\_\+} & specified wrench vector\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Eigen\+::\+Matrix\+Xd 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcalculate__jacobian_1_1GetJacobian_abd9cc65f49ec44b1cbbbafd1db15e6b4}\label{classcalculate__jacobian_1_1GetJacobian_abd9cc65f49ec44b1cbbbafd1db15e6b4}} 
+\index{calculate\_jacobian::GetJacobian@{calculate\_jacobian::GetJacobian}!urJacobian@{urJacobian}}
+\index{urJacobian@{urJacobian}!calculate\_jacobian::GetJacobian@{calculate\_jacobian::GetJacobian}}
+\doxysubsubsection{\texorpdfstring{urJacobian()}{urJacobian()}}
+{\footnotesize\ttfamily Eigen\+::\+Matrix\+Xd calculate\+\_\+jacobian\+::\+Get\+Jacobian\+::ur\+Jacobian (\begin{DoxyParamCaption}\item[{Eigen\+::\+Matrix\+Xd}]{T\+\_\+E,  }\item[{Eigen\+::\+Matrix\+Xd}]{T1\+\_\+,  }\item[{Eigen\+::\+Matrix\+Xd}]{T2\+\_\+,  }\item[{Eigen\+::\+Matrix\+Xd}]{T3\+\_\+,  }\item[{Eigen\+::\+Matrix\+Xd}]{T4\+\_\+,  }\item[{Eigen\+::\+Matrix\+Xd}]{T5\+\_\+ }\end{DoxyParamCaption})}
+
+\begin{DoxyReturn}{Returns}
+Eigen\+::\+Matrix\+Xd 
+\end{DoxyReturn}
+
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
 \item 

@@ -40,12 +40,15 @@ sudo apt-get install ros-melodic-moveit
 sudo apt-get install ros-melodic-moveit-visual-tools
 sudo apt install ros-melodic-cob-gazebo-ros-control
 sudo apt-get install ros-melodic-plotjuggler
+sudo apt-get install ros-melodic-joint-trajectory-controller
+sudo apt-get install ros-melodic-dwa-local-planner
+
 
 # checking dependencies
 sudo apt-get update -qq
 sudo apt-get install -qq -y python-rosdep
-sudo rosdep init
-sudo rosdep update
+sudo rosdep init (or sudo rm /etc/ros/rosdep/sources.list.d/20-default.list)
+sudo rosdep update or sudo apt update + ~ upgrade
 sudo rosdep install --from-paths ./ -i -y --rosdistro melodic
 
 catkin_make
@@ -54,19 +57,20 @@ catkin_make
 source $HOME/catkin_ws/devel/setup.bash
 ```
 # Getting Started
-
-## Main Control Loop
-The mobile robot is driven by two seperated systems of MiR and UR5. As the movement - in observance of non-holomic constraints - is controlled by the well-known diff_drive_controller, the UR5 reacts compliant to any force attack. The main controller connects both systems by interchanging relative motions. The current version reduces the linear velocity to 0.233 m/s in advance whereas the compliance controller absorbs the force intensity.
+## Preamble
+### Main Control Loop
+The mobile robot is driven by two separated systems of MiR and UR5. As the movement - in observance of non-holomic constraints - is controlled by the well-known diff_drive_controller, the UR5 reacts compliant to any force attack. The main controller connects both systems by interchanging relative motions. The current version reduces the linear velocity to 0.233 m/s in advance whereas the compliance controller absorbs the force intensity.
 ![Image of Main_Control](https://github.com/Heile28/force_manipulation/blob/master/etc/main_control.png)
 
-## FDCC-Solver
+### FDCC-Solver
 The Cartesian Compliance controller is a merging of impedance, admittance and force control visibly as following:
 ![Image of FDCC_Control](https://github.com/Heile28/force_manipulation/blob/master/etc/FDCC_model.PNG)
 
 Information about the implemented control loop used for the Forward Dynamics Solver provides [this paper](https://arxiv.org/pdf/1908.06252.pdf).
 
-### Configuration
-Write a yaml.-file with the following entries and store it in ~/MiR200-with-UR5/mir_ur5_description/config
+## Configurations
+### Configure the cartesian compliance controller
+#### Write a yaml.-file with the following entries saved as 'cartesian_compliance_controller.yaml'
 ```bash
 arm_cartesian_compliance_controller:
   type: "position_controllers/CartesianComplianceController"
@@ -99,9 +103,61 @@ arm_cartesian_compliance_controller:
       rot_y: {p: 0.01}
       rot_z: {p: 0.01}
 ```
+and store it in ~/MiR200-with-UR5/mir_ur5_description/config
+#### Get this configuration launched as ROS controller with Gazebo
+* Browse into MiR200-with-UR5/mir_ur5/launch/mir_ur5.launch
+and include cartesian controller as argument
+```bash
+<arg name="active_controllers" default="arm_cartesian_compliance_controller"/>
+```
+* and load controller configuration from YAML file by
+```bash
+<rosparam file="$(find mir_ur5_description)/config/cartesian_compliance_controller.yaml" command="load" subst_value="true"/>
+```
+* Spawn the controller (besides joint_state_controller) by
+```bash
+<!-- spawn controller manager with all active controllers (args are all namespaces from inside controller_configurations files-->
+<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/$(arg robot_namespace)"
+            args="$(arg active_controllers)">
+            
+<!-- Robot state publisher that publishes the current state of the robot to tf -->
+      <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen"/>
+ </node>
+```
+### Add Gazebo Force Torque Sensor
+#### Create a configuration file for the F/T-plugin saved as 'force_sensor.gazebo.xacro'
+```bash
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/wiki/xacro"> 
+  <xacro:macro name="sensor_force_torque" params="joint_name topic_name">
+    <gazebo reference="${joint_name}">
+     <provideFeedback>true</provideFeedback>
+     <!-- <turnGravityOff>false</turnGravityOff> -->
+     <visualize>true</visualize>
+    </gazebo>
+    <gazebo>
+     <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
+       <alwaysOn>true</alwaysOn>
+       <updateRate>100.0</updateRate>
+       <topicName>${topic_name}</topicName>
+       <jointName>${joint_name}</jointName>
+       <!--<gaussianNoise>0.0</gaussianNoise>-->
+     </plugin>
+    </gazebo>
+  </xacro:macro>
+</robot>
+```
+* and store it in ~/MiR200-with-UR5/mir_ur5_desription/urdf/include
 
-## Configure UR Kinematics Package
-The [universal_robot](https://github.com/ros-industrial/universal_robot) -package provides the repo namely "[ur_kinematics](https://github.com/ros-industrial/universal_robot/tree/kinetic-devel/ur_kinematics)". Adapt its file [ur_kin.cpp](https://github.com/ros-industrial/universal_robot/blob/kinetic-devel/ur_kinematics/src/ur_kin.cpp) by uncommenting line 16-26:
+* Browse into MiR200-with-UR5/mir_ur5_desription/urdf/mir_ur5.urdf.xacro and add
+```bash
+<!--add force_torque sensor-->
+<xacro:include filename="$(find mir_ur5_description)/urdf/include/force_sensor.gazebo.xacro" />
+<xacro:sensor_force_torque joint_name="$(arg tf_prefix)wrist_3_joint" topic_name="ee_force_torque_sensor"/>
+```
+### Configure UR Kinematics Package
+The [universal_robot](https://github.com/ros-industrial/universal_robot) -package provides the repo namely "[ur_kinematics](https://github.com/ros-industrial/universal_robot/tree/kinetic-devel/ur_kinematics)". 
+* Adapt its file [ur_kin.cpp](https://github.com/ros-industrial/universal_robot/blob/kinetic-devel/ur_kinematics/src/ur_kin.cpp) by uncommenting line 16-26:
 ```bash
 /*
     #define UR10_PARAMS
@@ -118,7 +174,7 @@ The [universal_robot](https://github.com/ros-industrial/universal_robot) -packag
     #ifdef UR5_PARAMS
 */
 ```
-and line 34-44:
+* and line 34-44:
 ```bash
 /*
     #endif
@@ -134,7 +190,7 @@ and line 34-44:
     #endif
 */
 ```
-Again execute
+* Again execute
 ```bash
 catkin_make
 ```
@@ -142,3 +198,9 @@ catkin_make
 ```bash
 roslaunch mir_ur5 system_sim.launch
 ```
+### Feature
+```bash
+sudo apt-get install ros-melodic-rqt-joint-trajectory-controller
+rosrun rqt_joint_trajectory_controller rqt_joint_trajectory_controller
+```
+

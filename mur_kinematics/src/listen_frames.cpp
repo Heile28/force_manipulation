@@ -15,7 +15,7 @@ ListenFrames::Quaternion quaternion;
 ListenFrames::ListenFrames()
 {
   this->nh_=nh_;
-  this->server_pose_ = nh_.advertiseService("listen_frames/request_endeffector/pose", &ListenFrames::callbackRequestEndeffector, this);
+  this->server_pose_ = nh_.advertiseService(nh_.getNamespace() + "listen_frames/request_endeffector/pose", &ListenFrames::callbackRequestEndeffector, this);
 }
 
 bool ListenFrames::callbackRequestEndeffector(mur_robot_msgs::PoseRequest::Request& req, mur_robot_msgs::PoseRequest::Response& res)

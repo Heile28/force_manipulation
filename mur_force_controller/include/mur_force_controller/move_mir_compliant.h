@@ -80,34 +80,41 @@ namespace move_compliant{
         void wrenchCallback(geometry_msgs::WrenchStamped wrench_msg);
 
     public:
-        //standard constructor
+
+        /**
+         * @brief Constructs a new Move Mir object
+         * 
+         */
         MoveMir();
 
-        //destructor
+        /**
+         * @brief Destroys all objects
+         * 
+         */
         ~MoveMir();
 
         //methods
         /**
-         * @brief service request initial global pose of endeffector in ~/base_link
+         * @brief service requests initial global pose of endeffector in ~/base_link
          * 
          */
         void lookupInitialGlobalPosition();
 
         /**
-         * @brief service request initial pose of endeffector in ~/base_link_ur5
+         * @brief service requests initial pose of endeffector in ~/base_link_ur5
          * 
          */
         void lookupInitialLocalPosition();
 
 
         /**
-         * @brief service request initial pose of endeffector in ~/world
+         * @brief service requests initial pose of endeffector in ~/world
          * 
          */
         void lookupInitialWorldPosition();
 
         /**
-         * @brief service request initial pose of MiR in ~/world
+         * @brief service requests initial pose of MiR in ~/world
          * 
          */
         void lookupInitialMiRPosition();
@@ -117,52 +124,69 @@ namespace move_compliant{
          * 
          * @return std::vector<double> current_pose
          */
-
         virtual std::vector<double> callCurrentGlobalPose();
 
         /**
-         * @brief calls for current local position of endeffector (inside ~/base_link_ur5)
+         * @brief calls for current local pose of endeffector (inside ~/base_link_ur5)
          * 
          * @return std::vector<double> current_pose
          */
         virtual std::vector<double> callCurrentLocalPose();
 
-        
+        /**
+         * @brief calls for current global pose of MiR and endeffector (inside /world)
+         * 
+         * @return std::vector<double> current_map_pose_, std::vector<double> current_mir_map_pose_
+         */
         virtual std::vector<double> callCurrentWorldPose();
         
         /**
-         * @brief Normalizes the angle to be 0 to M_PI
+         * @brief normalizes the specified angle to be 0 to M_PI
          * 
+         * @param angle 
+         * @return double normalized_angle
          */
         double normalize_angle(double angle);
-
         
         /**
-        * @brief check current force angle
-        * 
-        */
-        void poseUpdater();
+         * @brief checks about rotation of specified current force_angle
+         * 
+         * @param force_angle
+         * 
+         */
+        void poseUpdater(double force_angle);
 
         /**
-        * @brief check current pose relation between MiR and endeffector
-        * 
-        */
+         * @brief checks current pose relation between MiR and endeffector (part of nullspace movement 1)
+         * 
+         */
         void relativeAngleUpdater();
+
+        /**
+         * @brief get the current force angle object
+         * 
+         * @return double force_angle  
+         */
+        double getCurrentForceAngle();
+
+        /**
+         * @brief rotate MiR into force direction
+         * 
+         */
+        void rotateToForceDirection();
 
         /**
          * @brief connects /robot1_ns/arm_cartesian_compliance_controller/target_pose
          * 
-         * @param x_d desired pose which to send to cartesian_compliance_controller
-         * @param theta_ angle between MiR-x-axis and target direction
-         * 
+         * @param rot_angle angle between MiR-x-axis and target direction
          */
-        void nullspace(double theta_);
-
-        double getCurrentForceAngle();
-
-        void rotateToForceDirection();
-
         void rotateToPoseDirection(double rot_angle);
+
+        /**
+         * @brief method driving MiR straight towards force direction 
+         *  
+         */
+        void moveStraight();
 
         /**
          * @brief position related controller rotation and translation in parallel 
@@ -171,16 +195,17 @@ namespace move_compliant{
         void controlMethod1();
 
         /**
-         * @brief position related controller rotation and translation in sequence 
+         * @brief position related controller rotation and translation in sequence (nullspace movement 1)
          *  
          */
         void controlMethod2();
 
         /**
-         * @brief method driving MiR on straight line 
+         * @brief position related controller rotation and translation in sequence (nullspace movement 2)
          *  
          */
-        void moveStraight();
+        void controlMethod3();
+
     };
 }
 

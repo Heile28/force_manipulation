@@ -57,24 +57,31 @@ namespace move_compliant{
                                         "robot1_tf/wrist_1_joint", "robot1_tf/wrist_2_joint", "robot1_tf/wrist_3_joint"};
 
         protected:
+        
             /**
-            * @brief Callbacks current wrench 
-            * 
-            */
+             * @brief callbacks current wrench
+             * 
+             * @param angle_msg 
+             */
             void angleCallback(std_msgs::Float64 angle_msg);
 
         public:
 
-            //standard constructor
+            /**
+             * @brief Constructs a new Move U R object
+             * 
+             */
             MoveUR();
 
-            //destructor
+            /**
+             * @brief Destroys the all objects
+             * 
+             */
             ~MoveUR();
         
             /**
              * @brief connects /robot1_ns/arm_cartesian_compliance_controller/target_pose
              * 
-             * @param x_d desired pose which to send to cartesian_compliance_controller
              * @param theta_ angle between MiR-x-axis and force direction
              * 
              */
@@ -99,10 +106,23 @@ namespace move_compliant{
              */
             virtual std::vector<double> callCurrentLocalPose();
 
+            /**
+             * @brief moves endeffector into initial pose
+             * 
+             */
             void moveInitialPose();
 
+            /**
+             * @brief moves endeffector by specified rot_angle
+             * 
+             * @param rot_angle_ 
+             */
             void rotateAngle(double rot_angle_);
 
+            /**
+             * @brief calculates endeffector pose based on current joint angles 
+             * 
+             */
             void forwardKinematics();
 
     };

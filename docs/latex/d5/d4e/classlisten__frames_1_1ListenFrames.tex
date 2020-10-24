@@ -1,0 +1,58 @@
+\hypertarget{classlisten__frames_1_1ListenFrames}{}\doxysection{listen\+\_\+frames\+::Listen\+Frames Class Reference}
+\label{classlisten__frames_1_1ListenFrames}\index{listen\_frames::ListenFrames@{listen\_frames::ListenFrames}}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structlisten__frames_1_1ListenFrames_1_1Orientation}{Orientation}}
+\item 
+struct \mbox{\hyperlink{structlisten__frames_1_1ListenFrames_1_1Quaternion}{Quaternion}}
+\item 
+struct \mbox{\hyperlink{structlisten__frames_1_1ListenFrames_1_1Translation}{Translation}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classlisten__frames_1_1ListenFrames_a9fc8615a0b668cf770cadc294b31c528}{get\+Link\+Transform\+UR5}} (const std\+::string source\+\_\+frame, const std\+::string target\+\_\+frame)
+\begin{DoxyCompactList}\small\item\em callback function of joints data \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classlisten__frames_1_1ListenFrames_a95b5fbc1e99ed126a6f9b968010ea1ca}{callback\+Request\+Endeffector}} (mur\+\_\+robot\+\_\+msgs\+::\+Pose\+Request\+::\+Request \&req, mur\+\_\+robot\+\_\+msgs\+::\+Pose\+Request\+::\+Response \&res)
+\begin{DoxyCompactList}\small\item\em Service server to request for current endeffector pose. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classlisten__frames_1_1ListenFrames_a95b5fbc1e99ed126a6f9b968010ea1ca}\label{classlisten__frames_1_1ListenFrames_a95b5fbc1e99ed126a6f9b968010ea1ca}} 
+\index{listen\_frames::ListenFrames@{listen\_frames::ListenFrames}!callbackRequestEndeffector@{callbackRequestEndeffector}}
+\index{callbackRequestEndeffector@{callbackRequestEndeffector}!listen\_frames::ListenFrames@{listen\_frames::ListenFrames}}
+\doxysubsubsection{\texorpdfstring{callbackRequestEndeffector()}{callbackRequestEndeffector()}}
+{\footnotesize\ttfamily bool Listen\+Frames\+::callback\+Request\+Endeffector (\begin{DoxyParamCaption}\item[{mur\+\_\+robot\+\_\+msgs\+::\+Pose\+Request\+::\+Request \&}]{req,  }\item[{mur\+\_\+robot\+\_\+msgs\+::\+Pose\+Request\+::\+Response \&}]{res }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em req} & activate to true if wanted \\
+\hline
+{\em res} & is able to return cartesian position, orientation (quaternion + rpy) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true 
+
+false 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classlisten__frames_1_1ListenFrames_a9fc8615a0b668cf770cadc294b31c528}\label{classlisten__frames_1_1ListenFrames_a9fc8615a0b668cf770cadc294b31c528}} 
+\index{listen\_frames::ListenFrames@{listen\_frames::ListenFrames}!getLinkTransformUR5@{getLinkTransformUR5}}
+\index{getLinkTransformUR5@{getLinkTransformUR5}!listen\_frames::ListenFrames@{listen\_frames::ListenFrames}}
+\doxysubsubsection{\texorpdfstring{getLinkTransformUR5()}{getLinkTransformUR5()}}
+{\footnotesize\ttfamily void Listen\+Frames\+::get\+Link\+Transform\+UR5 (\begin{DoxyParamCaption}\item[{const std\+::string}]{source\+\_\+frame,  }\item[{const std\+::string}]{target\+\_\+frame }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em source\+\_\+frame} & frame origin \\
+\hline
+{\em target\+\_\+frame} & frame in which to transform \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+mur\+\_\+kinematics/include/mur\+\_\+kinematics/listen\+\_\+frames.\+h\item 
+mur\+\_\+kinematics/src/listen\+\_\+frames.\+cpp\end{DoxyCompactItemize}

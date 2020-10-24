@@ -17,13 +17,5 @@ int main(int argc, char** argv)
 
     gazebo_ft_publisher::WrenchPublisher wrench_publisher;
 
-    /*
-    while(ros::ok())
-    {
-        wrench_publisher.gravitation_compensation();
-        ros::spinOnce();
-    }
-    */
-
     ros::spin();
 }

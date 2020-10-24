@@ -1,0 +1,246 @@
+This repository can be used to implement a controlling mechanism for driving the mobile robot Mu\+R205 consisting of UR5 manipulator and MiR plattform by external forces. It is intended for gazebo simulation inside ROS.
+
+\doxysection*{Prerequisites}
+
+The following instructions assume that a Catkin workspace has been created. Browse in 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd \$HOME/catkin\_ws/src}
+
+\end{DoxyCode}
+
+
+\doxysubsection*{Clone the following repositories}
+
+
+\begin{DoxyItemize}
+\item \href{https://github.com/Heile28/force_manipulation.git}{\texttt{ force\+\_\+manipulation}}
+\item \href{https://github.com/ros-industrial/universal_robot}{\texttt{ universal\+\_\+robot}}
+\item \href{https://github.com/matchRos/MiR200_Sim}{\texttt{ Mi\+R200\+\_\+\+Sim}}
+\item \href{https://github.com/Heile28/MiR200-with-UR5}{\texttt{ Mi\+R200-\/with-\/\+UR5}}
+\item \href{https://github.com/pal-robotics/gazebo_ros_link_attacher}{\texttt{ gazebo\+\_\+ros\+\_\+link\+\_\+attacher}}
+\item \href{https://github.com/fzi-forschungszentrum-informatik/cartesian_controllers}{\texttt{ cartesian\+\_\+controllers}} 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git clone https://github.com/Heile28/force\_manipulation.git}
+\DoxyCodeLine{git clone -\/b \$melodic-\/devel https://github.com/ros-\/industrial/universal\_robot.git}
+\DoxyCodeLine{git clone https://github.com/matchRos/MiR200\_Sim.git}
+\DoxyCodeLine{git clone https://github.com/Heile28/MiR200-\/with-\/UR5.git}
+\DoxyCodeLine{git clone -\/b \$melodic-\/devel https://github.com/pal-\/robotics/gazebo\_ros\_link\_attacher}
+\DoxyCodeLine{git clone https://github.com/matchRos/MiR200\_Sim.git}
+
+\end{DoxyCode}
+ into your catkin workspace.
+\end{DoxyItemize}
+
+\doxysubsection*{Dependencies}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd \string~/MiR200\_Sim/mir\_driver/nodes/}
+\DoxyCodeLine{chmod +x rep117\_filter.py}
+\DoxyCodeLine{cd \$HOME/catkin\_ws}
+\DoxyCodeLine{}
+\DoxyCodeLine{\# Install }
+\DoxyCodeLine{sudo apt-\/get install ros-\/melodic-\/moveit}
+\DoxyCodeLine{sudo apt-\/get install ros-\/melodic-\/moveit-\/visual-\/tools}
+\DoxyCodeLine{sudo apt install ros-\/melodic-\/cob-\/gazebo-\/ros-\/control}
+\DoxyCodeLine{sudo apt-\/get install ros-\/melodic-\/plotjuggler}
+\DoxyCodeLine{sudo apt-\/get install ros-\/melodic-\/joint-\/trajectory-\/controller}
+\DoxyCodeLine{sudo apt-\/get install ros-\/melodic-\/dwa-\/local-\/planner}
+\DoxyCodeLine{}
+\DoxyCodeLine{}
+\DoxyCodeLine{\# checking dependencies}
+\DoxyCodeLine{sudo apt-\/get update -\/qq}
+\DoxyCodeLine{sudo apt-\/get install -\/qq -\/y python-\/rosdep}
+\DoxyCodeLine{sudo rosdep init (or sudo rm /etc/ros/rosdep/sources.list.d/20-\/default.list)}
+\DoxyCodeLine{sudo rosdep update or sudo apt update + \string~ upgrade}
+\DoxyCodeLine{sudo rosdep install -\/-\/from-\/paths ./ -\/i -\/y -\/-\/rosdistro melodic}
+\DoxyCodeLine{}
+\DoxyCodeLine{catkin\_make}
+\DoxyCodeLine{}
+\DoxyCodeLine{\# activate this workspace via \string~/.bashrc}
+\DoxyCodeLine{source \$HOME/catkin\_ws/devel/setup.bash}
+
+\end{DoxyCode}
+ \doxysection*{Getting Started}
+
+\doxysubsection*{Preamble}
+
+\doxysubsubsection*{Main Control Loop}
+
+The mobile robot is driven by two separated systems of MiR and UR5. As the movement -\/ in observance of non-\/holomic constraints -\/ is controlled by the well-\/known diff\+\_\+drive\+\_\+controller, the UR5 reacts compliant to any force attack. The main controller connects both systems by interchanging relative motions. The current version reduces the linear velocity to 0.\+233 m/s in advance whereas the compliance controller absorbs the force intensity. 
+
+\doxysubsubsection*{FDCC-\/\+Solver}
+
+The Cartesian Compliance controller is a merging of impedance, admittance and force control visibly as following\+: 
+
+Information about the implemented control loop used for the Forward Dynamics Solver provides \href{https://arxiv.org/pdf/1908.06252.pdf}{\texttt{ this paper}}.
+
+\doxysubsection*{Configurations}
+
+\doxysubsubsection*{Configure the cartesian compliance controller}
+
+\doxyparagraph*{Write a yaml.-\/file with the following entries saved as \textquotesingle{}cartesian\+\_\+compliance\+\_\+controller.\+yaml\textquotesingle{}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{arm\_cartesian\_compliance\_controller:}
+\DoxyCodeLine{  type: "{}position\_controllers/CartesianComplianceController"{}}
+\DoxyCodeLine{  end\_effector\_link: "{}\$(arg tf\_prefix)ee\_link\_ur5"{}    \# All links below must come before this link}
+\DoxyCodeLine{  robot\_base\_link: "{}\$(arg tf\_prefix)base\_link\_ur5"{}}
+\DoxyCodeLine{  ft\_sensor\_ref\_link: "{}\$(arg tf\_prefix)wrist\_3\_link\_ur5"{}}
+\DoxyCodeLine{  compliance\_ref\_link: "{}\$(arg tf\_prefix)ee\_link\_ur5"{}}
+\DoxyCodeLine{  target\_frame\_topic: "{}target\_pose"{} \#target\_frame}
+\DoxyCodeLine{  joints:}
+\DoxyCodeLine{    -\/ \$(arg tf\_prefix)shoulder\_pan\_joint}
+\DoxyCodeLine{    -\/ \$(arg tf\_prefix)shoulder\_lift\_joint}
+\DoxyCodeLine{    -\/ \$(arg tf\_prefix)elbow\_joint}
+\DoxyCodeLine{    -\/ \$(arg tf\_prefix)wrist\_1\_joint}
+\DoxyCodeLine{    -\/ \$(arg tf\_prefix)wrist\_2\_joint}
+\DoxyCodeLine{    -\/ \$(arg tf\_prefix)wrist\_3\_joint}
+\DoxyCodeLine{}
+\DoxyCodeLine{  stiffness:}
+\DoxyCodeLine{      trans\_x: 200}
+\DoxyCodeLine{      trans\_y: 200}
+\DoxyCodeLine{      trans\_z: 200}
+\DoxyCodeLine{      rot\_x: 150}
+\DoxyCodeLine{      rot\_y: 150}
+\DoxyCodeLine{      rot\_z: 150}
+\DoxyCodeLine{}
+\DoxyCodeLine{  pd\_gains:}
+\DoxyCodeLine{      trans\_x: \{p: 0.05\}}
+\DoxyCodeLine{      trans\_y: \{p: 0.05\}}
+\DoxyCodeLine{      trans\_z: \{p: 0.05\}}
+\DoxyCodeLine{      rot\_x: \{p: 0.01\}}
+\DoxyCodeLine{      rot\_y: \{p: 0.01\}}
+\DoxyCodeLine{      rot\_z: \{p: 0.01\}}
+
+\end{DoxyCode}
+ and store it in $\sim$/\+Mi\+R200-\/with-\/\+UR5/mir\+\_\+ur5\+\_\+description/config \doxyparagraph*{Get this configuration launched as ROS controller with Gazebo}
+
+
+\begin{DoxyItemize}
+\item Browse into Mi\+R200-\/with-\/\+UR5/mir\+\_\+ur5/launch/mir\+\_\+ur5.\+launch and include cartesian controller as argument 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{<arg name="{}active\_controllers"{} default="{}arm\_cartesian\_compliance\_controller"{}/>}
+
+\end{DoxyCode}
+
+\item and load controller configuration from YAML file by 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{<rosparam file="{}\$(find mir\_ur5\_description)/config/cartesian\_compliance\_controller.yaml"{} command="{}load"{} subst\_value="{}true"{}/>}
+
+\end{DoxyCode}
+
+\item Spawn the controller (besides joint\+\_\+state\+\_\+controller) by 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{<!-\/-\/ spawn controller manager with all active controllers (args are all namespaces from inside controller\_configurations files-\/-\/>}
+\DoxyCodeLine{<node name="{}controller\_spawner"{} pkg="{}controller\_manager"{} type="{}spawner"{} respawn="{}false"{} output="{}screen"{} ns="{}/\$(arg robot\_namespace)"{}}
+\DoxyCodeLine{            args="{}\$(arg active\_controllers)"{}>}
+\DoxyCodeLine{            }
+\DoxyCodeLine{<!-\/-\/ Robot state publisher that publishes the current state of the robot to tf -\/-\/>}
+\DoxyCodeLine{      <node pkg="{}robot\_state\_publisher"{} type="{}robot\_state\_publisher"{} name="{}robot\_state\_publisher"{} output="{}screen"{}/>}
+\DoxyCodeLine{ </node>}
+
+\end{DoxyCode}
+ \doxysubsubsection*{Add Gazebo Force Torque Sensor}
+\end{DoxyItemize}
+
+\doxyparagraph*{Create a configuration file for the F/\+T-\/plugin saved as \textquotesingle{}force\+\_\+sensor.\+gazebo.\+xacro\textquotesingle{}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{<?xml version="{}1.0"{}?>}
+\DoxyCodeLine{<robot xmlns:xacro="{}http://wiki.ros.org/wiki/xacro"{}> }
+\DoxyCodeLine{  <xacro:macro name="{}sensor\_force\_torque"{} params="{}joint\_name topic\_name"{}>}
+\DoxyCodeLine{    <gazebo reference="{}\$\{joint\_name\}"{}>}
+\DoxyCodeLine{     <provideFeedback>true</provideFeedback>}
+\DoxyCodeLine{     <!-\/-\/ <turnGravityOff>false</turnGravityOff> -\/-\/>}
+\DoxyCodeLine{     <visualize>true</visualize>}
+\DoxyCodeLine{    </gazebo>}
+\DoxyCodeLine{    <gazebo>}
+\DoxyCodeLine{     <plugin name="{}ft\_sensor"{} filename="{}libgazebo\_ros\_ft\_sensor.so"{}>}
+\DoxyCodeLine{       <alwaysOn>true</alwaysOn>}
+\DoxyCodeLine{       <updateRate>100.0</updateRate>}
+\DoxyCodeLine{       <topicName>\$\{topic\_name\}</topicName>}
+\DoxyCodeLine{       <jointName>\$\{joint\_name\}</jointName>}
+\DoxyCodeLine{       <!-\/-\/<gaussianNoise>0.0</gaussianNoise>-\/-\/>}
+\DoxyCodeLine{     </plugin>}
+\DoxyCodeLine{    </gazebo>}
+\DoxyCodeLine{  </xacro:macro>}
+\DoxyCodeLine{</robot>}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item and store it in $\sim$/\+Mi\+R200-\/with-\/\+UR5/mir\+\_\+ur5\+\_\+desription/urdf/include
+\item Browse into Mi\+R200-\/with-\/\+UR5/mir\+\_\+ur5\+\_\+desription/urdf/mir\+\_\+ur5.\+urdf.\+xacro and add 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{<!-\/-\/add force\_torque sensor-\/-\/>}
+\DoxyCodeLine{<xacro:include filename="{}\$(find mir\_ur5\_description)/urdf/include/force\_sensor.gazebo.xacro"{} />}
+\DoxyCodeLine{<xacro:sensor\_force\_torque joint\_name="{}\$(arg tf\_prefix)wrist\_3\_joint"{} topic\_name="{}ee\_force\_torque\_sensor"{}/>}
+
+\end{DoxyCode}
+ \doxysubsubsection*{Configure UR Kinematics Package}
+\end{DoxyItemize}
+
+The \href{https://github.com/ros-industrial/universal_robot}{\texttt{ universal\+\_\+robot}} -\/package provides the repo namely \char`\"{}\mbox{[}ur\+\_\+kinematics\mbox{]}(https\+://github.\+com/ros-\/industrial/universal\+\_\+robot/tree/kinetic-\/devel/ur\+\_\+kinematics)\char`\"{}.
+\begin{DoxyItemize}
+\item Adapt its file \href{https://github.com/ros-industrial/universal_robot/blob/kinetic-devel/ur_kinematics/src/ur_kin.cpp}{\texttt{ ur\+\_\+kin.\+cpp}} by uncommenting line 16-\/26\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/*}
+\DoxyCodeLine{    \#define UR10\_PARAMS}
+\DoxyCodeLine{    \#ifdef UR10\_PARAMS}
+\DoxyCodeLine{    const double d1 =  0.1273;}
+\DoxyCodeLine{    const double a2 = -\/0.612;}
+\DoxyCodeLine{    const double a3 = -\/0.5723;}
+\DoxyCodeLine{    const double d4 =  0.163941;}
+\DoxyCodeLine{    const double d5 =  0.1157;}
+\DoxyCodeLine{    const double d6 =  0.0922;}
+\DoxyCodeLine{    \#endif}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    \#define UR5\_PARAMS}
+\DoxyCodeLine{    \#ifdef UR5\_PARAMS}
+\DoxyCodeLine{*/}
+
+\end{DoxyCode}
+
+\item and line 34-\/44\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/*}
+\DoxyCodeLine{    \#endif}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    \#define UR3\_PARAMS}
+\DoxyCodeLine{    \#ifdef UR3\_PARAMS}
+\DoxyCodeLine{    const double d1 =  0.1519;}
+\DoxyCodeLine{    const double a2 = -\/0.24365;}
+\DoxyCodeLine{    const double a3 = -\/0.21325;}
+\DoxyCodeLine{    const double d4 =  0.11235;}
+\DoxyCodeLine{    const double d5 =  0.08535;}
+\DoxyCodeLine{    const double d6 =  0.0819;}
+\DoxyCodeLine{    \#endif}
+\DoxyCodeLine{*/}
+
+\end{DoxyCode}
+
+\item Again execute 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{catkin\_make}
+
+\end{DoxyCode}
+ \doxysubsection*{Start simulation}
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{roslaunch mir\_ur5 system\_sim.launch}
+
+\end{DoxyCode}
+ \doxysubsubsection*{Feature}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{sudo apt-\/get install ros-\/melodic-\/rqt-\/joint-\/trajectory-\/controller}
+\DoxyCodeLine{rosrun rqt\_joint\_trajectory\_controller rqt\_joint\_trajectory\_controller}
+
+\end{DoxyCode}
+ 

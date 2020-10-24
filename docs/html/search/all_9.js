@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['urjacobian',['urJacobian',['../df/dab/classcalculate__jacobian_1_1GetJacobian.html#abe5c223f433aa0d50c40c43fefe95542',1,'calculate_jacobian::GetJacobian']]]
+  ['quaternion_38',['Quaternion',['../d4/db3/structlisten__frames_1_1ListenFrames_1_1Quaternion.html',1,'listen_frames::ListenFrames::Quaternion'],['../dd/d2f/structMurBase_1_1Quaternion.html',1,'MurBase::Quaternion']]]
 ];

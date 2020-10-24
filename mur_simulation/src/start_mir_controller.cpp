@@ -4,7 +4,7 @@
  * 
  * Created on 21. August 2020
  * 
- * Main file executing all actions driving the MuR robot
+ * Main file executing actions driving MiR in conjunction with UR5
  * 
 */
 
@@ -34,12 +34,6 @@ int main(int argc, char** argv)
     // double theta0 = atan2(static_pose[1],static_pose[0]);
     // ROS_INFO_STREAM("Static angle is "<<theta0);
 
-
-
-    /***** rotate MuR in initial pose *****/
-
-
-
     /***** start moving MiR robot *****/
     move_compliant::MoveMir obj1;
     
@@ -63,34 +57,14 @@ int main(int argc, char** argv)
 
     
     while(ros::ok()){
-        
         //obj1.controlMethod1();
-        obj1.controlMethod2();
+        obj1.controlMethod3();
 
         //get_jacobian.forwardKinematics();
         ros::spinOnce();
         
     }
-    
-    
-    
-    
 
-
-    // while(ros::ok()){
-    //     obj1.rotateToPoseDirection();
-    //     ros::spinOnce();
-    // }
-    
-    
-
-    /*
-    while (ros::ok())
-    {
-        obj1.rotateToForceDirection();
-        ros::spinOnce();
-    }
-    */
-
-    ros::spin();
+    //ros::spin();
+    return 0;
 }

@@ -1,0 +1,14 @@
+<launch>
+    <arg name="robot_namespace"/>
+    
+    <!-- compulsory nodes -->
+    <node pkg="mur_simulation" type="start_services_node" name="force_manipulation_services" ns="/$(arg robot_namespace)"/>
+    <!-- <node pkg="mur_simulation" type="start_mir_node" name="move_mir_compliant" ns="/$(arg robot_namespace)" /> -->
+    <node pkg="mur_simulation" type="send_target_wrench_node" name="send_target_wrench" ns="/$(arg robot_namespace)" />
+    <!-- <node pkg="mur_simulation" type="start_ur_node" name="move_ur_compliant" ns="/$(arg robot_namespace)" /> -->
+    
+    <!-- additional nodes -->
+    <node pkg="mur_simulation" type="call_endeffector_kinematics_node" name="call_endeffector_kinematics"  ns="/$(arg robot_namespace)" />
+    <node pkg="mur_simulation" type="call_mir_kinematics_node" name="call_mir_kinematics" ns="/$(arg robot_namespace)" />
+
+</launch>

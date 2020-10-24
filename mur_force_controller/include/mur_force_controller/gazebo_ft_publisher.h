@@ -48,10 +48,18 @@ namespace gazebo_ft_publisher{
         void wrenchCallback(geometry_msgs::WrenchStamped wrench_msg);
     
     public:
-        //standard constructor
+        
+        /**
+         * @brief Construct a new Wrench Publisher object
+         * 
+         */
         WrenchPublisher();
 
-        //destructor
+        
+        /**
+         * @brief Destroy the Wrench Publisher object
+         * 
+         */
         ~WrenchPublisher();
 
         /**

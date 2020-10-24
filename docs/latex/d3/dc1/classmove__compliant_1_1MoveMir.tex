@@ -1,46 +1,143 @@
-\hypertarget{classmove__compliant_1_1MoveMir}{}\section{move\+\_\+compliant\+:\+:Move\+Mir Class Reference}
-\label{classmove__compliant_1_1MoveMir}\index{move\+\_\+compliant\+::\+Move\+Mir@{move\+\_\+compliant\+::\+Move\+Mir}}
-
-
-Inheritance diagram for move\+\_\+compliant\+:\+:Move\+Mir\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=213pt]{da/ddc/classmove__compliant_1_1MoveMir__inherit__graph}
-\end{center}
-\end{figure}
-
-
-Collaboration diagram for move\+\_\+compliant\+:\+:Move\+Mir\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=213pt]{d0/dbf/classmove__compliant_1_1MoveMir__coll__graph}
-\end{center}
-\end{figure}
-\subsection*{Public Member Functions}
+\hypertarget{classmove__compliant_1_1MoveMir}{}\doxysection{move\+\_\+compliant\+::Move\+Mir Class Reference}
+\label{classmove__compliant_1_1MoveMir}\index{move\_compliant::MoveMir@{move\_compliant::MoveMir}}
+\doxysubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_a32309612bce2fdb3821b9fd006f55b38}\label{classmove__compliant_1_1MoveMir_a32309612bce2fdb3821b9fd006f55b38}} 
-void {\bfseries lookup\+Initial\+Position} ()
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_a5d98dfc7d3a798dea0a396156ff8a167}\label{classmove__compliant_1_1MoveMir_a5d98dfc7d3a798dea0a396156ff8a167}} 
+\mbox{\hyperlink{classmove__compliant_1_1MoveMir_a5d98dfc7d3a798dea0a396156ff8a167}{Move\+Mir}} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new Move Mir object. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_a296aaceb81a91e41041d3348fbdfffd6}\label{classmove__compliant_1_1MoveMir_a296aaceb81a91e41041d3348fbdfffd6}} 
+\mbox{\hyperlink{classmove__compliant_1_1MoveMir_a296aaceb81a91e41041d3348fbdfffd6}{$\sim$\+Move\+Mir}} ()
+\begin{DoxyCompactList}\small\item\em Destroys all objects. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_ac409d5fab19a447361cf38b3ad6387a3}\label{classmove__compliant_1_1MoveMir_ac409d5fab19a447361cf38b3ad6387a3}} 
+void \mbox{\hyperlink{classmove__compliant_1_1MoveMir_ac409d5fab19a447361cf38b3ad6387a3}{lookup\+Initial\+Global\+Position}} ()
+\begin{DoxyCompactList}\small\item\em service requests initial global pose of endeffector in $\sim$/base\+\_\+link \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_ab0f9fcf4074b74d6ccc0995e0fa31247}\label{classmove__compliant_1_1MoveMir_ab0f9fcf4074b74d6ccc0995e0fa31247}} 
+void \mbox{\hyperlink{classmove__compliant_1_1MoveMir_ab0f9fcf4074b74d6ccc0995e0fa31247}{lookup\+Initial\+Local\+Position}} ()
+\begin{DoxyCompactList}\small\item\em service requests initial pose of endeffector in $\sim$/base\+\_\+link\+\_\+ur5 \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_a2f3109df87f165b9d97ad70de05d6871}\label{classmove__compliant_1_1MoveMir_a2f3109df87f165b9d97ad70de05d6871}} 
+void \mbox{\hyperlink{classmove__compliant_1_1MoveMir_a2f3109df87f165b9d97ad70de05d6871}{lookup\+Initial\+World\+Position}} ()
+\begin{DoxyCompactList}\small\item\em service requests initial pose of endeffector in $\sim$/world \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_a8568d4d4ed553944a75cfab82840a53d}\label{classmove__compliant_1_1MoveMir_a8568d4d4ed553944a75cfab82840a53d}} 
+void \mbox{\hyperlink{classmove__compliant_1_1MoveMir_a8568d4d4ed553944a75cfab82840a53d}{lookup\+Initial\+Mi\+RPosition}} ()
+\begin{DoxyCompactList}\small\item\em service requests initial pose of MiR in $\sim$/world \end{DoxyCompactList}\item 
+virtual std\+::vector$<$ double $>$ \mbox{\hyperlink{classmove__compliant_1_1MoveMir_a9b12bc5bcb58c3396844f460a977bde1}{call\+Current\+Global\+Pose}} ()
+\begin{DoxyCompactList}\small\item\em calls for global position of endeffector (inside $\sim$/base\+\_\+link) \end{DoxyCompactList}\item 
+virtual std\+::vector$<$ double $>$ \mbox{\hyperlink{classmove__compliant_1_1MoveMir_a6dca098d99d126dcbcbc2d6dbdeafa75}{call\+Current\+Local\+Pose}} ()
+\begin{DoxyCompactList}\small\item\em calls for current local pose of endeffector (inside $\sim$/base\+\_\+link\+\_\+ur5) \end{DoxyCompactList}\item 
+virtual std\+::vector$<$ double $>$ \mbox{\hyperlink{classmove__compliant_1_1MoveMir_a5ed081371ff928bb45495e67a5dfec4e}{call\+Current\+World\+Pose}} ()
+\begin{DoxyCompactList}\small\item\em calls for current global pose of MiR and endeffector (inside /world) \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classmove__compliant_1_1MoveMir_a2f5ddebd43807dec81b1c00a24abacda}{normalize\+\_\+angle}} (double angle)
+\begin{DoxyCompactList}\small\item\em normalizes the specified angle to be 0 to M\+\_\+\+PI \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classmove__compliant_1_1MoveMir_a436d66f5d18c1912e049cf4ed46df320}{pose\+Updater}} (double force\+\_\+angle)
+\begin{DoxyCompactList}\small\item\em checks about rotation of specified current force\+\_\+angle \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_a30c34db7d92ef11bbea35414b9aeb544}\label{classmove__compliant_1_1MoveMir_a30c34db7d92ef11bbea35414b9aeb544}} 
+void \mbox{\hyperlink{classmove__compliant_1_1MoveMir_a30c34db7d92ef11bbea35414b9aeb544}{relative\+Angle\+Updater}} ()
+\begin{DoxyCompactList}\small\item\em checks current pose relation between MiR and endeffector (part of nullspace movement 1) \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classmove__compliant_1_1MoveMir_a597c3ae70756872a0ccfecc0fc8304f3}{get\+Current\+Force\+Angle}} ()
+\begin{DoxyCompactList}\small\item\em get the current force angle object \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_a5e0517fb33bb3f0cd73645f23b2b80b9}\label{classmove__compliant_1_1MoveMir_a5e0517fb33bb3f0cd73645f23b2b80b9}} 
+void \mbox{\hyperlink{classmove__compliant_1_1MoveMir_a5e0517fb33bb3f0cd73645f23b2b80b9}{rotate\+To\+Force\+Direction}} ()
+\begin{DoxyCompactList}\small\item\em rotate MiR into force direction \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classmove__compliant_1_1MoveMir_a5805a73c4d6d7051b69f06f96600c067}{rotate\+To\+Pose\+Direction}} (double rot\+\_\+angle)
+\begin{DoxyCompactList}\small\item\em connects /robot1\+\_\+ns/arm\+\_\+cartesian\+\_\+compliance\+\_\+controller/target\+\_\+pose \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_a5dbad376a64a379cc7a08e50d53e0568}\label{classmove__compliant_1_1MoveMir_a5dbad376a64a379cc7a08e50d53e0568}} 
+void \mbox{\hyperlink{classmove__compliant_1_1MoveMir_a5dbad376a64a379cc7a08e50d53e0568}{move\+Straight}} ()
+\begin{DoxyCompactList}\small\item\em method driving MiR straight towards force direction \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_acc6454fc063d3849fa064072a88aed66}\label{classmove__compliant_1_1MoveMir_acc6454fc063d3849fa064072a88aed66}} 
+void \mbox{\hyperlink{classmove__compliant_1_1MoveMir_acc6454fc063d3849fa064072a88aed66}{control\+Method1}} ()
+\begin{DoxyCompactList}\small\item\em position related controller rotation and translation in parallel \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_aa7b9460db81d9e56f9a7f0d49a278312}\label{classmove__compliant_1_1MoveMir_aa7b9460db81d9e56f9a7f0d49a278312}} 
+void \mbox{\hyperlink{classmove__compliant_1_1MoveMir_aa7b9460db81d9e56f9a7f0d49a278312}{control\+Method2}} ()
+\begin{DoxyCompactList}\small\item\em position related controller rotation and translation in sequence (nullspace movement 1) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_adbe8b3751258adf7893f483f113448ce}\label{classmove__compliant_1_1MoveMir_adbe8b3751258adf7893f483f113448ce}} 
+void \mbox{\hyperlink{classmove__compliant_1_1MoveMir_adbe8b3751258adf7893f483f113448ce}{control\+Method3}} ()
+\begin{DoxyCompactList}\small\item\em position related controller rotation and translation in sequence (nullspace movement 2) \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_a793e53f3d1b2bc806a6bc2bac9185485}\label{classmove__compliant_1_1MoveMir_a793e53f3d1b2bc806a6bc2bac9185485}} 
-virtual void {\bfseries callback\+Current\+Pose} (mur\+\_\+robot\+\_\+msgs\+::\+Pose\+Message pose\+\_\+msg)
-\item 
-\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_aed52a78493d1d15125bfdcf24912d20d}\label{classmove__compliant_1_1MoveMir_aed52a78493d1d15125bfdcf24912d20d}} 
-void \hyperlink{classmove__compliant_1_1MoveMir_aed52a78493d1d15125bfdcf24912d20d}{displacement\+Pose} ()
-\begin{DoxyCompactList}\small\item\em Calculates displacement based on previous callbacks of initial and current poses. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_ae8932babb8005356b3bbb96da5f6631e}\label{classmove__compliant_1_1MoveMir_ae8932babb8005356b3bbb96da5f6631e}} 
-void \hyperlink{classmove__compliant_1_1MoveMir_ae8932babb8005356b3bbb96da5f6631e}{transfer\+Into\+Mir} (Eigen\+::\+Vector\+Xd displ\+\_\+)
-\begin{DoxyCompactList}\small\item\em Transforms U\+R5 endeffector pose into mir\+\_\+base frame. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_ace126d2ec09b2015d4ad97cb28d3252a}\label{classmove__compliant_1_1MoveMir_ace126d2ec09b2015d4ad97cb28d3252a}} 
-void \hyperlink{classmove__compliant_1_1MoveMir_ace126d2ec09b2015d4ad97cb28d3252a}{move\+Goal} ()
-\begin{DoxyCompactList}\small\item\em diff\+\_\+drive controller for the MiR \end{DoxyCompactList}\end{DoxyCompactItemize}
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_a1707efb46cd33aad2305254e511e9c94}\label{classmove__compliant_1_1MoveMir_a1707efb46cd33aad2305254e511e9c94}} 
+void \mbox{\hyperlink{classmove__compliant_1_1MoveMir_a1707efb46cd33aad2305254e511e9c94}{wrench\+Callback}} (geometry\+\_\+msgs\+::\+Wrench\+Stamped wrench\+\_\+msg)
+\begin{DoxyCompactList}\small\item\em Callbacks current wrench. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_a9b12bc5bcb58c3396844f460a977bde1}\label{classmove__compliant_1_1MoveMir_a9b12bc5bcb58c3396844f460a977bde1}} 
+\index{move\_compliant::MoveMir@{move\_compliant::MoveMir}!callCurrentGlobalPose@{callCurrentGlobalPose}}
+\index{callCurrentGlobalPose@{callCurrentGlobalPose}!move\_compliant::MoveMir@{move\_compliant::MoveMir}}
+\doxysubsubsection{\texorpdfstring{callCurrentGlobalPose()}{callCurrentGlobalPose()}}
+{\footnotesize\ttfamily std\+::vector$<$ double $>$ Move\+Mir\+::call\+Current\+Global\+Pose (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$double$>$ current\+\_\+pose 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_a6dca098d99d126dcbcbc2d6dbdeafa75}\label{classmove__compliant_1_1MoveMir_a6dca098d99d126dcbcbc2d6dbdeafa75}} 
+\index{move\_compliant::MoveMir@{move\_compliant::MoveMir}!callCurrentLocalPose@{callCurrentLocalPose}}
+\index{callCurrentLocalPose@{callCurrentLocalPose}!move\_compliant::MoveMir@{move\_compliant::MoveMir}}
+\doxysubsubsection{\texorpdfstring{callCurrentLocalPose()}{callCurrentLocalPose()}}
+{\footnotesize\ttfamily std\+::vector$<$ double $>$ Move\+Mir\+::call\+Current\+Local\+Pose (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$double$>$ current\+\_\+pose 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_a5ed081371ff928bb45495e67a5dfec4e}\label{classmove__compliant_1_1MoveMir_a5ed081371ff928bb45495e67a5dfec4e}} 
+\index{move\_compliant::MoveMir@{move\_compliant::MoveMir}!callCurrentWorldPose@{callCurrentWorldPose}}
+\index{callCurrentWorldPose@{callCurrentWorldPose}!move\_compliant::MoveMir@{move\_compliant::MoveMir}}
+\doxysubsubsection{\texorpdfstring{callCurrentWorldPose()}{callCurrentWorldPose()}}
+{\footnotesize\ttfamily std\+::vector$<$ double $>$ Move\+Mir\+::call\+Current\+World\+Pose (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$double$>$ current\+\_\+map\+\_\+pose\+\_\+, std\+::vector$<$double$>$ current\+\_\+mir\+\_\+map\+\_\+pose\+\_\+ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_a597c3ae70756872a0ccfecc0fc8304f3}\label{classmove__compliant_1_1MoveMir_a597c3ae70756872a0ccfecc0fc8304f3}} 
+\index{move\_compliant::MoveMir@{move\_compliant::MoveMir}!getCurrentForceAngle@{getCurrentForceAngle}}
+\index{getCurrentForceAngle@{getCurrentForceAngle}!move\_compliant::MoveMir@{move\_compliant::MoveMir}}
+\doxysubsubsection{\texorpdfstring{getCurrentForceAngle()}{getCurrentForceAngle()}}
+{\footnotesize\ttfamily double Move\+Mir\+::get\+Current\+Force\+Angle (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\begin{DoxyReturn}{Returns}
+double force\+\_\+angle ~\newline
+ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_a2f5ddebd43807dec81b1c00a24abacda}\label{classmove__compliant_1_1MoveMir_a2f5ddebd43807dec81b1c00a24abacda}} 
+\index{move\_compliant::MoveMir@{move\_compliant::MoveMir}!normalize\_angle@{normalize\_angle}}
+\index{normalize\_angle@{normalize\_angle}!move\_compliant::MoveMir@{move\_compliant::MoveMir}}
+\doxysubsubsection{\texorpdfstring{normalize\_angle()}{normalize\_angle()}}
+{\footnotesize\ttfamily double Move\+Mir\+::normalize\+\_\+angle (\begin{DoxyParamCaption}\item[{double}]{angle }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em angle} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+double normalized\+\_\+angle 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_a436d66f5d18c1912e049cf4ed46df320}\label{classmove__compliant_1_1MoveMir_a436d66f5d18c1912e049cf4ed46df320}} 
+\index{move\_compliant::MoveMir@{move\_compliant::MoveMir}!poseUpdater@{poseUpdater}}
+\index{poseUpdater@{poseUpdater}!move\_compliant::MoveMir@{move\_compliant::MoveMir}}
+\doxysubsubsection{\texorpdfstring{poseUpdater()}{poseUpdater()}}
+{\footnotesize\ttfamily void Move\+Mir\+::pose\+Updater (\begin{DoxyParamCaption}\item[{double}]{force\+\_\+angle }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em force\+\_\+angle} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classmove__compliant_1_1MoveMir_a5805a73c4d6d7051b69f06f96600c067}\label{classmove__compliant_1_1MoveMir_a5805a73c4d6d7051b69f06f96600c067}} 
+\index{move\_compliant::MoveMir@{move\_compliant::MoveMir}!rotateToPoseDirection@{rotateToPoseDirection}}
+\index{rotateToPoseDirection@{rotateToPoseDirection}!move\_compliant::MoveMir@{move\_compliant::MoveMir}}
+\doxysubsubsection{\texorpdfstring{rotateToPoseDirection()}{rotateToPoseDirection()}}
+{\footnotesize\ttfamily void Move\+Mir\+::rotate\+To\+Pose\+Direction (\begin{DoxyParamCaption}\item[{double}]{rot\+\_\+angle }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em rot\+\_\+angle} & angle between Mi\+R-\/x-\/axis and target direction \\
+\hline
+\end{DoxyParams}
 
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
 \item 
-mur\+\_\+force\+\_\+controller/include/mur\+\_\+force\+\_\+controller/move\+\_\+compliant.\+h\item 
-mur\+\_\+force\+\_\+controller/src/move\+\_\+compliant.\+cpp\end{DoxyCompactItemize}
+mur\+\_\+force\+\_\+controller/include/mur\+\_\+force\+\_\+controller/move\+\_\+mir\+\_\+compliant.\+h\item 
+mur\+\_\+force\+\_\+controller/src/move\+\_\+mir\+\_\+compliant.\+cpp\end{DoxyCompactItemize}

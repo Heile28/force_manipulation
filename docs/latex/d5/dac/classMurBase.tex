@@ -1,0 +1,150 @@
+\hypertarget{classMurBase}{}\doxysection{Mur\+Base Class Reference}
+\label{classMurBase}\index{MurBase@{MurBase}}
+
+
+base class ready to get inherited  
+
+
+
+
+{\ttfamily \#include $<$mur\+\_\+base.\+h$>$}
+
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structMurBase_1_1Orientation}{Orientation}}
+\item 
+struct \mbox{\hyperlink{structMurBase_1_1Quaternion}{Quaternion}}
+\item 
+struct \mbox{\hyperlink{structMurBase_1_1Translation}{Translation}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMurBase_a1f1655125fb4706e0d6b4a1e39350c73}\label{classMurBase_a1f1655125fb4706e0d6b4a1e39350c73}} 
+void \mbox{\hyperlink{classMurBase_a1f1655125fb4706e0d6b4a1e39350c73}{start\+Service\+Server}} ()
+\begin{DoxyCompactList}\small\item\em starts a Service\+Server to query current poses for external nodes \end{DoxyCompactList}\item 
+std\+::vector$<$ double $>$ \mbox{\hyperlink{classMurBase_ae94d7443e8d0a2635edddafa6e401a35}{get\+Angles}} ()
+\begin{DoxyCompactList}\small\item\em Get the Angles object in coherence of a Joint\+Angles\+Listener() \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMurBase_aba9a331d3fba28c9bd16d781e2a8f7e4}{get\+Link\+Transform\+UR5}} (const std\+::string source\+\_\+frame, const std\+::string target\+\_\+frame)
+\begin{DoxyCompactList}\small\item\em callback function of joints data \end{DoxyCompactList}\item 
+std\+::vector$<$ double $>$ \mbox{\hyperlink{classMurBase_a55fbe72bd01af67ac122ee346eb718c5}{get\+Current\+Pose}} (std\+::string source\+\_\+frame\+\_\+, std\+::string target\+\_\+frame\+\_\+)
+\begin{DoxyCompactList}\small\item\em Get the Current Pose object. \end{DoxyCompactList}\item 
+tf\+::\+Stamped\+Transform \mbox{\hyperlink{classMurBase_a95136f33724455539384823265cd922d}{transform}} (const std\+::string source\+\_\+frame\+\_\+, const std\+::string target\+\_\+frame\+\_\+)
+\begin{DoxyCompactList}\small\item\em Returns an transformation object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMurBase_a1fe21f8788eda7f1efd2084ea934cb13}\label{classMurBase_a1fe21f8788eda7f1efd2084ea934cb13}} 
+ros\+::\+Subscriber {\bfseries joint\+\_\+angles\+\_\+}
+\item 
+\mbox{\Hypertarget{classMurBase_a3a3b115f30b3bac498e4f645b1558e60}\label{classMurBase_a3a3b115f30b3bac498e4f645b1558e60}} 
+double {\bfseries theta1\+\_\+}
+\item 
+\mbox{\Hypertarget{classMurBase_a2747aa0e036f066d406cef3ee913f1d0}\label{classMurBase_a2747aa0e036f066d406cef3ee913f1d0}} 
+double {\bfseries theta2\+\_\+}
+\item 
+\mbox{\Hypertarget{classMurBase_afad23b94fe9b7eaa72276559996cd70e}\label{classMurBase_afad23b94fe9b7eaa72276559996cd70e}} 
+double {\bfseries theta3\+\_\+}
+\item 
+\mbox{\Hypertarget{classMurBase_a50aebad76f6a467e50c1b42dfec62f0c}\label{classMurBase_a50aebad76f6a467e50c1b42dfec62f0c}} 
+double {\bfseries theta4\+\_\+}
+\item 
+\mbox{\Hypertarget{classMurBase_a3199704f90b1532cb4159b91765d1540}\label{classMurBase_a3199704f90b1532cb4159b91765d1540}} 
+double {\bfseries theta5\+\_\+}
+\item 
+\mbox{\Hypertarget{classMurBase_a2128a307001aa41ea2bca14c8c5f71b1}\label{classMurBase_a2128a307001aa41ea2bca14c8c5f71b1}} 
+double {\bfseries theta6\+\_\+}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMurBase_a4defcf4f3b5506cd33332d7024cc7255}\label{classMurBase_a4defcf4f3b5506cd33332d7024cc7255}} 
+int {\bfseries map\+Indizes} (std\+::string name)
+\item 
+\mbox{\Hypertarget{classMurBase_a3ca7696f5ee13563dabe58e6502f9dbf}\label{classMurBase_a3ca7696f5ee13563dabe58e6502f9dbf}} 
+void \mbox{\hyperlink{classMurBase_a3ca7696f5ee13563dabe58e6502f9dbf}{callback\+Joint\+Angles}} (sensor\+\_\+msgs\+::\+Joint\+State joint\+\_\+msg)
+\begin{DoxyCompactList}\small\item\em callback function of joints data \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classMurBase_abdad3028329fa3763de212c1efc0771a}{callback\+Request\+Endeffector}} (mur\+\_\+robot\+\_\+msgs\+::\+Pose\+Request\+::\+Request \&req, mur\+\_\+robot\+\_\+msgs\+::\+Pose\+Request\+::\+Response \&res)
+\begin{DoxyCompactList}\small\item\em Service server to request for current endeffector pose. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classMurBase_abdad3028329fa3763de212c1efc0771a}\label{classMurBase_abdad3028329fa3763de212c1efc0771a}} 
+\index{MurBase@{MurBase}!callbackRequestEndeffector@{callbackRequestEndeffector}}
+\index{callbackRequestEndeffector@{callbackRequestEndeffector}!MurBase@{MurBase}}
+\doxysubsubsection{\texorpdfstring{callbackRequestEndeffector()}{callbackRequestEndeffector()}}
+{\footnotesize\ttfamily bool Mur\+Base\+::callback\+Request\+Endeffector (\begin{DoxyParamCaption}\item[{mur\+\_\+robot\+\_\+msgs\+::\+Pose\+Request\+::\+Request \&}]{req,  }\item[{mur\+\_\+robot\+\_\+msgs\+::\+Pose\+Request\+::\+Response \&}]{res }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em req} & activate to true if wanted \\
+\hline
+{\em res} & is able to return cartesian position, orientation (quaternion + rpy) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true 
+
+false 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMurBase_ae94d7443e8d0a2635edddafa6e401a35}\label{classMurBase_ae94d7443e8d0a2635edddafa6e401a35}} 
+\index{MurBase@{MurBase}!getAngles@{getAngles}}
+\index{getAngles@{getAngles}!MurBase@{MurBase}}
+\doxysubsubsection{\texorpdfstring{getAngles()}{getAngles()}}
+{\footnotesize\ttfamily std\+::vector$<$ double $>$ Mur\+Base\+::get\+Angles (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$double$>$ theta\+\_\+ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMurBase_a55fbe72bd01af67ac122ee346eb718c5}\label{classMurBase_a55fbe72bd01af67ac122ee346eb718c5}} 
+\index{MurBase@{MurBase}!getCurrentPose@{getCurrentPose}}
+\index{getCurrentPose@{getCurrentPose}!MurBase@{MurBase}}
+\doxysubsubsection{\texorpdfstring{getCurrentPose()}{getCurrentPose()}}
+{\footnotesize\ttfamily std\+::vector$<$ double $>$ Mur\+Base\+::get\+Current\+Pose (\begin{DoxyParamCaption}\item[{std\+::string}]{source\+\_\+frame\+\_\+,  }\item[{std\+::string}]{target\+\_\+frame\+\_\+ }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em source\+\_\+frame\+\_\+} & \\
+\hline
+{\em target\+\_\+frame\+\_\+} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$double$>$ pose\+\_\+ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMurBase_aba9a331d3fba28c9bd16d781e2a8f7e4}\label{classMurBase_aba9a331d3fba28c9bd16d781e2a8f7e4}} 
+\index{MurBase@{MurBase}!getLinkTransformUR5@{getLinkTransformUR5}}
+\index{getLinkTransformUR5@{getLinkTransformUR5}!MurBase@{MurBase}}
+\doxysubsubsection{\texorpdfstring{getLinkTransformUR5()}{getLinkTransformUR5()}}
+{\footnotesize\ttfamily void Mur\+Base\+::get\+Link\+Transform\+UR5 (\begin{DoxyParamCaption}\item[{const std\+::string}]{source\+\_\+frame,  }\item[{const std\+::string}]{target\+\_\+frame }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em source\+\_\+frame} & frame origin \\
+\hline
+{\em target\+\_\+frame} & frame in which to transform \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMurBase_a95136f33724455539384823265cd922d}\label{classMurBase_a95136f33724455539384823265cd922d}} 
+\index{MurBase@{MurBase}!transform@{transform}}
+\index{transform@{transform}!MurBase@{MurBase}}
+\doxysubsubsection{\texorpdfstring{transform()}{transform()}}
+{\footnotesize\ttfamily tf\+::\+Stamped\+Transform Mur\+Base\+::transform (\begin{DoxyParamCaption}\item[{const std\+::string}]{source\+\_\+frame\+\_\+,  }\item[{const std\+::string}]{target\+\_\+frame\+\_\+ }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em source\+\_\+frame\+\_\+} & \\
+\hline
+{\em target\+\_\+frame\+\_\+} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+tf\+::\+Stamped\+Transform 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+mur\+\_\+force\+\_\+controller/include/mur\+\_\+force\+\_\+controller/mur\+\_\+base.\+h\item 
+mur\+\_\+force\+\_\+controller/src/mur\+\_\+base.\+cpp\end{DoxyCompactItemize}

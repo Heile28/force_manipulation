@@ -1,0 +1,46 @@
+\hypertarget{classMoveRobotClient}{}\doxysection{Move\+Robot\+Client Class Reference}
+\label{classMoveRobotClient}\index{MoveRobotClient@{MoveRobotClient}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMoveRobotClient_a60ef6537be3cd964dd3a2afd1fffe551}\label{classMoveRobotClient_a60ef6537be3cd964dd3a2afd1fffe551}} 
+void {\bfseries switch\+Controller} ()
+\item 
+\mbox{\Hypertarget{classMoveRobotClient_a1287659a6e5d8e38e1364080d686cb2e}\label{classMoveRobotClient_a1287659a6e5d8e38e1364080d686cb2e}} 
+void {\bfseries on\+Transition} (const Goal\+Handle gh)
+\item 
+\mbox{\Hypertarget{classMoveRobotClient_a8af4781aa021c96524b9f501a647686b}\label{classMoveRobotClient_a8af4781aa021c96524b9f501a647686b}} 
+void {\bfseries on\+Feedback} (const Goal\+Handle gh, const control\+\_\+msgs\+::\+Follow\+Joint\+Trajectory\+Feedback\+Const\+Ptr \&feedback)
+\item 
+\mbox{\Hypertarget{classMoveRobotClient_a646a0faa1efd87bed78db7adad5c996e}\label{classMoveRobotClient_a646a0faa1efd87bed78db7adad5c996e}} 
+Goal\+Handle {\bfseries send\+Goal} (std\+::string frame)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMoveRobotClient_a5f418c41f91ce923357faf85f457f88c}\label{classMoveRobotClient_a5f418c41f91ce923357faf85f457f88c}} 
+std\+::map$<$ int, Goal\+Handle $\ast$ $>$ {\bfseries \+\_\+goal\+Handles}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classMoveRobotClient_a4d583f79d143f7f5168da953ceca42cf}\label{classMoveRobotClient_a4d583f79d143f7f5168da953ceca42cf}} 
+ros\+::\+Node\+Handle {\bfseries \+\_\+nh}
+\item 
+\mbox{\Hypertarget{classMoveRobotClient_a1b3c30994f8675fe404a131a5bf5ee1b}\label{classMoveRobotClient_a1b3c30994f8675fe404a131a5bf5ee1b}} 
+actionlib\+::\+Action\+Client$<$ control\+\_\+msgs\+::\+Follow\+Joint\+Trajectory\+Action $>$ {\bfseries \+\_\+ac}
+\item 
+\mbox{\Hypertarget{classMoveRobotClient_a40b3f41ac2235bdf248c58a55c0e0e83}\label{classMoveRobotClient_a40b3f41ac2235bdf248c58a55c0e0e83}} 
+ros\+::\+Service\+Client {\bfseries robot\+\_\+switch\+\_\+client}
+\item 
+\mbox{\Hypertarget{classMoveRobotClient_a2d97b9b0c9d2ee931f71dc61f2e967bd}\label{classMoveRobotClient_a2d97b9b0c9d2ee931f71dc61f2e967bd}} 
+ros\+::\+Service\+Client {\bfseries query\+\_\+active\+\_\+controller}
+\item 
+\mbox{\Hypertarget{classMoveRobotClient_a838cce77cef2373f1afb7b1c3b17a9a5}\label{classMoveRobotClient_a838cce77cef2373f1afb7b1c3b17a9a5}} 
+bool {\bfseries sw} = false
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+mur\+\_\+simulation/src/move\+\_\+mur\+\_\+client.\+cpp\end{DoxyCompactItemize}

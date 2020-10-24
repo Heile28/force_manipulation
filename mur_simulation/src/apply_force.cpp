@@ -23,7 +23,7 @@ class ApplyForce
         tf::Vector3 tf_force_apply_, tf_force_at_base_;
         geometry_msgs::Vector3 force_, force_at_base_;
         ros::NodeHandle nh_;
-        ros::Publisher pub_wrench = nh_.advertise<geometry_msgs::WrenchStamped>("/apply_force/target_wrench",100);
+        ros::Publisher pub_wrench = nh_.advertise<geometry_msgs::WrenchStamped>("/robot1_ns/apply_force/target_wrench",100);
     public:
         /**
          * @brief transfers applied force from ~/ee_link_ur5 into ~/base_link + apply in Gazebo wrench-service
