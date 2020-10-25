@@ -204,7 +204,7 @@ and start force_controllers
 rosrun mur_simulation start_mir_controller_node
 rosun mur_simulation start_ur_controller_node
 ```
-### Simulate sn force attack
+### Simulate an force attack
 ```bash
 rosrun mur_simulation apply_force_node
 ```
