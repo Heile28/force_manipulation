@@ -197,6 +197,16 @@ catkin_make
 ## Start simulation
 ```bash
 roslaunch mir_ur5 system_sim.launch
+roslaunch mir_simulation activate_force_manipulation.launch
+```
+and start force_controllers
+```bash
+rosrun mur_simulation start_mir_controller_node
+rosun mur_simulation start_ur_controller_node
+```
+### Simulate sn force attack
+```bash
+rosrun mur_simulation apply_force_node
 ```
 ### Feature
 ```bash
