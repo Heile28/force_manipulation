@@ -88,9 +88,9 @@ arm_cartesian_compliance_controller:
     - $(arg tf_prefix)wrist_3_joint
 
   stiffness:
-      trans_x: 200
-      trans_y: 200
-      trans_z: 200
+      trans_x: 800
+      trans_y: 800
+      trans_z: 800
       rot_x: 150
       rot_y: 150
       rot_z: 150
