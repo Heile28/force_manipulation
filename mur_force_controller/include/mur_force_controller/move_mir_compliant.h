@@ -34,7 +34,6 @@ namespace move_compliant{
     private:
         ros::NodeHandle nh_;
         MurBase base_;
-        move_compliant::MoveUR start_ur_;
         ros::Publisher pub_simple_, pub_pose_, pub_angle_;
         ros::ServiceClient endeffector_pose_client_;
         ros::Time init_time_, current_time_, last_time_;
