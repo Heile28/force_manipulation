@@ -309,25 +309,31 @@ void MoveMir::relativeAngleUpdater()
 void MoveMir::rotateToForceDirection()
 {
         ROS_INFO("Now is time for rotation in force direction!");
-        
-        /***** Query angle of force attack *****/
-        double force_angle = getCurrentForceAngle();
-        
-        /***** Store as rotation angle for ur5 controller *****/
-        rotation_angle_.data = force_angle;
+        double force_angle;
+    
+        /**** Rate considerates synchronisation between
+         * rotateToPoseDirection() and poseUpdater() ****/
+        ros::Rate r(1.7);
         
         /***** Rotate MiR in direction *****/
-        rotateToPoseDirection(force_angle);
-        
-        /***** Reset switcher *****/
-        //force_angle = getCurrentForceAngle();
-        //if(abs(force_angle) < 0.03) //0.0095
-        //{
-            activate_rotation2_ = 0; //SECOND ROTATION DISABLED
-            ROS_INFO("Overall rotation finished!");
-        //}
-        
-
+        while(nh_.ok() && activate_rotation2_)
+        {
+            // Query angle of force attack
+            force_angle = getCurrentForceAngle();
+            
+            //send the rotation command
+            rotateToPoseDirection(force_angle);
+            r.sleep();
+            
+            //interchange with manipulator
+            relativeAngleUpdater();
+            pub_angle_.publish(rotation_angle_);
+            
+            //get current pose
+            poseUpdater(force_angle);
+            
+            ros::spinOnce();
+        }
 }
 
 double MoveMir::getCurrentForceAngle()
@@ -383,7 +389,7 @@ void MoveMir::controlMethod1()
     if(abs(theta_norm) >= 0.03) // && activate_force_ == 1)
     {
             /**** Set velocities when force not parallel ****/
-            tw_msg_.angular.z = theta_norm;
+            tw_msg_.angular.z = M_PI/3*theta_norm;
             tw_msg_.linear.x = (isPositiveForce_==1) ? -x_dot_ : x_dot_;
             /*
             std::cout<<"Current MiR pose:\n";
@@ -496,7 +502,7 @@ void MoveMir::rotateToPoseDirection(double rot_angle)
     pub_simple_.publish(tw_msg_);
     
     /***** Specify angle *****/
-    tw_msg_.angular.z = rot_angle;
+    tw_msg_.angular.z = M_PI/3*rot_angle;
     //ros::Rate r2(8.0);
     //r2.sleep(); //sleep for 0.125 seconds
     do
