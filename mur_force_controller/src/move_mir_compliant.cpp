@@ -328,6 +328,7 @@ void MoveMir::relativeAngleUpdater()
 void MoveMir::rotateToForceDirection()
 {
         ROS_INFO("Now is time for rotation in force direction!");
+<<<<<<< HEAD
         
         double force_angle;
         /**** Rate considerates synchronisation between 
@@ -345,20 +346,41 @@ void MoveMir::rotateToForceDirection()
             //store current mir yaw angle
             mir_yaw_old = mir_yaw;
             
+=======
+        double force_angle;
+    
+        /**** Rate considerates synchronisation between
+         * rotateToPoseDirection() and poseUpdater() ****/
+        ros::Rate r(1.7);
+        
+        /***** Rotate MiR in direction *****/
+        while(nh_.ok() && activate_rotation2_)
+        {
+            // Query angle of force attack
+            force_angle = getCurrentForceAngle();
+            
+>>>>>>> 2f03fa0f5f4bafb0ec32faf4054eac9162577486
             //send the rotation command
             rotateToPoseDirection(force_angle);
             r.sleep();
             
             //interchange with manipulator
             relativeAngleUpdater();
+<<<<<<< HEAD
             //rotation_angle_.data = force_angle;
             pub_angle_.publish(rotation_angle_);
             
             //get the current pose
+=======
+            pub_angle_.publish(rotation_angle_);
+            
+            //get current pose
+>>>>>>> 2f03fa0f5f4bafb0ec32faf4054eac9162577486
             poseUpdater(force_angle);
             
             ros::spinOnce();
         }
+<<<<<<< HEAD
         
         /***** Reset switcher *****/
         //force_angle = getCurrentForceAngle();
@@ -369,6 +391,8 @@ void MoveMir::rotateToForceDirection()
         //}
         
 
+=======
+>>>>>>> 2f03fa0f5f4bafb0ec32faf4054eac9162577486
 }
 
 double MoveMir::getCurrentForceAngle()
@@ -536,7 +560,11 @@ void MoveMir::rotateToPoseDirection(double rot_angle)
     pub_simple_.publish(tw_msg_);
     
     /***** Specify angle *****/
+<<<<<<< HEAD
     tw_msg_.angular.z = M_PI/3*rot_angle; //rot_angle; 1 DEG/s
+=======
+    tw_msg_.angular.z = M_PI/3*rot_angle;
+>>>>>>> 2f03fa0f5f4bafb0ec32faf4054eac9162577486
     //ros::Rate r2(8.0);
     //r2.sleep(); //sleep for 0.125 seconds
     
@@ -566,12 +594,21 @@ void MoveMir::moveStraight()
     tw_msg_.angular.z = 0.0;
     pub_simple_.publish(tw_msg_);
 
+<<<<<<< HEAD
     while(nh_.ok() && activate_force_ == 1 && activate_rotation2_ == 0){
         tw_msg_.linear.x = (isPositiveForce_==1) ? -x_dot_ : x_dot_;
         pub_simple_.publish(tw_msg_);
         //poseUpdater();
         ros::spinOnce(); //needed otherwise unlimited straight move
         //r.sleep();
+=======
+    while(nh_.ok() && activate_force_ == 1 && activate_rotation2_ == 0)
+    {
+        tw_msg_.linear.x = (isPositiveForce_==1) ? -x_dot_ : x_dot_;
+        pub_simple_.publish(tw_msg_);
+        ros::spinOnce();
+        r.sleep();
+>>>>>>> 2f03fa0f5f4bafb0ec32faf4054eac9162577486
     }
     
 }

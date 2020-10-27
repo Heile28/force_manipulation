@@ -1,5 +1,5 @@
 <launch>
-    <arg name="robot_namespace"/>
+    <arg name="robot_namespace" value="robot1_ns"/>
     
     <!-- compulsory nodes -->
     <node pkg="mur_simulation" type="start_services_node" name="force_manipulation_services" ns="/$(arg robot_namespace)"/>

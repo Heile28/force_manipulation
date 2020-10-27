@@ -88,9 +88,9 @@ arm_cartesian_compliance_controller:
     - $(arg tf_prefix)wrist_3_joint
 
   stiffness:
-      trans_x: 200
-      trans_y: 200
-      trans_z: 200
+      trans_x: 800
+      trans_y: 800
+      trans_z: 800
       rot_x: 150
       rot_y: 150
       rot_z: 150
@@ -197,13 +197,19 @@ catkin_make
 ## Start simulation
 ```bash
 roslaunch mir_ur5 system_sim.launch
+roslaunch mir_simulation activate_force_manipulation.launch
+```
+and start force_controllers
+```bash
+rosrun mur_simulation start_mir_node
+rosun mur_simulation start_ur_node
+```
+### Simulate an force attack
+```bash
+rosrun mur_simulation apply_force_node
 ```
 ### Feature
 ```bash
 sudo apt-get install ros-melodic-rqt-joint-trajectory-controller
 rosrun rqt_joint_trajectory_controller rqt_joint_trajectory_controller
 ```
-<<<<<<< HEAD
-
-=======
->>>>>>> 470b812138ae82862b14ecf2f5abc8f1a818ad72
