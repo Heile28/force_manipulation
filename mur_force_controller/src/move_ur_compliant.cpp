@@ -14,7 +14,7 @@
 #include <ur_kinematics/ur_kin.h>
 
 
-using namespace move_compliant;
+using namespace move_ur_compliant;
 
 MoveUR::MoveUR()
 {
@@ -22,6 +22,7 @@ MoveUR::MoveUR()
     this->rotation_angle_ = nh_.subscribe("/move_mir_compliant/rotation_angle", 100, &MoveUR::angleCallback, this);
     this->pub_pose_ = nh_.advertise<geometry_msgs::PoseStamped>("/robot1_ns/arm_cartesian_compliance_controller/target_pose", 100);
     this->lookupInitialLocalPosition();
+    this->current_local_pose_ = initial_local_pose_;
     this->lookupInitialGlobalPosition();
     this->q0_ = 0.0;
 }
@@ -35,7 +36,11 @@ void MoveUR::angleCallback(std_msgs::Float64 angle_)
     /**** Methods proceeding subscribed angle ****/
     //nullspace(theta_);
     //moveInitialPose();
-    rotateAngle(q0_);
+
+    if(abs(q0_) > 0.03)
+        rotateAngle(q0_);
+    else
+        moveInitialPose();
 }
 
 void MoveUR::lookupInitialLocalPosition(){
@@ -124,56 +129,6 @@ std::vector<double> MoveUR::callCurrentLocalPose()
     return current_local_pose_;
 }
 
-void MoveUR::nullspace(double q0_)
-{
-    /*** Lookup current local pose ***/
-    callCurrentLocalPose();
-    ROS_INFO("Inside Nullspace movement.");
-
-    /***** Publish desired pose to cartesian_compliance_controller *****/
-    geometry_msgs::PoseStamped x_d;
-    x_d.header.frame_id = "robot1_tf/base_link_ur5";
-
-    double r = sqrt(pow(current_local_pose_[0],2)+pow(current_local_pose_[1],2));
-    double delta_x[2] = {r*sin(-q0_), r*cos(-q0_)};
-    //ROS_INFO_STREAM("Delta theta ist "<<q0_);
-
-    //rotation matrix around z
-    //R={cos(angle), -sin(angle), 0; sin(angle), cos(angle), 0; 0, 0, 1}
-    Eigen::Matrix3d R;
-    R << cos(-q0_), -sin(-q0_), 0, sin(-q0_), cos(-q0_), 0, 0, 0, 1;
-
-    Eigen::Vector3d x, x_current;
-    x_current << current_local_pose_[0], current_local_pose_[1], current_local_pose_[2];
-    x = R*x_current;
-    
-    //?????
-    x_d.pose.position.x = x(0);
-    x_d.pose.position.y = x(1);
-    x_d.pose.position.z = x(2);
-
-    x_d.pose.orientation.x = current_local_pose_[6];
-    x_d.pose.orientation.y = current_local_pose_[7];
-    x_d.pose.orientation.z = current_local_pose_[8];
-    x_d.pose.orientation.w = current_local_pose_[9];
-        
-    // x_d.pose.position.x = current_local_pose_[0]+delta_x[0]; //+initial_local_pose_[0]; //-dsad;
-    // x_d.pose.position.y = current_local_pose_[1]+delta_x[1]; //+initial_local_pose_[1];
-    // x_d.pose.position.z = current_local_pose_[2];
-
-    // x_d.pose.orientation.x = current_local_pose_[3];
-    // x_d.pose.orientation.y = current_local_pose_[4];
-    // x_d.pose.orientation.z = current_local_pose_[5];
-    // x_d.pose.orientation.w = current_local_pose_[6];
-
-    //ROS_INFO_STREAM("Probe: theta ist "<<atan2(x_d.pose.position.y-current_local_pose_[1],x_d.pose.position.x-current_local_pose_[0]) );
-
-    //std::cout<<"Desired pose: "<<x_d.pose.position.x<<", "<<x_d.pose.position.y<<", "<<x_d.pose.position.z<<std::endl;
-    
-    pub_pose_.publish(x_d);
-    
-}
-
 void MoveUR::moveInitialPose()
 {
 
@@ -188,34 +143,39 @@ void MoveUR::moveInitialPose()
     _to_initial = transform_*_from_initial;
     tf::poseTFToMsg(_to_initial,x_d.pose);
     
-    // x_d.pose.position.x = desired_local_pose_.pose.position.x; //+initial_local_pose_[0]; //-dsad;
-    // x_d.pose.position.y = desired_local_pose_.pose.position.y; //+initial_local_pose_[1];
-    // x_d.pose.position.z = desired_local_pose_.pose.position.z;
+    x_d.pose.position.x = initial_local_pose_[0]; //-dsad;
+    x_d.pose.position.y = initial_local_pose_[1];
+    x_d.pose.position.z = initial_local_pose_[2];
 
-    // x_d.pose.orientation.x = desired_local_pose_.pose.orientation.x;
-    // x_d.pose.orientation.y = desired_local_pose_.pose.orientation.y;
-    // x_d.pose.orientation.z = desired_local_pose_.pose.orientation.z;
-    // x_d.pose.orientation.w = desired_local_pose_.pose.orientation.w;
+    x_d.pose.orientation.x = initial_local_pose_[6];
+    x_d.pose.orientation.y = initial_local_pose_[7];
+    x_d.pose.orientation.z = initial_local_pose_[8];
+    x_d.pose.orientation.w = initial_local_pose_[9];
 
-    std::cout<<"Desired pose: "<<x_d.pose.position.x<<", "<<x_d.pose.position.y<<", "<<x_d.pose.position.z<<std::endl;
+    //std::cout<<"Desired pose: "<<x_d.pose.position.x<<", "<<x_d.pose.position.y<<", "<<x_d.pose.position.z<<std::endl;
 
+    /**** Publish to compliance controller input *****/
     pub_pose_.publish(x_d);
 }
 
 void MoveUR::rotateAngle(double rot_angle_)
 {
-    lookupInitialLocalPosition();
+    //lookupInitialLocalPosition();
+
     /**** Query current joint configuration ****/
     joint_theta_.clear();
     joint_theta_ = base_.getAngles();
-    ROS_INFO_STREAM("Current theta: "<<joint_theta_[0]);
+    //ROS_INFO_STREAM("Current theta: "<<joint_theta_[0]);
 
-    transform_ = base_.transform("robot1_tf/base_link", "robot1_tf/ee_link_ur5");
+    //transform_ = base_.transform("robot1_tf/base_link", "robot1_tf/ee_link_ur5");
 
     /**** Change first angle to rotation angle ****/
-    joint_theta_[0] = joint_theta_[0] - rot_angle_;
-    //ROS_INFO_STREAM("New theta: "<<joint_theta_[0]);
-
+    if(rot_angle_ > 0)
+        joint_theta_[0] = joint_theta_[0] + abs(rot_angle_);
+    else
+        joint_theta_[0] = joint_theta_[0] - abs(rot_angle_);
+    
+    ROS_INFO_STREAM("New theta: "<<joint_theta_[0]);
 
     /**** Calculate new pose rotated by rot_angle_ ****/
     forwardKinematics();
@@ -223,7 +183,11 @@ void MoveUR::rotateAngle(double rot_angle_)
     geometry_msgs::PoseStamped x_d;
     x_d.header.frame_id = "robot1_tf/base_link_ur5";
     x_d.header.stamp = ros::Time::now();
-    x_d.pose.position.x = T[3];
+    //x_d.pose.position.x = T[3];
+    if(abs(T[11]) > 0.8)
+        x_d.pose.position.x = 0.75;
+    else
+        x_d.pose.position.x = T[3];
     x_d.pose.position.y = T[7];
     x_d.pose.position.z = T[11];
 

@@ -3,15 +3,17 @@ var annotated_dup =
     [ "calculate_jacobian", null, [
       [ "GetJacobian", "df/dab/classcalculate__jacobian_1_1GetJacobian.html", "df/dab/classcalculate__jacobian_1_1GetJacobian" ]
     ] ],
-    [ "gazebo_ft_publisher", null, [
+    [ "gazebo_ft_publisher", "d3/d62/namespacegazebo__ft__publisher.html", [
       [ "WrenchPublisher", "d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html", "d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher" ]
     ] ],
-    [ "listen_frames", null, [
+    [ "listen_frames", "df/d6d/namespacelisten__frames.html", [
       [ "ListenFrames", "d5/d4e/classlisten__frames_1_1ListenFrames.html", "d5/d4e/classlisten__frames_1_1ListenFrames" ]
     ] ],
-    [ "move_compliant", null, [
-      [ "MoveMir", "d3/dc1/classmove__compliant_1_1MoveMir.html", "d3/dc1/classmove__compliant_1_1MoveMir" ],
-      [ "MoveUR", "de/d3a/classmove__compliant_1_1MoveUR.html", "de/d3a/classmove__compliant_1_1MoveUR" ]
+    [ "move_mir_compliant", "dc/dd5/namespacemove__mir__compliant.html", [
+      [ "MoveMir", "d2/d53/classmove__mir__compliant_1_1MoveMir.html", "d2/d53/classmove__mir__compliant_1_1MoveMir" ]
+    ] ],
+    [ "move_ur_compliant", "d5/d2d/namespacemove__ur__compliant.html", [
+      [ "MoveUR", "d6/d58/classmove__ur__compliant_1_1MoveUR.html", "d6/d58/classmove__ur__compliant_1_1MoveUR" ]
     ] ],
     [ "ApplyForce", "db/d9e/classApplyForce.html", "db/d9e/classApplyForce" ],
     [ "CalculateJacobians", "db/dc0/classCalculateJacobians.html", "db/dc0/classCalculateJacobians" ],

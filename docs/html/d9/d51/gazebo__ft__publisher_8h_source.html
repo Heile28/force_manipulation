@@ -121,50 +121,51 @@ $(document).ready(function(){initNavTree('d9/d51/gazebo__ft__publisher_8h_source
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#ifndef GAZEBO_FT_PUBLISHER_H</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#define GAZEBO_FT_PUBLISHER_H</span></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">namespace </span>gazebo_ft_publisher{</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html">   29</a></span>&#160;    <span class="keyword">class </span><a class="code" href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html">WrenchPublisher</a></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    {</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        ros::NodeHandle nh_;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        ros::Subscriber sub_;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        ros::Publisher pub_;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        geometry_msgs::WrenchStamped wrench_;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        geometry_msgs::Vector3Stamped force_, torque_;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        geometry_msgs::Vector3Stamped wrench_force_, wrench_torque_;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        tf::StampedTransform transform_, transform_ft_;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        tf::TransformListener listener_;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        tf::Matrix3x3 R;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html#a63b73dcdc8c175d6f1391a3a7a51b71c">wrenchCallback</a>(geometry_msgs::WrenchStamped wrench_msg);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <a class="code" href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html#ab5b70297a68b9baa5fe8c5e5f2dab350">WrenchPublisher</a>();</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <a class="code" href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html#afccf7ab2a81419db8b9590d0630a28d0">~WrenchPublisher</a>();</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html#a2364056bf9eaa8dfc7d4021107c89e10">transform_wrench_into_ee</a>();</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html#a55b16ff1fc3553cf437c7119054d8e5e">send_directly_to_topic</a>();</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html#ad6565b7fb09efa49e852a4ffc6b239bd">gravitation_compensation</a>();</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    };</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;}</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* GAZEBO_FT_PUBLISHER_H */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="aclassgazebo__ft__publisher_1_1WrenchPublisher_html"><div class="ttname"><a href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html">gazebo_ft_publisher::WrenchPublisher</a></div><div class="ttdef"><b>Definition:</b> gazebo_ft_publisher.h:30</div></div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="../../d3/d62/namespacegazebo__ft__publisher.html">   28</a></span>&#160;<span class="keyword">namespace </span><a class="code" href="../../d3/d62/namespacegazebo__ft__publisher.html">gazebo_ft_publisher</a>{</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html">   30</a></span>&#160;    <span class="keyword">class </span><a class="code" href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html">WrenchPublisher</a></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    {</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        ros::NodeHandle nh_;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        ros::Subscriber sub_;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        ros::Publisher pub_;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        geometry_msgs::WrenchStamped wrench_;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        geometry_msgs::Vector3Stamped force_, torque_;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        geometry_msgs::Vector3Stamped wrench_force_, wrench_torque_;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        tf::StampedTransform transform_, transform_ft_;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        tf::TransformListener listener_;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        tf::Matrix3x3 R;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html#a63b73dcdc8c175d6f1391a3a7a51b71c">wrenchCallback</a>(geometry_msgs::WrenchStamped wrench_msg);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <a class="code" href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html#ab5b70297a68b9baa5fe8c5e5f2dab350">WrenchPublisher</a>();</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <a class="code" href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html#afccf7ab2a81419db8b9590d0630a28d0">~WrenchPublisher</a>();</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html#a2364056bf9eaa8dfc7d4021107c89e10">transform_wrench_into_ee</a>();</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html#a55b16ff1fc3553cf437c7119054d8e5e">send_directly_to_topic</a>();</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html#ad6565b7fb09efa49e852a4ffc6b239bd">gravitation_compensation</a>();</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    };</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;}</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* GAZEBO_FT_PUBLISHER_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="aclassgazebo__ft__publisher_1_1WrenchPublisher_html"><div class="ttname"><a href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html">gazebo_ft_publisher::WrenchPublisher</a></div><div class="ttdef"><b>Definition:</b> gazebo_ft_publisher.h:31</div></div>
 <div class="ttc" id="aclassgazebo__ft__publisher_1_1WrenchPublisher_html_a2364056bf9eaa8dfc7d4021107c89e10"><div class="ttname"><a href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html#a2364056bf9eaa8dfc7d4021107c89e10">gazebo_ft_publisher::WrenchPublisher::transform_wrench_into_ee</a></div><div class="ttdeci">void transform_wrench_into_ee()</div><div class="ttdoc">transfers current wrench of Gazebo-F/T-sensor-plugin fixed at 'wrist3_link_ur5' into 'ee_link_ur5'</div><div class="ttdef"><b>Definition:</b> gazebo_ft_publisher.cpp:19</div></div>
 <div class="ttc" id="aclassgazebo__ft__publisher_1_1WrenchPublisher_html_a55b16ff1fc3553cf437c7119054d8e5e"><div class="ttname"><a href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html#a55b16ff1fc3553cf437c7119054d8e5e">gazebo_ft_publisher::WrenchPublisher::send_directly_to_topic</a></div><div class="ttdeci">void send_directly_to_topic()</div><div class="ttdoc">send wrench directly to FDCC controler topic</div><div class="ttdef"><b>Definition:</b> gazebo_ft_publisher.cpp:191</div></div>
 <div class="ttc" id="aclassgazebo__ft__publisher_1_1WrenchPublisher_html_a63b73dcdc8c175d6f1391a3a7a51b71c"><div class="ttname"><a href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html#a63b73dcdc8c175d6f1391a3a7a51b71c">gazebo_ft_publisher::WrenchPublisher::wrenchCallback</a></div><div class="ttdeci">void wrenchCallback(geometry_msgs::WrenchStamped wrench_msg)</div><div class="ttdoc">Callbacks current wrench and publishes it to cartesian_admittance_controller.</div><div class="ttdef"><b>Definition:</b> gazebo_ft_publisher.cpp:98</div></div>
 <div class="ttc" id="aclassgazebo__ft__publisher_1_1WrenchPublisher_html_ab5b70297a68b9baa5fe8c5e5f2dab350"><div class="ttname"><a href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html#ab5b70297a68b9baa5fe8c5e5f2dab350">gazebo_ft_publisher::WrenchPublisher::WrenchPublisher</a></div><div class="ttdeci">WrenchPublisher()</div><div class="ttdoc">Construct a new Wrench Publisher object.</div><div class="ttdef"><b>Definition:</b> gazebo_ft_publisher.cpp:5</div></div>
 <div class="ttc" id="aclassgazebo__ft__publisher_1_1WrenchPublisher_html_ad6565b7fb09efa49e852a4ffc6b239bd"><div class="ttname"><a href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html#ad6565b7fb09efa49e852a4ffc6b239bd">gazebo_ft_publisher::WrenchPublisher::gravitation_compensation</a></div><div class="ttdeci">void gravitation_compensation()</div><div class="ttdoc">compensate f/t-data with mass of wrist_3</div><div class="ttdef"><b>Definition:</b> gazebo_ft_publisher.cpp:121</div></div>
 <div class="ttc" id="aclassgazebo__ft__publisher_1_1WrenchPublisher_html_afccf7ab2a81419db8b9590d0630a28d0"><div class="ttname"><a href="../../d0/d02/classgazebo__ft__publisher_1_1WrenchPublisher.html#afccf7ab2a81419db8b9590d0630a28d0">gazebo_ft_publisher::WrenchPublisher::~WrenchPublisher</a></div><div class="ttdeci">~WrenchPublisher()</div><div class="ttdoc">Destroy the Wrench Publisher object.</div><div class="ttdef"><b>Definition:</b> gazebo_ft_publisher.cpp:14</div></div>
+<div class="ttc" id="anamespacegazebo__ft__publisher_html"><div class="ttname"><a href="../../d3/d62/namespacegazebo__ft__publisher.html">gazebo_ft_publisher</a></div><div class="ttdoc">Class relates to the gazebo force-torque-sensor plugin.</div><div class="ttdef"><b>Definition:</b> gazebo_ft_publisher.h:28</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

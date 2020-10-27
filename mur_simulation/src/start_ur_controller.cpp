@@ -9,7 +9,7 @@ int main(int argc, char** argv)
     ROS_INFO("universal robot is active.");
     ros::NodeHandle nh;
 
-    move_compliant::MoveUR obj2;
+    move_ur_compliant::MoveUR obj2;
     ROS_INFO("Ready to receive new poses");
 
     ros::spin();

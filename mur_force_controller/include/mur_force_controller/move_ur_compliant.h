@@ -24,7 +24,8 @@
 #ifndef MOVE_UR_COMPLIANT_H
 #define MOVE_UR_COMPLIANT_H
 
-namespace move_compliant{
+/// \brief Class of ur_controller driving the UR in conjunction to MiR yaw change
+namespace move_ur_compliant{
 
     class MoveUR{
         private:
@@ -78,14 +79,6 @@ namespace move_compliant{
              * 
              */
             ~MoveUR();
-        
-            /**
-             * @brief connects /robot1_ns/arm_cartesian_compliance_controller/target_pose
-             * 
-             * @param theta_ angle between MiR-x-axis and force direction
-             * 
-             */
-            void nullspace(double theta_);
 
             /**
              * @brief request initial local pose in ~/base_link_ur5

@@ -42,6 +42,7 @@ int32 progress_id # id that describes the current status of the action
 typedef actionlib::ClientGoalHandle<control_msgs::FollowJointTrajectoryAction> GoalHandle;
   //typedef um nicht immer die Typdefinition wiederholen zu muessen
 
+/// \brief Actionlib Class moving manipulator to an initial pose ready to force manipulation
 class MoveRobotClient {
     protected:
     ros::NodeHandle _nh;

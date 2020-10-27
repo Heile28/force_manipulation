@@ -25,6 +25,7 @@
 #ifndef LISTEN_FRAMES_H
 #define LISTEN_FRAMES_H
 
+/// \brief Class providing methods of frame transformations
 namespace listen_frames{
     
     class ListenFrames

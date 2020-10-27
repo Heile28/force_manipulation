@@ -11,7 +11,7 @@
 
 #include <mur_force_controller/move_mir_compliant.h>
 
-using namespace move_compliant;
+using namespace move_mir_compliant;
 
 //constructor
 MoveMir::MoveMir()
@@ -21,10 +21,11 @@ MoveMir::MoveMir()
     this->lookupInitialWorldPosition();
     this->lookupInitialLocalPosition();
     this->lookupInitialMiRPosition();
-    this->pub_angle_ = nh_.advertise<std_msgs::Float64>("/move_mir_compliant/rotation_angle", 100);
+    this->pub_angle_ = nh_.advertise<std_msgs::Float64>("rotation_angle", 100);
     this->pub_simple_ = nh_.advertise<geometry_msgs::Twist>("/robot1_ns/mobile_base_controller/cmd_vel", 100);
     this->pub_pose_ = nh_.advertise<geometry_msgs::PoseStamped>("/robot1_ns/arm_cartesian_compliance_controller/target_pose", 100);
     this->sub_force_ = nh_.subscribe("/robot1_ns/arm_cartesian_compliance_controller/ft_sensor_wrench", 100, &MoveMir::wrenchCallback, this);
+    this->sub_mir_pose_ = nh_.subscribe(nh_.getNamespace() + "/get_mir_kinematics/current_pose", 100, &MoveMir::mirPoseCallback, this);
     
     init_time_ = ros::Time(0);
     this->rotation_angle_.data = 0.0;
@@ -34,6 +35,7 @@ MoveMir::MoveMir()
     this->activate_rotation2_ = 1; //READY FOR FIRST ROTATION
     this->x_dot_ = 0.2331114;
     this->old_mir_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    this->mir_yaw_old = 0.0;
     
 }
 
@@ -272,6 +274,16 @@ void MoveMir::wrenchCallback(geometry_msgs::WrenchStamped wrench_msg_){
 
 }
 
+void MoveMir::mirPoseCallback(geometry_msgs::Pose pose_msg)
+{
+    tf::Quaternion q(pose_msg.orientation.x, pose_msg.orientation.y, pose_msg.orientation.z, pose_msg.orientation.w);
+    tf::Matrix3x3 m(q);
+    double roll, pitch, yaw;
+    m.getRPY(roll, pitch, yaw);
+
+    mir_yaw = yaw;
+}
+
 void MoveMir::poseUpdater(double force_angle)
 {
     ROS_INFO_STREAM("Force angle is "<<force_angle);
@@ -281,28 +293,35 @@ void MoveMir::poseUpdater(double force_angle)
     }
     if(abs(force_angle) >= 0.03) //if greater 2 DEG begin rotation
         activate_rotation2_ = 1;
+
+    if(abs(force_angle) == 0)
+        activate_rotation2_ = 0;
+    
 }
         
 void MoveMir::relativeAngleUpdater()
 {
+    /*callCurrentWorldPose();
     double theta_star = atan2(current_map_pose_[1]-current_mir_map_pose_[1], current_map_pose_[0]-current_mir_map_pose_[0]);
     std::cout<<"theta_star: "<<theta_star<<std::endl;
 
     double rot_angle1 = theta_star - theta_mir_world_;
     rot_angle1 = normalize_angle(rot_angle1);
-    //std::cout<<"rot_angle1 normalized: "<<rot_angle1<<std::endl;
-    
+    std::cout<<"rot_angle1 normalized: "<<rot_angle1<<std::endl;
+    */
 
     /***** Store as rotation angle for ur5 controller *****/
-    rotation_angle_.data = rot_angle1;
+    rotation_angle_.data = mir_yaw - mir_yaw_old; //rot_angle1;
     
     /***** Rotate when pose angle is greater 1 degree *****/
+    /*
     if(activate_force_ == 1 && activate_rotation1_ == 1 && abs(rot_angle1) > 0.03)
     {
         //ROS_INFO_STREAM("Rotation angle in DEG: "<<rot_angle1*180/PI);
         rotateToPoseDirection(rot_angle1);
         activate_rotation1_ = 0;    //READY FOR SECOND ROTATION
     }
+    */
 
 }
 
@@ -310,21 +329,43 @@ void MoveMir::rotateToForceDirection()
 {
         ROS_INFO("Now is time for rotation in force direction!");
         
-        /***** Query angle of force attack *****/
-        double force_angle = getCurrentForceAngle();
+        double force_angle;
+        /**** Rate considerates synchronisation between 
+         * rotateToPoseDirection() and poseUpdater() *****/
+        ros::Rate r(1.9);
         
         /***** Store as rotation angle for ur5 controller *****/
-        rotation_angle_.data = force_angle;
+        //rotation_angle_.data = force_angle;
         
         /***** Rotate MiR in direction *****/
-        rotateToPoseDirection(force_angle);
+        while(nh_.ok() && activate_rotation2_){
+            // Query angle of force attack
+            force_angle = getCurrentForceAngle();
+            
+            //store current mir yaw angle
+            mir_yaw_old = mir_yaw;
+            
+            //send the rotation command
+            rotateToPoseDirection(force_angle);
+            r.sleep();
+            
+            //interchange with manipulator
+            relativeAngleUpdater();
+            //rotation_angle_.data = force_angle;
+            pub_angle_.publish(rotation_angle_);
+            
+            //get the current pose
+            poseUpdater(force_angle);
+            
+            ros::spinOnce();
+        }
         
         /***** Reset switcher *****/
         //force_angle = getCurrentForceAngle();
         //if(abs(force_angle) < 0.03) //0.0095
         //{
-            activate_rotation2_ = 0; //SECOND ROTATION DISABLED
-            ROS_INFO("Overall rotation finished!");
+        //    activate_rotation2_ = 0; //SECOND ROTATION DISABLED
+        //    ROS_INFO("Overall rotation finished!");
         //}
         
 
@@ -383,7 +424,7 @@ void MoveMir::controlMethod1()
     if(abs(theta_norm) >= 0.03) // && activate_force_ == 1)
     {
             /**** Set velocities when force not parallel ****/
-            tw_msg_.angular.z = theta_norm;
+            tw_msg_.angular.z = M_PI/3*theta_norm;
             tw_msg_.linear.x = (isPositiveForce_==1) ? -x_dot_ : x_dot_;
             /*
             std::cout<<"Current MiR pose:\n";
@@ -434,7 +475,7 @@ void MoveMir::controlMethod1()
 
             /**** Send commands ****/
             pub_simple_.publish(tw_msg_);
-            pub_pose_.publish(new_pose);
+            //pub_pose_.publish(new_pose);
 
             old_mir_pose = current_mir_map_pose_;
 
@@ -484,7 +525,6 @@ void MoveMir::controlMethod3()
 
 void MoveMir::rotateToPoseDirection(double rot_angle)
 {
-    ros::Rate r(0.5);
     /***** Rotate MiR platform *****/
     tw_msg_.linear.x = 0.0;
     tw_msg_.linear.y = 0.0;
@@ -496,18 +536,17 @@ void MoveMir::rotateToPoseDirection(double rot_angle)
     pub_simple_.publish(tw_msg_);
     
     /***** Specify angle *****/
-    tw_msg_.angular.z = rot_angle;
+    tw_msg_.angular.z = M_PI/3*rot_angle; //rot_angle; 1 DEG/s
     //ros::Rate r2(8.0);
     //r2.sleep(); //sleep for 0.125 seconds
-    do
-    {
-        pub_simple_.publish(tw_msg_);
-        /***** Publish previously specified angle to ur5 controller *****/
-        pub_angle_.publish(rotation_angle_);
-        rot_angle = getCurrentForceAngle();
-        tw_msg_.angular.z = rot_angle;
-        r.sleep();
-    } while (rot_angle > 0.03);
+    
+    pub_simple_.publish(tw_msg_);
+        //r.sleep();
+        /***** Publish relative angle difference to ur5 controller *****/
+        //rot_angle = getCurrentForceAngle();
+        //poseUpdater(rot_angle);
+        //tw_msg_.angular.z = rot_angle;
+        //ros::spinOnce();
 }
 
 void MoveMir::moveStraight()
@@ -527,13 +566,13 @@ void MoveMir::moveStraight()
     tw_msg_.angular.z = 0.0;
     pub_simple_.publish(tw_msg_);
 
-    do{
+    while(nh_.ok() && activate_force_ == 1 && activate_rotation2_ == 0){
         tw_msg_.linear.x = (isPositiveForce_==1) ? -x_dot_ : x_dot_;
         pub_simple_.publish(tw_msg_);
         //poseUpdater();
-        ros::spinOnce();
-        r.sleep();
-    } while(activate_force_ == 1 && activate_rotation2_ == 0);
+        ros::spinOnce(); //needed otherwise unlimited straight move
+        //r.sleep();
+    }
     
 }
 

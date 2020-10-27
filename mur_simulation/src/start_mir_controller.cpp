@@ -18,8 +18,8 @@
 int main(int argc, char** argv)
 {
     ros::init(argc,argv,"Drive_MiR");
-    std::cout<<"Im in main file now"<<std::endl;
-    ros::NodeHandle nh;
+    std::cout<<"Ready to drive MiR by force"<<std::endl;
+    //ros::NodeHandle nh;
     
     /***** Test manipulation measure w *****/
     //calculate_jacobian::GetJacobian get_jacobian;
@@ -35,7 +35,7 @@ int main(int argc, char** argv)
     // ROS_INFO_STREAM("Static angle is "<<theta0);
 
     /***** start moving MiR robot *****/
-    move_compliant::MoveMir obj1;
+    move_mir_compliant::MoveMir obj1;
     
     /*
     ros::Publisher pub_simple_ = nh.advertise<geometry_msgs::Twist>("/robot1_ns/mobile_base_controller/cmd_vel", 100);
@@ -62,7 +62,6 @@ int main(int argc, char** argv)
 
         //get_jacobian.forwardKinematics();
         ros::spinOnce();
-        
     }
 
     //ros::spin();

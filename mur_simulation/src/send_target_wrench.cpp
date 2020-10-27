@@ -11,6 +11,7 @@
 #include <ros/ros.h>
 #include <geometry_msgs/WrenchStamped.h>
 
+/// \brief Class for sending current target wrench to cartesian compliance controller
 class SendTarget
 {
     private:

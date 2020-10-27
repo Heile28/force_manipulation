@@ -15,6 +15,7 @@
 #include <mur_force_controller/mur_base.h>
 #include <tf/transform_broadcaster.h>
 
+/// \brief Class providing methods for testing purposes
 class ApplyForce
 {
     private:
@@ -34,7 +35,7 @@ class ApplyForce
             ros::service::waitForService("/gazebo/apply_body_wrench"); //link: https://github.com/ros-simulation/gazebo_ros_pkgs/blob/kinetic-devel/gazebo_msgs/srv/ApplyBodyWrench.srv
             ros::ServiceClient force_client = nh_.serviceClient<gazebo_msgs::ApplyBodyWrench>("/gazebo/apply_body_wrench");
             gazebo_msgs::ApplyBodyWrench srv1; //namespace + servicename
-            ros::Duration duration_seconds(0.1); //specify duration of force attack in seconds
+            ros::Duration duration_seconds(0.2); //specify duration of force attack in seconds
             
             srv1.request.body_name = "robot1::robot1_tf/wrist_3_link_ur5"; //robot1::robot1_tf/base_footprint
             srv1.request.reference_frame = "robot1_tf/wrist_3_link_ur5";
@@ -506,7 +507,7 @@ int main(int argc, char** argv)
     ros::NodeHandle nh_;
 
     ApplyForce obj;
-    obj.apply_force_profile3();
+    obj.apply_force_profile4();
     //obj.apply_force_profile2();
     
     ros::spin();

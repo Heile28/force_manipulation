@@ -24,6 +24,7 @@
 #ifndef GAZEBO_FT_PUBLISHER_H
 #define GAZEBO_FT_PUBLISHER_H
 
+/// \brief Class relates to the gazebo force-torque-sensor plugin
 namespace gazebo_ft_publisher{
 
     class WrenchPublisher

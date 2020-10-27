@@ -26,6 +26,9 @@ var NAVTREE =
 [
   [ "Controllers for force manipulation of a mobile robot", "index.html", [
     [ "force_manipulation <img src=\"https://img.shields.io/github/issues/Heile28/force_manipulation\" alt=\"alt text\"/> <img src=\"https://img.shields.io/github/forks/Heile28/force_manipulation\" alt=\"alt text\"/>", "d0/d30/md_README.html", null ],
+    [ "Namespaces", "namespaces.html", [
+      [ "Namespace List", "namespaces.html", "namespaces_dup" ]
+    ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
@@ -42,7 +45,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"annotated.html"
+""
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

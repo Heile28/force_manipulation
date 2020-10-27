@@ -1,0 +1,72 @@
+\hypertarget{classmove__ur__compliant_1_1MoveUR}{}\doxysection{move\+\_\+ur\+\_\+compliant\+::Move\+UR Class Reference}
+\label{classmove__ur__compliant_1_1MoveUR}\index{move\_ur\_compliant::MoveUR@{move\_ur\_compliant::MoveUR}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classmove__ur__compliant_1_1MoveUR_a33ecfa69a662e0bfe0914404de85b245}\label{classmove__ur__compliant_1_1MoveUR_a33ecfa69a662e0bfe0914404de85b245}} 
+\mbox{\hyperlink{classmove__ur__compliant_1_1MoveUR_a33ecfa69a662e0bfe0914404de85b245}{Move\+UR}} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new Move U R object. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classmove__ur__compliant_1_1MoveUR_a6fbe3f58d6a70a95e29f764b79f7c840}\label{classmove__ur__compliant_1_1MoveUR_a6fbe3f58d6a70a95e29f764b79f7c840}} 
+\mbox{\hyperlink{classmove__ur__compliant_1_1MoveUR_a6fbe3f58d6a70a95e29f764b79f7c840}{$\sim$\+Move\+UR}} ()
+\begin{DoxyCompactList}\small\item\em Destroys the all objects. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classmove__ur__compliant_1_1MoveUR_ac33bd82a2c964342beaefcd882ca4bd5}\label{classmove__ur__compliant_1_1MoveUR_ac33bd82a2c964342beaefcd882ca4bd5}} 
+void \mbox{\hyperlink{classmove__ur__compliant_1_1MoveUR_ac33bd82a2c964342beaefcd882ca4bd5}{lookup\+Initial\+Local\+Position}} ()
+\begin{DoxyCompactList}\small\item\em request initial local pose in $\sim$/base\+\_\+link\+\_\+ur5 \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classmove__ur__compliant_1_1MoveUR_a7cf98fdc19ffa93c1569ec3ee221cd85}\label{classmove__ur__compliant_1_1MoveUR_a7cf98fdc19ffa93c1569ec3ee221cd85}} 
+void \mbox{\hyperlink{classmove__ur__compliant_1_1MoveUR_a7cf98fdc19ffa93c1569ec3ee221cd85}{lookup\+Initial\+Global\+Position}} ()
+\begin{DoxyCompactList}\small\item\em request initial global pose in $\sim$/base\+\_\+link \end{DoxyCompactList}\item 
+virtual std\+::vector$<$ double $>$ \mbox{\hyperlink{classmove__ur__compliant_1_1MoveUR_a749ff8aaf660ca5ec8d8bc6ccc946a12}{call\+Current\+Local\+Pose}} ()
+\begin{DoxyCompactList}\small\item\em calls for local position of endeffector (inside $\sim$/base\+\_\+link\+\_\+ur5) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classmove__ur__compliant_1_1MoveUR_ac64c10b8e2d00f60b98ee7cef34ed1d1}\label{classmove__ur__compliant_1_1MoveUR_ac64c10b8e2d00f60b98ee7cef34ed1d1}} 
+void \mbox{\hyperlink{classmove__ur__compliant_1_1MoveUR_ac64c10b8e2d00f60b98ee7cef34ed1d1}{move\+Initial\+Pose}} ()
+\begin{DoxyCompactList}\small\item\em moves endeffector into initial pose \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classmove__ur__compliant_1_1MoveUR_a9e536e189e72984539a1e78f207d3d0f}{rotate\+Angle}} (double rot\+\_\+angle\+\_\+)
+\begin{DoxyCompactList}\small\item\em moves endeffector by specified rot\+\_\+angle \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classmove__ur__compliant_1_1MoveUR_a2c7f4ec431ee5fb8a2e7d86b417797c6}\label{classmove__ur__compliant_1_1MoveUR_a2c7f4ec431ee5fb8a2e7d86b417797c6}} 
+void \mbox{\hyperlink{classmove__ur__compliant_1_1MoveUR_a2c7f4ec431ee5fb8a2e7d86b417797c6}{forward\+Kinematics}} ()
+\begin{DoxyCompactList}\small\item\em calculates endeffector pose based on current joint angles \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classmove__ur__compliant_1_1MoveUR_a38617268d6931c2603a44c0f4f08946d}{angle\+Callback}} (std\+\_\+msgs\+::\+Float64 angle\+\_\+msg)
+\begin{DoxyCompactList}\small\item\em callbacks current wrench \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classmove__ur__compliant_1_1MoveUR_a38617268d6931c2603a44c0f4f08946d}\label{classmove__ur__compliant_1_1MoveUR_a38617268d6931c2603a44c0f4f08946d}} 
+\index{move\_ur\_compliant::MoveUR@{move\_ur\_compliant::MoveUR}!angleCallback@{angleCallback}}
+\index{angleCallback@{angleCallback}!move\_ur\_compliant::MoveUR@{move\_ur\_compliant::MoveUR}}
+\doxysubsubsection{\texorpdfstring{angleCallback()}{angleCallback()}}
+{\footnotesize\ttfamily void Move\+UR\+::angle\+Callback (\begin{DoxyParamCaption}\item[{std\+\_\+msgs\+::\+Float64}]{angle\+\_\+msg }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em angle\+\_\+msg} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classmove__ur__compliant_1_1MoveUR_a749ff8aaf660ca5ec8d8bc6ccc946a12}\label{classmove__ur__compliant_1_1MoveUR_a749ff8aaf660ca5ec8d8bc6ccc946a12}} 
+\index{move\_ur\_compliant::MoveUR@{move\_ur\_compliant::MoveUR}!callCurrentLocalPose@{callCurrentLocalPose}}
+\index{callCurrentLocalPose@{callCurrentLocalPose}!move\_ur\_compliant::MoveUR@{move\_ur\_compliant::MoveUR}}
+\doxysubsubsection{\texorpdfstring{callCurrentLocalPose()}{callCurrentLocalPose()}}
+{\footnotesize\ttfamily std\+::vector$<$ double $>$ Move\+UR\+::call\+Current\+Local\+Pose (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$double$>$ current\+\_\+local\+\_\+pose 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classmove__ur__compliant_1_1MoveUR_a9e536e189e72984539a1e78f207d3d0f}\label{classmove__ur__compliant_1_1MoveUR_a9e536e189e72984539a1e78f207d3d0f}} 
+\index{move\_ur\_compliant::MoveUR@{move\_ur\_compliant::MoveUR}!rotateAngle@{rotateAngle}}
+\index{rotateAngle@{rotateAngle}!move\_ur\_compliant::MoveUR@{move\_ur\_compliant::MoveUR}}
+\doxysubsubsection{\texorpdfstring{rotateAngle()}{rotateAngle()}}
+{\footnotesize\ttfamily void Move\+UR\+::rotate\+Angle (\begin{DoxyParamCaption}\item[{double}]{rot\+\_\+angle\+\_\+ }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em rot\+\_\+angle\+\_\+} & \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+mur\+\_\+force\+\_\+controller/include/mur\+\_\+force\+\_\+controller/move\+\_\+ur\+\_\+compliant.\+h\item 
+mur\+\_\+force\+\_\+controller/src/move\+\_\+ur\+\_\+compliant.\+cpp\end{DoxyCompactItemize}

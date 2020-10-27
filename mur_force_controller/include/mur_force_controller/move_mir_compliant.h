@@ -26,7 +26,8 @@
 #ifndef MOVE_MIR_COMPLIANT_H
 #define MOVE_MIR_COMPLIANT_H
 
-namespace move_compliant{
+/// \brief Class of mir_controller driving the MiR plattform in in conjunction to the cartesian compliance controller
+namespace move_mir_compliant{
     
     class MoveMir
     {
@@ -34,7 +35,7 @@ namespace move_compliant{
     private:
         ros::NodeHandle nh_;
         MurBase base_;
-        move_compliant::MoveUR start_ur_;
+        //move_ur_compliant::MoveUR start_ur_;
         ros::Publisher pub_simple_, pub_pose_, pub_angle_;
         ros::ServiceClient endeffector_pose_client_;
         ros::Time init_time_, current_time_, last_time_;
@@ -65,12 +66,13 @@ namespace move_compliant{
         bool isPositiveForce_;
 
         //rotate in Force direction
-        ros::Subscriber sub_force_;
+        ros::Subscriber sub_force_, sub_mir_pose_;
         tf::StampedTransform transform_;
         tf::Vector3 tf_force_at_base_, tf_force_at_sensor_;
         geometry_msgs::Vector3 force_, force_at_base_, torque_;
         geometry_msgs::PoseStamped new_pose;
         std::vector<double> delta_pose;
+        double mir_yaw, mir_yaw_old;
 
     protected:
         /**
@@ -78,6 +80,12 @@ namespace move_compliant{
         * 
         */
         void wrenchCallback(geometry_msgs::WrenchStamped wrench_msg);
+
+        /**
+        * @brief Callbacks current wrench 
+        * 
+        */
+        void mirPoseCallback(geometry_msgs::Pose pose_msg);
 
     public:
 
