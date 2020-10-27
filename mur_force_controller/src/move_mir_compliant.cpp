@@ -533,13 +533,13 @@ void MoveMir::moveStraight()
     tw_msg_.angular.z = 0.0;
     pub_simple_.publish(tw_msg_);
 
-    do{
+    while(nh_.ok() && activate_force_ == 1 && activate_rotation2_ == 0)
+    {
         tw_msg_.linear.x = (isPositiveForce_==1) ? -x_dot_ : x_dot_;
         pub_simple_.publish(tw_msg_);
-        //poseUpdater();
         ros::spinOnce();
         r.sleep();
-    } while(activate_force_ == 1 && activate_rotation2_ == 0);
+    }
     
 }
 
