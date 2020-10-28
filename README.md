@@ -199,10 +199,14 @@ catkin_make
 roslaunch mir_ur5 system_sim.launch
 roslaunch mir_simulation activate_force_manipulation.launch
 ```
-and start force_controllers
+start force_controllers
 ```bash
 rosrun mur_simulation start_mir_node
 rosun mur_simulation start_ur_node
+```
+and move into initial configuration
+```bash
+rosrun mur_simulation move_mur_client_node
 ```
 ### Simulate an force attack
 ```bash
