@@ -35,10 +35,7 @@ namespace move_mir_compliant{
     private:
         ros::NodeHandle nh_;
         MurBase base_;
-<<<<<<< HEAD
-        //move_ur_compliant::MoveUR start_ur_;
-=======
->>>>>>> 2f03fa0f5f4bafb0ec32faf4054eac9162577486
+
         ros::Publisher pub_simple_, pub_pose_, pub_angle_;
         ros::ServiceClient endeffector_pose_client_;
         ros::Time init_time_, current_time_, last_time_;
